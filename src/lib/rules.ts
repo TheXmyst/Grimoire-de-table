@@ -74,3 +74,89 @@ export function maxSpellLevel(cls: string, level: number): number {
 export const hasCantrips = (cls: string) => ['full', 'pact'].includes(casterOf(cls));
 
 export const SPELL_LEVEL_LABEL = (lvl: number) => (lvl === 0 ? 'Sort mineur' : `Niveau ${lvl}`);
+
+export const SKILLS: { key: string; label: string; ability: AbilityKey }[] = [
+  { key: 'acrobaties', label: 'Acrobaties', ability: 'DEX' },
+  { key: 'arcanes', label: 'Arcanes', ability: 'INT' },
+  { key: 'athletisme', label: 'Athlétisme', ability: 'FOR' },
+  { key: 'discretion', label: 'Discrétion', ability: 'DEX' },
+  { key: 'dressage', label: 'Dressage', ability: 'SAG' },
+  { key: 'escamotage', label: 'Escamotage', ability: 'DEX' },
+  { key: 'histoire', label: 'Histoire', ability: 'INT' },
+  { key: 'intimidation', label: 'Intimidation', ability: 'CHA' },
+  { key: 'investigation', label: 'Investigation', ability: 'INT' },
+  { key: 'medecine', label: 'Médecine', ability: 'SAG' },
+  { key: 'nature', label: 'Nature', ability: 'INT' },
+  { key: 'perception', label: 'Perception', ability: 'SAG' },
+  { key: 'perspicacite', label: 'Perspicacité', ability: 'SAG' },
+  { key: 'persuasion', label: 'Persuasion', ability: 'CHA' },
+  { key: 'religion', label: 'Religion', ability: 'INT' },
+  { key: 'representation', label: 'Représentation', ability: 'CHA' },
+  { key: 'survie', label: 'Survie', ability: 'SAG' },
+  { key: 'tromperie', label: 'Tromperie', ability: 'CHA' },
+];
+
+/** Sauvegardes maîtrisées d'office par classe (PHB). */
+export const CLASS_SAVES: Record<string, AbilityKey[]> = {
+  Barbare: ['FOR', 'CON'],
+  Barde: ['DEX', 'CHA'],
+  Clerc: ['SAG', 'CHA'],
+  Druide: ['INT', 'SAG'],
+  Ensorceleur: ['CON', 'CHA'],
+  Guerrier: ['FOR', 'CON'],
+  Magicien: ['INT', 'SAG'],
+  Moine: ['FOR', 'DEX'],
+  Occultiste: ['SAG', 'CHA'],
+  Paladin: ['SAG', 'CHA'],
+  Rôdeur: ['FOR', 'DEX'],
+  Roublard: ['DEX', 'INT'],
+};
+
+/** Nom de la sous-classe selon la classe, pour l'étiquette du champ. */
+export const SUBCLASS_LABEL: Record<string, string> = {
+  Barbare: 'Voie primitive',
+  Barde: 'Collège bardique',
+  Clerc: 'Domaine divin',
+  Druide: 'Cercle druidique',
+  Ensorceleur: 'Origine magique',
+  Guerrier: 'Archétype martial',
+  Magicien: 'Tradition arcanique',
+  Moine: 'Tradition monastique',
+  Occultiste: 'Patron d’outre-monde',
+  Paladin: 'Serment sacré',
+  Rôdeur: 'Archétype de rôdeur',
+  Roublard: 'Archétype de roublard',
+};
+
+export const COINS = [
+  { key: 'pc', label: 'PC', name: 'Cuivre' },
+  { key: 'pa', label: 'PA', name: 'Argent' },
+  { key: 'pe', label: 'PE', name: 'Électrum' },
+  { key: 'po', label: 'PO', name: 'Or' },
+  { key: 'pp', label: 'PP', name: 'Platine' },
+] as const;
+
+export type CoinKey = (typeof COINS)[number]['key'];
+
+/** Valeur totale en pièces d'or. */
+export const coinsInGold = (c: Partial<Record<CoinKey, number>>) =>
+  (c.pc ?? 0) / 100 + (c.pa ?? 0) / 10 + (c.pe ?? 0) / 2 + (c.po ?? 0) + (c.pp ?? 0) * 10;
+
+export type Attack = {
+  name: string;
+  ability: AbilityKey;
+  proficient: boolean;
+  dice: string;
+  type: string;
+  bonus: number;
+};
+
+/** Lance une expression simple de dés, par exemple « 2d6 » ou « 1d8 ». */
+export function rollDice(expr: string): { total: number; rolls: number[] } {
+  const m = expr.trim().toLowerCase().match(/^(\d*)d(\d+)$/);
+  if (!m) return { total: 0, rolls: [] };
+  const n = Math.min(40, parseInt(m[1] || '1', 10));
+  const faces = parseInt(m[2], 10);
+  const rolls = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * faces));
+  return { total: rolls.reduce((a, b) => a + b, 0), rolls };
+}

@@ -1,22 +1,44 @@
 import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { AbilitiesTab, skillTotal } from '../../components/sheet/AbilitiesTab';
+import { BagTab } from '../../components/sheet/BagTab';
+import { CombatTab } from '../../components/sheet/CombatTab';
+import { NumField, Stat, Tabs, type SheetProps } from '../../components/sheet/common';
+import { RoleplayTab } from '../../components/sheet/RoleplayTab';
+import { SpellsTab } from '../../components/sheet/SpellsTab';
 import { Body, Button, Card, ErrorText, Field, Label, Pill, Row, Screen, Title } from '../../components/ui';
 import { useUserId } from '../../lib/auth';
-import {
-  ABILITIES,
-  CLASSES,
-  SPELL_LEVEL_LABEL,
-  maxSpellLevel,
-  modifier,
-  proficiencyBonus,
-  signed,
-  spellSlots,
-  type AbilityKey,
-} from '../../lib/rules';
+import { ABILITIES, CLASSES, CLASS_SAVES, SUBCLASS_LABEL, modifier, proficiencyBonus, signed } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
 import { fonts, useTheme } from '../../lib/theme';
 import type { Campaign, Character, CharacterSpell, Member } from '../../lib/types';
+
+// Valeurs par défaut si la base n'a pas encore les colonnes de la migration 0003
+const withDefaults = (c: Character): Character => ({
+  ...c,
+  subclass: c.subclass ?? '',
+  save_profs: c.save_profs ?? [],
+  skill_profs: c.skill_profs ?? [],
+  skill_expertise: c.skill_expertise ?? [],
+  attacks: c.attacks ?? [],
+  coins: { ...{ pc: 0, pa: 0, pe: 0, po: 0, pp: 0 }, ...((c.coins as Partial<Character['coins']> | null) ?? {}) },
+  traits: c.traits ?? '',
+  ideals: c.ideals ?? '',
+  bonds: c.bonds ?? '',
+  flaws: c.flaws ?? '',
+  backstory: c.backstory ?? '',
+});
+
+type TabKey = 'combat' | 'caracs' | 'sorts' | 'sac' | 'perso';
+
+const TABS: { key: TabKey; label: string }[] = [
+  { key: 'combat', label: 'Combat' },
+  { key: 'caracs', label: 'Caracs' },
+  { key: 'sorts', label: 'Sorts' },
+  { key: 'sac', label: 'Sac' },
+  { key: 'perso', label: 'Perso' },
+];
 
 export default function CharacterScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -29,7 +51,9 @@ export default function CharacterScreen() {
   const [spells, setSpells] = useState<CharacterSpell[]>([]);
   const [draft, setDraft] = useState<Partial<Character>>({});
   const [editing, setEditing] = useState(false);
+  const [tab, setTab] = useState<TabKey>('combat');
   const [amount, setAmount] = useState('5');
+  const [lastRoll, setLastRoll] = useState<{ label: string; total: number; detail: string } | null>(null);
   const [error, setError] = useState('');
 
   const loadSpells = useCallback(async () => {
@@ -41,7 +65,7 @@ export default function CharacterScreen() {
   const load = useCallback(async () => {
     const { data, error } = await supabase.from('characters').select('*').eq('id', id).single();
     if (error) return setError(errorText(error));
-    const c = data as Character;
+    const c = withDefaults(data as Character);
     setCh(c);
     const [camp, mem] = await Promise.all([
       supabase.from('campaigns').select('*').eq('id', c.campaign_id).single(),
@@ -63,7 +87,7 @@ export default function CharacterScreen() {
     const channel = supabase
       .channel(`character-${id}`)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'characters', filter: `id=eq.${id}` }, (payload) =>
-        setCh(payload.new as Character),
+        setCh(withDefaults(payload.new as Character)),
       )
       .on('postgres_changes', { event: '*', schema: 'public', table: 'character_spells', filter: `character_id=eq.${id}` }, () =>
         loadSpells(),
@@ -81,8 +105,7 @@ export default function CharacterScreen() {
   const canHp = isGm || (isOwner && campaign.settings.players_edit_hp);
   const canInventory = isGm || (isOwner && campaign.settings.players_edit_inventory);
   const pb = proficiencyBonus(ch.level);
-  const slots = spellSlots(ch.class, ch.level);
-  const maxLvl = maxSpellLevel(ch.class, ch.level);
+  const passivePerception = 10 + skillTotal(ch, 'perception');
   const hpPct = ch.hp_max > 0 ? Math.max(0, Math.min(1, ch.hp / ch.hp_max)) : 0;
 
   async function patch(values: Partial<Character>) {
@@ -109,35 +132,40 @@ export default function CharacterScreen() {
     }
   }
 
-  function toggleSlot(level: number, index: number) {
-    if (!ch) return;
-    const used = ch.slots_used[level] ?? 0;
-    patch({ slots_used: { ...ch.slots_used, [level]: index < used ? index : index + 1 } });
-  }
-
   async function saveEdits() {
     await patch(draft);
     setDraft({});
     setEditing(false);
   }
 
-  async function setSpellStatus(spellId: string, status: 'approved') {
-    const { error } = await supabase.from('character_spells').update({ status }).eq('character_id', id).eq('spell_id', spellId);
-    if (error) setError(errorText(error));
-    loadSpells();
-  }
-
-  async function removeSpell(spellId: string) {
-    const { error } = await supabase.from('character_spells').delete().eq('character_id', id).eq('spell_id', spellId);
-    if (error) setError(errorText(error));
-    loadSpells();
-  }
-
   const d = { ...ch, ...draft };
   const players = members.filter((m) => m.role === 'player');
+  const sheet: SheetProps = {
+    ch,
+    campaign,
+    spells,
+    isGm,
+    isOwner,
+    canHp,
+    canInventory,
+    patch,
+    onRoll: (label, total, detail) => setLastRoll({ label, total, detail }),
+    reloadSpells: loadSpells,
+  };
+
+  const rollBanner = lastRoll ? (
+        <View style={[styles.roll, { borderColor: t.accent, backgroundColor: t.surface }]}>
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: t.ink, fontWeight: '700' }}>{lastRoll.label}</Text>
+            <Text style={{ color: t.muted, fontSize: 13 }}>{lastRoll.detail}</Text>
+          </View>
+          <Text style={[styles.rollTotal, { color: t.accent }]}>{lastRoll.total}</Text>
+          <Button small label="OK" onPress={() => setLastRoll(null)} />
+        </View>
+  ) : null;
 
   return (
-    <Screen>
+    <Screen overlay={rollBanner}>
       <Stack.Screen options={{ title: ch.name }} />
 
       <Card>
@@ -145,17 +173,19 @@ export default function CharacterScreen() {
           <View style={{ flexShrink: 1 }}>
             <Text style={[styles.name, { color: t.ink }]}>{ch.name}</Text>
             <Body muted>
-              {ch.race} · {ch.class} niveau {ch.level}
+              {ch.race} · {ch.class}
+              {ch.subclass ? ` (${ch.subclass})` : ''} niveau {ch.level}
             </Body>
           </View>
           {isGm && !editing && <Button small label="Modifier la fiche" onPress={() => setEditing(true)} />}
         </Row>
 
-        <View style={styles.bigRow}>
+        <View style={styles.stats}>
           <Stat label="CA" value={String(ch.ac)} />
           <Stat label="Initiative" value={signed(modifier(ch.abilities.DEX))} />
           <Stat label="Vitesse" value={`${ch.speed} m`} />
           <Stat label="Maîtrise" value={signed(pb)} />
+          <Stat label="Perc. passive" value={String(passivePerception)} highlight />
         </View>
 
         <Label>Points de vie</Label>
@@ -183,13 +213,14 @@ export default function CharacterScreen() {
         </View>
       </Card>
 
+
       {editing && (
         <Card>
           <Title>Modifier (MJ)</Title>
           <Row>
             <Field label="Nom" value={d.name} onChangeText={(v) => setDraft({ ...draft, name: v })} />
             <Field label="Espèce" value={d.race} onChangeText={(v) => setDraft({ ...draft, race: v })} />
-            <Field label="Historique" value={d.background} onChangeText={(v) => setDraft({ ...draft, background: v })} />
+            <Field label="Historique" value={d.background} onChangeText={(v) => setDraft({ ...draft, background: v })} placeholder="Acolyte" />
           </Row>
           <Label>Classe</Label>
           <Row>
@@ -199,10 +230,17 @@ export default function CharacterScreen() {
                 small
                 label={c.name}
                 kind={c.name === d.class ? 'primary' : 'default'}
-                onPress={() => setDraft({ ...draft, class: c.name })}
+                // Changer de classe applique ses sauvegardes maîtrisées par défaut
+                onPress={() => setDraft({ ...draft, class: c.name, save_profs: CLASS_SAVES[c.name] ?? [] })}
               />
             ))}
           </Row>
+          <Field
+            label={SUBCLASS_LABEL[d.class] ?? 'Sous-classe'}
+            value={d.subclass}
+            onChangeText={(v) => setDraft({ ...draft, subclass: v })}
+            placeholder={d.class === 'Clerc' ? 'Domaine de la Vie' : ''}
+          />
           <Row>
             <NumField label="Niveau" value={d.level} onChange={(v) => setDraft({ ...draft, level: Math.min(20, Math.max(1, v)) })} />
             <NumField label="XP" value={d.xp} onChange={(v) => setDraft({ ...draft, xp: v })} />
@@ -221,6 +259,7 @@ export default function CharacterScreen() {
               />
             ))}
           </Row>
+          <Body muted style={{ fontSize: 13 }}>Les maîtrises de sauvegardes et de compétences se cochent dans l'onglet Caracs.</Body>
           <Label>Joueur</Label>
           <Row>
             <Button small label="Personne" kind={d.player_id === null ? 'primary' : 'default'} onPress={() => setDraft({ ...draft, player_id: null })} />
@@ -237,150 +276,37 @@ export default function CharacterScreen() {
           <Row>
             <Button kind="primary" label="Enregistrer" onPress={saveEdits} />
             <Button label="Annuler" onPress={() => { setDraft({}); setEditing(false); }} />
-            <Button kind="danger" label="Supprimer la fiche" onPress={async () => {
-              const { error } = await supabase.from('characters').delete().eq('id', ch.id);
-              if (error) setError(errorText(error)); else router.back();
-            }} />
+            <Button
+              kind="danger"
+              label="Supprimer la fiche"
+              onPress={async () => {
+                const { error } = await supabase.from('characters').delete().eq('id', ch.id);
+                if (error) setError(errorText(error));
+                else router.back();
+              }}
+            />
           </Row>
-        </Card>
-      )}
-
-      <Card>
-        <Title>Caractéristiques</Title>
-        <View style={styles.abilities}>
-          {ABILITIES.map((a) => (
-            <View key={a.key} style={[styles.ability, { borderColor: t.line, backgroundColor: t.bg }]}>
-              <Label>{a.label}</Label>
-              <Text style={[styles.big, { color: t.ink }]}>{signed(modifier(ch.abilities[a.key as AbilityKey]))}</Text>
-              <Body muted>{ch.abilities[a.key as AbilityKey]}</Body>
-            </View>
-          ))}
-        </View>
-      </Card>
-
-      {maxLvl >= 0 && (
-        <Card>
-          <Row style={{ justifyContent: 'space-between' }}>
-            <Title>Sorts</Title>
-            {(isGm || isOwner) && (
-              <Button small kind="primary" label="Choisir des sorts" onPress={() => router.push(`/spells/${ch.id}`)} />
-            )}
-          </Row>
-          {slots.map((count, i) =>
-            count > 0 ? (
-              <Row key={i}>
-                <Body muted style={{ width: 80 }}>{SPELL_LEVEL_LABEL(i + 1)}</Body>
-                {Array.from({ length: count }, (_, j) => {
-                  const used = j < (ch.slots_used[i + 1] ?? 0);
-                  return (
-                    <Pressable
-                      key={j}
-                      accessibilityLabel={`Emplacement ${j + 1} ${used ? 'utilisé' : 'disponible'}`}
-                      disabled={!isGm && !isOwner}
-                      onPress={() => toggleSlot(i + 1, j)}
-                      style={[styles.pip, { borderColor: t.brass, backgroundColor: used ? 'transparent' : t.brass }]}
-                    />
-                  );
-                })}
-              </Row>
-            ) : null,
-          )}
-          {spells.length === 0 && <Body muted>Aucun sort appris pour l'instant.</Body>}
-          {spells.map((s) => (
-            <View key={s.spell_id} style={[styles.spell, { borderColor: t.line }]}>
-              <Row style={{ justifyContent: 'space-between' }}>
-                <View style={{ flexShrink: 1 }}>
-                  <Body style={{ fontWeight: '700' }}>{s.spells.name}</Body>
-                  <Body muted style={{ fontSize: 14 }}>
-                    {SPELL_LEVEL_LABEL(s.spells.level)} · {s.spells.casting_time} · {s.spells.range}
-                    {s.spells.concentration ? ' · Concentration' : ''}
-                  </Body>
-                </View>
-                <Row>
-                  {s.status === 'pending' && <Pill text="En attente du MJ" tone="warn" />}
-                  {isGm && s.status === 'pending' && <Button small kind="primary" label="Valider" onPress={() => setSpellStatus(s.spell_id, 'approved')} />}
-                  {(isGm || (isOwner && s.status === 'pending')) && (
-                    <Button small kind="danger" label="Retirer" onPress={() => removeSpell(s.spell_id)} />
-                  )}
-                </Row>
-              </Row>
-            </View>
-          ))}
-          {(isGm || isOwner) && slots.some((n) => n > 0) && (
-            <Button small label="Repos long : récupérer les emplacements" onPress={() => patch(canHp ? { slots_used: {}, hp: ch.hp_max } : { slots_used: {} })} />
-          )}
-        </Card>
-      )}
-
-      <Card>
-        <Title>Inventaire</Title>
-        <TextArea value={ch.inventory} editable={canInventory} onSave={(v) => patch({ inventory: v })} />
-      </Card>
-
-      {(isGm || isOwner) && (
-        <Card>
-          <Title>Notes du personnage</Title>
-          <TextArea value={ch.notes} editable onSave={(v) => patch({ notes: v })} />
         </Card>
       )}
 
       <ErrorText>{error}</ErrorText>
+
+      <Tabs tabs={TABS} value={tab} onChange={setTab} />
+      {tab === 'combat' && <CombatTab {...sheet} />}
+      {tab === 'caracs' && <AbilitiesTab {...sheet} />}
+      {tab === 'sorts' && <SpellsTab {...sheet} />}
+      {tab === 'sac' && <BagTab {...sheet} />}
+      {tab === 'perso' && <RoleplayTab {...sheet} />}
     </Screen>
-  );
-}
-
-function Stat({ label, value }: { label: string; value: string }) {
-  const t = useTheme();
-  return (
-    <View style={[styles.stat, { borderColor: t.line, backgroundColor: t.bg }]}>
-      <Label>{label}</Label>
-      <Text style={{ fontFamily: fonts.display, fontSize: 22, fontWeight: '700', color: t.ink }}>{value}</Text>
-    </View>
-  );
-}
-
-function NumField({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
-  return (
-    <View style={{ flexBasis: 90, flexGrow: 1 }}>
-      <Field label={label} value={String(value)} keyboardType="number-pad" onChangeText={(v) => onChange(parseInt(v, 10) || 0)} />
-    </View>
-  );
-}
-
-/** Zone de texte enregistrée quand on quitte le champ, et resynchronisée si la fiche change ailleurs. */
-function TextArea({ value, editable, onSave }: { value: string; editable: boolean; onSave: (v: string) => void }) {
-  const t = useTheme();
-  const [text, setText] = useState(value);
-  const [focused, setFocused] = useState(false);
-  useEffect(() => {
-    if (!focused) setText(value);
-  }, [value, focused]);
-  return (
-    <TextInput
-      multiline
-      editable={editable}
-      value={text}
-      onChangeText={setText}
-      onFocus={() => setFocused(true)}
-      onBlur={() => {
-        setFocused(false);
-        if (text !== value) onSave(text);
-      }}
-      style={[styles.textarea, { color: t.ink, borderColor: t.line, backgroundColor: t.bg }]}
-    />
   );
 }
 
 const styles = StyleSheet.create({
   name: { fontFamily: fonts.display, fontSize: 26, fontWeight: '700' },
   big: { fontFamily: fonts.display, fontSize: 28, fontWeight: '700' },
-  bigRow: { flexDirection: 'row', gap: 8 },
-  stat: { flex: 1, borderWidth: 1, borderRadius: 8, paddingVertical: 8, alignItems: 'center', gap: 2 },
-  abilities: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  ability: { flexGrow: 1, flexBasis: 100, borderWidth: 1, borderRadius: 8, padding: 8, alignItems: 'center' },
+  stats: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   amount: { width: 60, borderWidth: 1, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, fontSize: 16, textAlign: 'center' },
   bar: { height: 8, borderRadius: 99, overflow: 'hidden' },
-  pip: { width: 26, height: 26, borderRadius: 13, borderWidth: 2 },
-  spell: { borderTopWidth: 1, paddingTop: 8 },
-  textarea: { minHeight: 120, borderWidth: 1, borderRadius: 6, padding: 10, fontSize: 16, textAlignVertical: 'top' },
+  roll: { flexDirection: 'row', alignItems: 'center', gap: 12, borderWidth: 1, borderRadius: 10, padding: 12, elevation: 6 },
+  rollTotal: { fontFamily: fonts.display, fontSize: 32, fontWeight: '700' },
 });

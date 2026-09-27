@@ -14,12 +14,13 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { fonts, useTheme } from '../lib/theme';
 
-export function Screen({ children, scroll = true }: { children: ReactNode; scroll?: boolean }) {
+export function Screen({ children, scroll = true, overlay }: { children: ReactNode; scroll?: boolean; overlay?: ReactNode }) {
   const t = useTheme();
-  const inner = <View style={styles.inner}>{children}</View>;
+  const inner = <View style={[styles.inner, overlay ? { paddingBottom: 120 } : null]}>{children}</View>;
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: t.bg }} edges={['bottom', 'left', 'right']}>
       {scroll ? <ScrollView keyboardShouldPersistTaps="handled">{inner}</ScrollView> : inner}
+      {overlay ? <View style={styles.overlay}>{overlay}</View> : null}
     </SafeAreaView>
   );
 }
@@ -145,6 +146,7 @@ export function Pill({ text, tone = 'neutral' }: { text: string; tone?: 'neutral
 }
 
 const styles = StyleSheet.create({
+  overlay: { position: 'absolute', left: 16, right: 16, bottom: 16, maxWidth: 968, alignSelf: 'center' },
   inner: { padding: 16, gap: 16, width: '100%', maxWidth: 1000, alignSelf: 'center' },
   card: { borderWidth: 1, borderRadius: 10, padding: 16, gap: 12 },
   title: { fontFamily: fonts.display, fontSize: 20, fontWeight: '700' },

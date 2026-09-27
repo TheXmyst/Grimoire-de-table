@@ -1,4 +1,4 @@
-import type { Abilities } from './rules';
+import type { Abilities, Attack, CoinKey } from './rules';
 
 export type CampaignSettings = {
   ruleset: string;
@@ -28,6 +28,7 @@ export type Character = {
   player_id: string | null;
   name: string;
   class: string;
+  subclass: string;
   race: string;
   background: string;
   level: number;
@@ -41,6 +42,16 @@ export type Character = {
   slots_used: Record<string, number>;
   inventory: string;
   notes: string;
+  save_profs: string[];
+  skill_profs: string[];
+  skill_expertise: string[];
+  attacks: Attack[];
+  coins: Record<CoinKey, number>;
+  traits: string;
+  ideals: string;
+  bonds: string;
+  flaws: string;
+  backstory: string;
 };
 
 export type Spell = {

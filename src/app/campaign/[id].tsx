@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { Pressable, Text } from 'react-native';
 import { Body, Button, Card, ErrorText, Field, Label, Pill, Row, Screen, Title, Toggle } from '../../components/ui';
 import { useUserId } from '../../lib/auth';
-import { CLASSES } from '../../lib/rules';
+import { CLASSES, CLASS_SAVES } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
 import { fonts, useTheme } from '../../lib/theme';
 import type { Campaign, CampaignSettings, Character, Member } from '../../lib/types';
@@ -60,7 +60,7 @@ export default function CampaignScreen() {
     const hitDie = CLASSES.find((c) => c.name === cls)?.hitDie ?? 8;
     const { data, error } = await supabase
       .from('characters')
-      .insert({ campaign_id: id, name: name.trim(), class: cls, race: race.trim(), player_id: playerId, hp: hitDie, hp_max: hitDie })
+      .insert({ campaign_id: id, name: name.trim(), class: cls, race: race.trim(), player_id: playerId, hp: hitDie, hp_max: hitDie, save_profs: CLASS_SAVES[cls] ?? [] })
       .select()
       .single();
     if (error) return setError(errorText(error));
