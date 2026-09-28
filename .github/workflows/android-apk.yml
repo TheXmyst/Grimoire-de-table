@@ -11,6 +11,7 @@ jobs:
     env:
       EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,6 +24,19 @@ jobs:
           java-version: 17
       - run: npm ci
       - run: npx tsc --noEmit
+
+      # Mises à jour automatiques : seulement si le secret EXPO_TOKEN existe
+      - name: Lier le projet Expo
+        if: env.EXPO_TOKEN != ''
+        run: npx eas-cli@latest init --non-interactive --force
+      - name: Configurer les mises à jour automatiques
+        run: node scripts/configure-updates.js
+      - name: Publier la mise à jour dans les applis installées
+        if: env.EXPO_TOKEN != ''
+        env:
+          MESSAGE: ${{ github.event.head_commit.message || 'Mise à jour manuelle' }}
+        run: npx eas-cli@latest update --channel production --platform android --non-interactive --message "$MESSAGE"
+
       - name: Générer le projet Android
         run: npx expo prebuild --platform android --no-install
       - name: Compiler l'APK

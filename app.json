@@ -25,6 +25,9 @@
     "scheme": "grimoire",
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "updates": {
+      "enabled": false
+    }
   }
 }
