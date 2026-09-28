@@ -39,8 +39,14 @@ jobs:
 
       - name: Générer le projet Android
         run: npx expo prebuild --platform android --no-install
+      # Gradle manque de Metaspace avec le module de mises à jour : on lui donne plus de mémoire
+      - name: Donner plus de mémoire à Gradle
+        run: |
+          sed -i '/^org.gradle.jvmargs=/d' android/gradle.properties
+          echo 'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=2g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8' >> android/gradle.properties
       - name: Compiler l'APK
         working-directory: android
+        timeout-minutes: 45
         run: ./gradlew assembleRelease --no-daemon
       - uses: actions/upload-artifact@v4
         with:
