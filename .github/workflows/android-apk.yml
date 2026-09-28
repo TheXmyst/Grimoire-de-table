@@ -43,7 +43,7 @@ jobs:
       - name: Donner plus de mémoire à Gradle
         run: |
           sed -i '/^org.gradle.jvmargs=/d' android/gradle.properties
-          echo 'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=2g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8' >> android/gradle.properties
+          printf '\norg.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=2g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8\n' >> android/gradle.properties
       - name: Tracer les appels à node pendant la compilation
         run: |
           mkdir -p "$RUNNER_TEMP/nodewrap"
