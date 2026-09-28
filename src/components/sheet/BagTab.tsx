@@ -3,7 +3,8 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { COINS, coinsInGold, type CoinKey } from '../../lib/rules';
 import { fonts, useTheme } from '../../lib/theme';
 import { Body, Button, Card, Label, Row, Title } from '../ui';
-import { TextArea, type SheetProps } from './common';
+import { parseInventory, serializeInventory, type Item } from '../../lib/inventory';
+import { Collapsible, TextArea, type SheetProps } from './common';
 
 export function BagTab({ ch, canInventory, patch }: SheetProps) {
   const t = useTheme();
@@ -15,6 +16,21 @@ export function BagTab({ ch, canInventory, patch }: SheetProps) {
   }
 
   const total = coinsInGold(ch.coins);
+
+  const items = parseInventory(ch.inventory);
+  const indexed = items.map((item, index) => ({ item, index }));
+  const worn = indexed.filter((i) => i.item.equipped);
+  const carried = indexed.filter((i) => !i.item.equipped);
+  const [draft, setDraft] = useState('');
+
+  const save = (next: Item[]) => patch({ inventory: serializeInventory(next) });
+  const toggle = (index: number) => save(items.map((it, i) => (i === index ? { ...it, equipped: !it.equipped } : it)));
+  const remove = (index: number) => save(items.filter((_, i) => i !== index));
+  function add() {
+    if (!draft.trim()) return;
+    save([...items, { text: draft.trim(), equipped: false }]);
+    setDraft('');
+  }
 
   return (
     <>
@@ -53,20 +69,69 @@ export function BagTab({ ch, canInventory, patch }: SheetProps) {
       </Card>
 
       <Card>
-        <Title>Inventaire</Title>
-        <TextArea
-          value={ch.inventory}
-          editable={canInventory}
-          onSave={(v) => patch({ inventory: v })}
-          placeholder="Sac à dos, corde de 15 m, rations (5 jours)…"
-          minHeight={200}
-        />
+        <Title>Équipement porté</Title>
+        {worn.length === 0 && <Body muted>Rien de porté. Appuie sur « Porter » à côté d'un objet du sac.</Body>}
+        {worn.map(({ item, index }) => (
+          <ItemRow key={index} text={item.text} worn canEdit={canInventory} onToggle={() => toggle(index)} onRemove={() => remove(index)} />
+        ))}
+      </Card>
+
+      <Card>
+        <Title>Sac</Title>
+        {carried.length === 0 && <Body muted>Le sac est vide.</Body>}
+        {carried.map(({ item, index }) => (
+          <ItemRow key={index} text={item.text} worn={false} canEdit={canInventory} onToggle={() => toggle(index)} onRemove={() => remove(index)} />
+        ))}
+        {canInventory && (
+          <Row>
+            <TextInput
+              value={draft}
+              onChangeText={setDraft}
+              onSubmitEditing={add}
+              placeholder="Nouvel objet : corde de 15 m, potion de soins…"
+              placeholderTextColor={t.muted}
+              accessibilityLabel="Nouvel objet"
+              style={[styles.newItem, { color: t.ink, borderColor: t.line, backgroundColor: t.bg }]}
+            />
+            <Button small kind="primary" label="Ajouter" onPress={add} disabled={!draft.trim()} />
+          </Row>
+        )}
+        {canInventory && (
+          <Collapsible title="Modifier en texte" preview="Une ligne par objet, « * » devant ce qui est porté">
+            <TextArea value={ch.inventory} editable onSave={(v) => patch({ inventory: v })} minHeight={200} />
+          </Collapsible>
+        )}
       </Card>
     </>
   );
 }
 
+function ItemRow({
+  text,
+  worn,
+  canEdit,
+  onToggle,
+  onRemove,
+}: {
+  text: string;
+  worn: boolean;
+  canEdit: boolean;
+  onToggle: () => void;
+  onRemove: () => void;
+}) {
+  const t = useTheme();
+  return (
+    <View style={[styles.item, { borderColor: t.line }]}>
+      <Text style={{ color: t.ink, fontSize: 16, flex: 1, fontWeight: worn ? '700' : '400' }}>{text}</Text>
+      {canEdit && <Button small label={worn ? 'Ranger' : 'Porter'} onPress={onToggle} />}
+      {canEdit && !worn && <Button small kind="danger" label="✕" onPress={onRemove} />}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  item: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth },
+  newItem: { flex: 1, borderWidth: 1, borderRadius: 6, paddingHorizontal: 10, paddingVertical: 8, fontSize: 16 },
   coins: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   coin: { flexGrow: 1, flexBasis: 110, borderWidth: 1, borderRadius: 8, padding: 8, alignItems: 'center', gap: 4 },
   amount: { fontFamily: fonts.display, fontSize: 26, fontWeight: '700' },

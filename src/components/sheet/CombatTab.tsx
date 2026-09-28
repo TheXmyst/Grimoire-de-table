@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ABILITIES, hitDieOf, modifier, proficiencyBonus, rollDice, signed, type Attack } from '../../lib/rules';
+import { equippedItems } from '../../lib/inventory';
 import { fonts, useTheme } from '../../lib/theme';
 import { Body, Button, Card, Field, Label, Row, Title, Toggle } from '../ui';
 import { NumField, longRestValues, type SheetProps } from './common';
@@ -139,6 +140,8 @@ export function CombatTab(props: SheetProps) {
     );
   }
 
+  const worn = equippedItems(ch.inventory);
+
   return (
     <>
       <Card>
@@ -147,6 +150,7 @@ export function CombatTab(props: SheetProps) {
           {canInventory && editing === null && <Button small label="Ajouter" onPress={() => startEdit('new')} />}
         </Row>
         {ch.attacks.length === 0 && editing === null && <Body muted>Aucune arme. Ajoute par exemple une masse d'armes ou une fronde.</Body>}
+        {worn.length > 0 && <Body muted>Porté : {worn.map((i) => i.text).join(' · ')}</Body>}
 
         {ch.attacks.map((a, i) => {
           const n = attackNumbers(ch, a);

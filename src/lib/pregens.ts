@@ -84,7 +84,7 @@ export const PREGENS: Pregen[] = [
         "description": "Les soldats de ton ancienne armée te reconnaissent et te respectent. Tu peux réquisitionner du matériel simple ou un cheval pour une courte durée."
       }
     ],
-    "inventory": "Cotte de mailles (désavantage aux jets de Discrétion)\nBouclier\nÉpée longue\nArbalète légère + 20 carreaux\nSac d'explorateur : sac à dos, sac de couchage, gamelle, boîte à amadou, 10 torches, 10 jours de rations, outre d'eau, corde de chanvre 15 m\nInsigne de grade\nTrophée : un croc d'un ennemi vaincu\nDés en os\nVêtements communs",
+    "inventory": "* Cotte de mailles (désavantage aux jets de Discrétion)\n* Bouclier\n* Épée longue\nArbalète légère + 20 carreaux\nSac d'explorateur : sac à dos, sac de couchage, gamelle, boîte à amadou, 10 torches, 10 jours de rations, outre d'eau, corde de chanvre 15 m\nInsigne de grade\nTrophée : un croc d'un ennemi vaincu\nDés en os\nVêtements communs",
     "coins": {
       "pc": 0,
       "pa": 0,
@@ -215,7 +215,7 @@ export const PREGENS: Pregen[] = [
         "description": "Tu connais quelqu'un de fiable dans le milieu, capable de faire passer des messages discrètement."
       }
     ],
-    "inventory": "Armure de cuir\nRapière\nArc court + carquois de 20 flèches\n2 dagues\nOutils de voleur\nSac de cambrioleur : sac à dos, 1 000 billes, 3 m de ficelle, clochette, 5 bougies, pied-de-biche, marteau, 10 pitons, lanterne à capote, 2 flasques d'huile, 5 jours de rations, boîte à amadou, outre d'eau, corde de chanvre 15 m\nPied-de-biche\nVêtements sombres avec capuche\nJeu de cartes",
+    "inventory": "* Armure de cuir\n* Rapière\nArc court + carquois de 20 flèches\n2 dagues\nOutils de voleur\nSac de cambrioleur : sac à dos, 1 000 billes, 3 m de ficelle, clochette, 5 bougies, pied-de-biche, marteau, 10 pitons, lanterne à capote, 2 flasques d'huile, 5 jours de rations, boîte à amadou, outre d'eau, corde de chanvre 15 m\nPied-de-biche\nVêtements sombres avec capuche\nJeu de cartes",
     "coins": {
       "pc": 0,
       "pa": 0,
@@ -332,7 +332,7 @@ export const PREGENS: Pregen[] = [
         "description": "Les temples de ta foi t'offrent soins et hébergement gratuits, pour toi et ton groupe."
       }
     ],
-    "inventory": "Cotte de mailles (désavantage aux jets de Discrétion)\nBouclier avec le symbole sacré gravé dessus (te sert de focaliseur pour tes sorts)\nMarteau de guerre\nArbalète légère + 20 carreaux\nSac d'ecclésiastique : sac à dos, couverture, 10 bougies, boîte à amadou, boîte à aumônes, 2 pains d'encens, encensoir, habits de cérémonie, 2 jours de rations, outre d'eau\nLivre de prières\n5 bâtonnets d'encens\nVêtements communs",
+    "inventory": "* Cotte de mailles (désavantage aux jets de Discrétion)\n* Bouclier avec le symbole sacré gravé dessus (te sert de focaliseur pour tes sorts)\n* Marteau de guerre\nArbalète légère + 20 carreaux\nSac d'ecclésiastique : sac à dos, couverture, 10 bougies, boîte à amadou, boîte à aumônes, 2 pains d'encens, encensoir, habits de cérémonie, 2 jours de rations, outre d'eau\nLivre de prières\n5 bâtonnets d'encens\nVêtements communs",
     "coins": {
       "pc": 0,
       "pa": 0,
@@ -482,7 +482,7 @@ export const PREGENS: Pregen[] = [
         "description": "Si tu ne connais pas une information, tu sais souvent où ou auprès de qui la trouver."
       }
     ],
-    "inventory": "Grimoire (tes 6 sorts de niveau 1)\nSacoche à composantes\nDague\nSac d'érudit : sac à dos, livre de savoir, bouteille d'encre, plume, 10 feuilles de parchemin, petit sac de sable, petit couteau\nBouteille d'encre noire et plume\nPetit couteau\nLettre d'un collègue mort posant une question sans réponse\nVêtements communs",
+    "inventory": "Grimoire (tes 6 sorts de niveau 1)\nSacoche à composantes\n* Dague\nSac d'érudit : sac à dos, livre de savoir, bouteille d'encre, plume, 10 feuilles de parchemin, petit sac de sable, petit couteau\nBouteille d'encre noire et plume\nPetit couteau\nLettre d'un collègue mort posant une question sans réponse\nVêtements communs",
     "coins": {
       "pc": 0,
       "pa": 0,
@@ -638,7 +638,7 @@ export const PREGENS: Pregen[] = [
         "description": "Ta longue retraite t'a révélé un secret important sur le monde. Le MJ et toi décidez lequel."
       }
     ],
-    "inventory": "Armure de cuir\nBouclier en bois\nCimeterre\nFocaliseur druidique : branche de gui (pour lancer tes sorts)\nSac d'explorateur : sac à dos, sac de couchage, gamelle, boîte à amadou, 10 torches, 10 jours de rations, outre d'eau, corde de chanvre 15 m\nÉtui à parchemins rempli de notes sur tes prières et visions\nCouverture d'hiver\nMatériel d'herboriste\nVêtements communs",
+    "inventory": "* Armure de cuir\n* Bouclier en bois\n* Cimeterre\nFocaliseur druidique : branche de gui (pour lancer tes sorts)\nSac d'explorateur : sac à dos, sac de couchage, gamelle, boîte à amadou, 10 torches, 10 jours de rations, outre d'eau, corde de chanvre 15 m\nÉtui à parchemins rempli de notes sur tes prières et visions\nCouverture d'hiver\nMatériel d'herboriste\nVêtements communs",
     "coins": {
       "pc": 0,
       "pa": 0,

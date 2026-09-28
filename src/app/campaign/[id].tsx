@@ -5,7 +5,8 @@ import { Pressable, Text, View } from 'react-native';
 import { Body, Button, Card, ErrorText, Field, Label, Pill, Row, Screen, Title, Toggle } from '../../components/ui';
 import { useUserId } from '../../lib/auth';
 import { importPregen } from '../../lib/importPregen';
-import { PREGENS } from '../../lib/pregens';
+import { CLASS_TEMPLATES } from '../../lib/classTemplates';
+import { PREGENS, type Pregen } from '../../lib/pregens';
 import { CLASSES, CLASS_SAVES } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
 import { fonts, useTheme } from '../../lib/theme';
@@ -20,7 +21,7 @@ export default function CampaignScreen() {
   const [members, setMembers] = useState<Member[]>([]);
   const [characters, setCharacters] = useState<Character[]>([]);
   const [error, setError] = useState('');
-  const [importing, setImporting] = useState<number | null>(null);
+  const [importing, setImporting] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
   // Nouvelle fiche
@@ -71,12 +72,13 @@ export default function CampaignScreen() {
     router.push(`/character/${data.id}`);
   }
 
-  async function addPregen(index: number) {
+  async function addPregen(p: Pregen, open = false) {
     setError('');
-    setImporting(index);
+    setImporting(p.name);
     try {
-      await importPregen(id, PREGENS[index]);
+      const characterId = await importPregen(id, p);
       await load();
+      if (open) router.push(`/character/${characterId}`);
     } catch (e) {
       setError(errorText(e));
     } finally {
@@ -177,7 +179,7 @@ export default function CampaignScreen() {
         <Card>
           <Title>Personnages prétirés</Title>
           <Body muted>Des fiches de niveau 1 prêtes à jouer, sorts compris. Ajoute-les puis attribue-les à tes joueurs.</Body>
-          {PREGENS.map((p, i) => {
+          {PREGENS.map((p) => {
             const already = characters.some((c) => c.name === p.name);
             return (
               <Row key={p.name} style={{ justifyContent: 'space-between', borderTopWidth: 1, borderColor: t.line, paddingTop: 8 }}>
@@ -188,11 +190,32 @@ export default function CampaignScreen() {
                 {already ? (
                   <Pill text="Ajouté" />
                 ) : (
-                  <Button small label={importing === i ? 'Ajout…' : 'Ajouter'} disabled={importing !== null} onPress={() => addPregen(i)} />
+                  <Button small label={importing === p.name ? 'Ajout…' : 'Ajouter'} disabled={importing !== null} onPress={() => addPregen(p)} />
                 )}
               </Row>
             );
           })}
+        </Card>
+      )}
+
+      {isGm && (
+        <Card>
+          <Title>Modèles de classe</Title>
+          <Body muted>
+            Une fiche standard de niveau 1 pour chaque classe (humain, équipement de départ, sorts). Crée-la, puis renomme-la et
+            ajuste-la dans le panneau MJ de la fiche.
+          </Body>
+          <Row style={{ flexWrap: 'wrap' }}>
+            {CLASS_TEMPLATES.map((p) => (
+              <Button
+                key={p.name}
+                small
+                label={importing === p.name ? 'Création…' : p.class}
+                disabled={importing !== null}
+                onPress={() => addPregen(p, true)}
+              />
+            ))}
+          </Row>
         </Card>
       )}
 
