@@ -1,12 +1,12 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { SPELL_LEVEL_LABEL, maxSpellLevel, spellSlots } from '../../lib/rules';
+import { ABILITIES, SPELL_ABILITY, SPELL_LEVEL_LABEL, maxSpellLevel, modifier, proficiencyBonus, signed, spellSlots, type AbilityKey } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
 import { useTheme } from '../../lib/theme';
 import type { CharacterSpell } from '../../lib/types';
 import { Body, Button, Card, ErrorText, Pill, Row, Title } from '../ui';
-import type { SheetProps } from './common';
+import { TextArea, longRestValues, type SheetProps } from './common';
 
 export function SpellSlots({ ch, isGm, isOwner, canHp, patch }: SheetProps) {
   const t = useTheme();
@@ -42,7 +42,7 @@ export function SpellSlots({ ch, isGm, isOwner, canHp, patch }: SheetProps) {
       )}
       {(isGm || isOwner) && (
         <Row>
-          <Button small label="Repos long" onPress={() => patch(canHp ? { slots_used: {}, hp: ch.hp_max } : { slots_used: {} })} />
+          <Button small label="Repos long" onPress={() => patch(longRestValues(ch, canHp))} />
         </Row>
       )}
     </Card>
@@ -60,6 +60,12 @@ function SpellRow({ s, isGm, isOwner, onChange }: { s: CharacterSpell; isGm: boo
     onChange();
   }
 
+  async function togglePrepared() {
+    const { error } = await supabase.from('character_spells').update({ prepared: !s.prepared }).eq('character_id', s.character_id).eq('spell_id', s.spell_id);
+    if (error) setError(errorText(error));
+    onChange();
+  }
+
   async function remove() {
     const { error } = await supabase.from('character_spells').delete().eq('character_id', s.character_id).eq('spell_id', s.spell_id);
     if (error) setError(errorText(error));
@@ -71,13 +77,19 @@ function SpellRow({ s, isGm, isOwner, onChange }: { s: CharacterSpell; isGm: boo
     <View style={[styles.spell, { borderColor: t.line }]}>
       <Row style={{ justifyContent: 'space-between' }}>
         <Pressable style={{ flexShrink: 1, flexGrow: 1 }} onPress={() => setOpen(!open)} accessibilityRole="button">
-          <Text style={{ color: t.ink, fontWeight: '700', fontSize: 16 }}>{sp.name}</Text>
+          <Text style={{ color: t.ink, fontWeight: '700', fontSize: 16 }}>
+            {sp.name}
+            {s.tag ? <Text style={{ color: t.accent, fontSize: 12, fontWeight: '700' }}>{`  ${s.tag.toUpperCase()}`}</Text> : null}
+          </Text>
           <Text style={{ color: t.muted, fontSize: 14 }}>
             {[sp.casting_time, sp.range, sp.concentration ? 'Concentration' : '', sp.ritual ? 'Rituel' : ''].filter(Boolean).join(' · ')}
           </Text>
         </Pressable>
         <Row>
           {s.status === 'pending' && <Pill text="En attente du MJ" tone="warn" />}
+          {sp.level > 0 && s.status === 'approved' && (
+            <Button small label={s.prepared ? 'Préparé' : 'Non préparé'} kind={s.prepared ? 'primary' : 'default'} disabled={!isGm && !isOwner} onPress={togglePrepared} />
+          )}
           {isGm && s.status === 'pending' && <Button small kind="primary" label="Valider" onPress={approve} />}
           {(isGm || (isOwner && s.status === 'pending')) && <Button small kind="danger" label="Retirer" onPress={remove} />}
         </Row>
@@ -113,8 +125,60 @@ export function SpellsTab(props: SheetProps) {
     );
   }
 
+  const t = useTheme();
+  const ability = ((ch.spell_ability || SPELL_ABILITY[ch.class]) ?? 'INT') as AbilityKey;
+  const abilityLabel = ABILITIES.find((a) => a.key === ability)?.label ?? ability;
+  const attack = modifier(ch.abilities[ability]) + proficiencyBonus(ch.level);
+  const dc = 8 + attack;
+
   return (
     <>
+      <Card>
+        <Title>Incantation</Title>
+        <View style={styles.chips}>
+          <View style={[styles.chip, { borderColor: t.line, backgroundColor: t.bg }]}>
+            <Text style={{ color: t.muted, fontSize: 12 }}>Caractéristique</Text>
+            <Text style={[styles.chipValue, { color: t.ink }]}>{abilityLabel}</Text>
+          </View>
+          <View style={[styles.chip, { borderColor: t.accent, backgroundColor: t.bg }]}>
+            <Text style={{ color: t.muted, fontSize: 12 }}>DD des sauvegardes</Text>
+            <Text style={[styles.chipValue, { color: t.accent }]}>{dc}</Text>
+          </View>
+          <View style={[styles.chip, { borderColor: t.accent, backgroundColor: t.bg }]}>
+            <Text style={{ color: t.muted, fontSize: 12 }}>Attaque de sort</Text>
+            <Text style={[styles.chipValue, { color: t.accent }]}>{signed(attack)}</Text>
+          </View>
+        </View>
+        {isGm && (
+          <Row>
+            <Body muted>Caractéristique :</Body>
+            {ABILITIES.filter((a) => ['INT', 'SAG', 'CHA'].includes(a.key)).map((a) => (
+              <Button
+                key={a.key}
+                small
+                label={a.key}
+                kind={ability === a.key ? 'primary' : 'default'}
+                onPress={() => props.patch({ spell_ability: a.key === SPELL_ABILITY[ch.class] ? '' : a.key })}
+              />
+            ))}
+          </Row>
+        )}
+        {isGm ? (
+          <TextArea
+            value={ch.spell_notes}
+            editable
+            minHeight={60}
+            placeholder="Règle de préparation : 4 sorts préparés (SAG + niveau), à changer après un repos long."
+            onSave={(v) => props.patch({ spell_notes: v })}
+          />
+        ) : ch.spell_notes ? (
+          <Body muted>{ch.spell_notes}</Body>
+        ) : null}
+        <Body muted style={{ fontSize: 13 }}>
+          Concentration : un seul sort à la fois. Si tu subis des dégâts, sauvegarde de Constitution (DD 10 ou la moitié des dégâts) pour le garder.
+        </Body>
+      </Card>
+
       {(isGm || isOwner) && (
         <Button kind="primary" label="Choisir des sorts" onPress={() => router.push(`/spells/${ch.id}`)} />
       )}
@@ -163,6 +227,9 @@ function LevelLabel({ lvl }: { lvl: number }) {
 }
 
 const styles = StyleSheet.create({
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  chip: { flexGrow: 1, flexBasis: 120, borderWidth: 1, borderRadius: 8, padding: 8, alignItems: 'center' },
+  chipValue: { fontSize: 22, fontWeight: '700' },
   pip: { width: 26, height: 26, borderRadius: 13, borderWidth: 2 },
   spell: { borderTopWidth: StyleSheet.hairlineWidth, paddingVertical: 8 },
 });

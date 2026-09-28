@@ -1,9 +1,11 @@
 import * as Clipboard from 'expo-clipboard';
 import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Pressable, Text } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { Body, Button, Card, ErrorText, Field, Label, Pill, Row, Screen, Title, Toggle } from '../../components/ui';
 import { useUserId } from '../../lib/auth';
+import { importPregen } from '../../lib/importPregen';
+import { PREGENS } from '../../lib/pregens';
 import { CLASSES, CLASS_SAVES } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
 import { fonts, useTheme } from '../../lib/theme';
@@ -18,6 +20,7 @@ export default function CampaignScreen() {
   const [members, setMembers] = useState<Member[]>([]);
   const [characters, setCharacters] = useState<Character[]>([]);
   const [error, setError] = useState('');
+  const [importing, setImporting] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
 
   // Nouvelle fiche
@@ -66,6 +69,19 @@ export default function CampaignScreen() {
     if (error) return setError(errorText(error));
     setName('');
     router.push(`/character/${data.id}`);
+  }
+
+  async function addPregen(index: number) {
+    setError('');
+    setImporting(index);
+    try {
+      await importPregen(id, PREGENS[index]);
+      await load();
+    } catch (e) {
+      setError(errorText(e));
+    } finally {
+      setImporting(null);
+    }
   }
 
   async function removeMember(userId: string) {
@@ -154,6 +170,29 @@ export default function CampaignScreen() {
             ))}
           </Row>
           <Button kind="primary" label="Créer la fiche" onPress={createCharacter} disabled={!name.trim()} />
+        </Card>
+      )}
+
+      {isGm && (
+        <Card>
+          <Title>Personnages prétirés</Title>
+          <Body muted>Des fiches de niveau 1 prêtes à jouer, sorts compris. Ajoute-les puis attribue-les à tes joueurs.</Body>
+          {PREGENS.map((p, i) => {
+            const already = characters.some((c) => c.name === p.name);
+            return (
+              <Row key={p.name} style={{ justifyContent: 'space-between', borderTopWidth: 1, borderColor: t.line, paddingTop: 8 }}>
+                <View style={{ flexShrink: 1 }}>
+                  <Body style={{ fontWeight: '700' }}>{p.name}</Body>
+                  <Body muted style={{ fontSize: 14 }}>{p.race} · {p.class}</Body>
+                </View>
+                {already ? (
+                  <Pill text="Ajouté" />
+                ) : (
+                  <Button small label={importing === i ? 'Ajout…' : 'Ajouter'} disabled={importing !== null} onPress={() => addPregen(i)} />
+                )}
+              </Row>
+            );
+          })}
         </Card>
       )}
 

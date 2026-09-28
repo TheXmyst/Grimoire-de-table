@@ -1,7 +1,8 @@
 import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AbilitiesTab, skillTotal } from '../../components/sheet/AbilitiesTab';
+import { FeaturesTab } from '../../components/sheet/FeaturesTab';
 import { BagTab } from '../../components/sheet/BagTab';
 import { CombatTab } from '../../components/sheet/CombatTab';
 import { NumField, Stat, Tabs, type SheetProps } from '../../components/sheet/common';
@@ -9,7 +10,7 @@ import { RoleplayTab } from '../../components/sheet/RoleplayTab';
 import { SpellsTab } from '../../components/sheet/SpellsTab';
 import { Body, Button, Card, ErrorText, Field, Label, Pill, Row, Screen, Title } from '../../components/ui';
 import { useUserId } from '../../lib/auth';
-import { ABILITIES, CLASSES, CLASS_SAVES, SUBCLASS_LABEL, modifier, proficiencyBonus, signed } from '../../lib/rules';
+import { ABILITIES, ALIGNMENTS, CLASSES, CLASS_SAVES, SUBCLASS_LABEL, hitDieOf, modifier, proficiencyBonus, signed } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
 import { fonts, useTheme } from '../../lib/theme';
 import type { Campaign, Character, CharacterSpell, Member } from '../../lib/types';
@@ -28,13 +29,26 @@ const withDefaults = (c: Character): Character => ({
   bonds: c.bonds ?? '',
   flaws: c.flaws ?? '',
   backstory: c.backstory ?? '',
+  alignment: c.alignment ?? '',
+  ac_note: c.ac_note ?? '',
+  hit_dice_used: c.hit_dice_used ?? 0,
+  death_successes: c.death_successes ?? 0,
+  death_failures: c.death_failures ?? 0,
+  inspiration: c.inspiration ?? false,
+  proficiencies: c.proficiencies ?? {},
+  features: c.features ?? [],
+  spell_ability: c.spell_ability ?? '',
+  spell_notes: c.spell_notes ?? '',
+  pitch: c.pitch ?? '',
+  play_guide: c.play_guide ?? '',
 });
 
-type TabKey = 'combat' | 'caracs' | 'sorts' | 'sac' | 'perso';
+type TabKey = 'combat' | 'caracs' | 'capacites' | 'sorts' | 'sac' | 'perso';
 
 const TABS: { key: TabKey; label: string }[] = [
   { key: 'combat', label: 'Combat' },
   { key: 'caracs', label: 'Caracs' },
+  { key: 'capacites', label: 'Capacités' },
   { key: 'sorts', label: 'Sorts' },
   { key: 'sac', label: 'Sac' },
   { key: 'perso', label: 'Perso' },
@@ -175,15 +189,26 @@ export default function CharacterScreen() {
             <Body muted>
               {ch.race} · {ch.class}
               {ch.subclass ? ` (${ch.subclass})` : ''} niveau {ch.level}
+              {ch.background ? ` · ${ch.background}` : ''}
+              {ch.alignment ? ` · ${ch.alignment}` : ''}
             </Body>
           </View>
+          <Pressable
+            accessibilityRole="switch"
+            accessibilityState={{ checked: ch.inspiration }}
+            disabled={!isGm && !isOwner}
+            onPress={() => patch({ inspiration: !ch.inspiration })}
+            style={[styles.inspiration, { borderColor: ch.inspiration ? t.brass : t.line, backgroundColor: ch.inspiration ? t.brass : 'transparent' }]}
+          >
+            <Text style={{ color: ch.inspiration ? t.bg : t.muted, fontWeight: '700', fontSize: 12, letterSpacing: 1 }}>INSPIRATION</Text>
+          </Pressable>
           {isGm && !editing && <Button small label="Modifier la fiche" onPress={() => setEditing(true)} />}
         </Row>
 
         <View style={styles.stats}>
-          <Stat label="CA" value={String(ch.ac)} />
+          <Stat label="CA" value={String(ch.ac)} hint={ch.ac_note} />
           <Stat label="Initiative" value={signed(modifier(ch.abilities.DEX))} />
-          <Stat label="Vitesse" value={`${ch.speed} m`} />
+          <Stat label="Vitesse" value={`${String(Number(ch.speed)).replace('.', ',')} m`} hint={`${Math.round(ch.speed / 0.3)} pieds`} />
           <Stat label="Maîtrise" value={signed(pb)} />
           <Stat label="Perc. passive" value={String(passivePerception)} highlight />
         </View>
@@ -191,7 +216,7 @@ export default function CharacterScreen() {
         <Label>Points de vie</Label>
         <Row>
           <Text style={[styles.big, { color: t.ink }]}>{ch.hp}</Text>
-          <Body muted>/ {ch.hp_max}</Body>
+          <Body muted>/ {ch.hp_max} · dé de vie {ch.level}d{hitDieOf(ch.class)}</Body>
           {ch.temp_hp > 0 && <Pill text={`+${ch.temp_hp} temp.`} tone="warn" />}
           <View style={{ flex: 1 }} />
           {canHp && (
@@ -211,6 +236,11 @@ export default function CharacterScreen() {
         <View style={[styles.bar, { backgroundColor: t.sunk }]}>
           <View style={{ width: `${hpPct * 100}%`, height: '100%', backgroundColor: hpPct < 0.3 ? t.bad : t.good }} />
         </View>
+        {ch.pitch ? (
+          <View style={[styles.pitch, { borderColor: t.accent, backgroundColor: t.bg }]}>
+            <Body>{ch.pitch}</Body>
+          </View>
+        ) : null}
       </Card>
 
 
@@ -221,6 +251,12 @@ export default function CharacterScreen() {
             <Field label="Nom" value={d.name} onChangeText={(v) => setDraft({ ...draft, name: v })} />
             <Field label="Espèce" value={d.race} onChangeText={(v) => setDraft({ ...draft, race: v })} />
             <Field label="Historique" value={d.background} onChangeText={(v) => setDraft({ ...draft, background: v })} placeholder="Acolyte" />
+          </Row>
+          <Label>Alignement</Label>
+          <Row>
+            {ALIGNMENTS.map((a) => (
+              <Button key={a} small label={a} kind={d.alignment === a ? 'primary' : 'default'} onPress={() => setDraft({ ...draft, alignment: a })} />
+            ))}
           </Row>
           <Label>Classe</Label>
           <Row>
@@ -247,7 +283,14 @@ export default function CharacterScreen() {
             <NumField label="PV max" value={d.hp_max} onChange={(v) => setDraft({ ...draft, hp_max: v })} />
             <NumField label="PV temp." value={d.temp_hp} onChange={(v) => setDraft({ ...draft, temp_hp: v })} />
             <NumField label="CA" value={d.ac} onChange={(v) => setDraft({ ...draft, ac: v })} />
-            <NumField label="Vitesse (m)" value={d.speed} onChange={(v) => setDraft({ ...draft, speed: v })} />
+            <View style={{ flexBasis: 90, flexGrow: 1 }}>
+              <Field
+                label="Vitesse (m)"
+                defaultValue={String(Number(d.speed)).replace('.', ',')}
+                keyboardType="decimal-pad"
+                onChangeText={(v) => setDraft({ ...draft, speed: parseFloat(v.replace(',', '.')) || 0 })}
+              />
+            </View>
           </Row>
           <Row>
             {ABILITIES.map((a) => (
@@ -259,6 +302,15 @@ export default function CharacterScreen() {
               />
             ))}
           </Row>
+          <Field label="Détail de la CA" value={d.ac_note} onChangeText={(v) => setDraft({ ...draft, ac_note: v })} placeholder="cotte de mailles 16 + bouclier 2" />
+          <Field
+            label="Présentation du personnage"
+            value={d.pitch}
+            onChangeText={(v) => setDraft({ ...draft, pitch: v })}
+            multiline
+            style={{ minHeight: 70, textAlignVertical: 'top' }}
+            placeholder="Le mur de l'équipe : tu encaisses les coups et tu protèges les autres."
+          />
           <Body muted style={{ fontSize: 13 }}>Les maîtrises de sauvegardes et de compétences se cochent dans l'onglet Caracs.</Body>
           <Label>Joueur</Label>
           <Row>
@@ -294,6 +346,7 @@ export default function CharacterScreen() {
       <Tabs tabs={TABS} value={tab} onChange={setTab} />
       {tab === 'combat' && <CombatTab {...sheet} />}
       {tab === 'caracs' && <AbilitiesTab {...sheet} />}
+      {tab === 'capacites' && <FeaturesTab {...sheet} />}
       {tab === 'sorts' && <SpellsTab {...sheet} />}
       {tab === 'sac' && <BagTab {...sheet} />}
       {tab === 'perso' && <RoleplayTab {...sheet} />}
@@ -308,5 +361,7 @@ const styles = StyleSheet.create({
   amount: { width: 60, borderWidth: 1, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 6, fontSize: 16, textAlign: 'center' },
   bar: { height: 8, borderRadius: 99, overflow: 'hidden' },
   roll: { flexDirection: 'row', alignItems: 'center', gap: 12, borderWidth: 1, borderRadius: 10, padding: 12, elevation: 6 },
+  inspiration: { borderWidth: 1, borderRadius: 99, paddingHorizontal: 10, paddingVertical: 5 },
+  pitch: { borderLeftWidth: 3, borderRadius: 6, padding: 10 },
   rollTotal: { fontFamily: fonts.display, fontSize: 32, fontWeight: '700' },
 });

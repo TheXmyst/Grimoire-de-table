@@ -14,6 +14,19 @@ export function RoleplayTab({ ch, isGm, isOwner, patch }: SheetProps) {
   const editable = isGm || isOwner;
   return (
     <>
+      {(ch.play_guide || isGm) && (
+        <Card>
+          <Title>Ton tour, pas à pas</Title>
+          <TextArea
+            value={ch.play_guide}
+            editable={isGm}
+            minHeight={isGm ? 120 : 40}
+            placeholder={"1. Bouge jusqu'à ta vitesse.\n2. Action : attaque ou lance un sort.\n3. Action bonus si une capacité le permet.\nAstuce : …"}
+            onSave={(v) => patch({ play_guide: v })}
+          />
+        </Card>
+      )}
+
       <Card>
         <Title>Rôleplay</Title>
         {ch.background ? <Body muted>Historique : {ch.background}</Body> : null}

@@ -1,10 +1,94 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { ABILITIES, modifier, proficiencyBonus, rollDice, signed, type Attack } from '../../lib/rules';
+import { ABILITIES, hitDieOf, modifier, proficiencyBonus, rollDice, signed, type Attack } from '../../lib/rules';
 import { fonts, useTheme } from '../../lib/theme';
 import { Body, Button, Card, Field, Label, Row, Title, Toggle } from '../ui';
-import { NumField, type SheetProps } from './common';
+import { NumField, longRestValues, type SheetProps } from './common';
 import { SpellSlots } from './SpellsTab';
+
+/** Dés de vie et jets contre la mort. */
+function Vitality({ ch, isGm, isOwner, canHp, patch, onRoll }: SheetProps) {
+  const t = useTheme();
+  const die = hitDieOf(ch.class);
+  const left = Math.max(0, ch.level - ch.hit_dice_used);
+  const canEdit = isGm || isOwner;
+
+  // Repos court : on dépense un dé de vie, on récupère dé + modificateur de CON
+  function spendHitDie() {
+    const r = 1 + Math.floor(Math.random() * die);
+    const con = modifier(ch.abilities.CON);
+    const gain = Math.max(0, r + con);
+    patch({ hit_dice_used: ch.hit_dice_used + 1, hp: Math.min(ch.hp_max, ch.hp + gain) });
+    onRoll(`Dé de vie : +${gain} PV`, gain, `d${die} (${r}) ${signed(con)} CON`);
+  }
+
+  function deathSave() {
+    const r = 1 + Math.floor(Math.random() * 20);
+    if (r === 20) {
+      patch({ hp: 1, death_successes: 0, death_failures: 0 });
+      onRoll('Jet contre la mort : 20 naturel, tu te relèves avec 1 PV !', r, 'd20');
+    } else if (r === 1) {
+      patch({ death_failures: Math.min(3, ch.death_failures + 2) });
+      onRoll('Jet contre la mort : 1 naturel, deux échecs', r, 'd20');
+    } else if (r >= 10) {
+      patch({ death_successes: Math.min(3, ch.death_successes + 1) });
+      onRoll('Jet contre la mort : réussite', r, 'd20 (10 ou plus)');
+    } else {
+      patch({ death_failures: Math.min(3, ch.death_failures + 1) });
+      onRoll('Jet contre la mort : échec', r, 'd20 (9 ou moins)');
+    }
+  }
+
+  const Boxes = ({ n, color, field }: { n: number; color: string; field: 'death_successes' | 'death_failures' }) => (
+    <Row style={{ gap: 6 }}>
+      {[0, 1, 2].map((i) => (
+        <Pressable
+          key={i}
+          disabled={!canEdit}
+          accessibilityLabel={`${field === 'death_successes' ? 'Réussite' : 'Échec'} ${i + 1}`}
+          onPress={() => patch({ [field]: i < n ? i : i + 1 })}
+          style={[styles.box, { borderColor: color, backgroundColor: i < n ? color : 'transparent' }]}
+        />
+      ))}
+    </Row>
+  );
+
+  return (
+    <Card>
+      <Title>Dés de vie et survie</Title>
+      <Row style={{ justifyContent: 'space-between' }}>
+        <Body>
+          Dés de vie : <Text style={{ fontWeight: '700' }}>{left}</Text> / {ch.level} (d{die})
+        </Body>
+        {canEdit && (
+          <Row>
+            {canHp && <Button small label="Repos court : dépenser un dé" disabled={left === 0 || ch.hp >= ch.hp_max} onPress={spendHitDie} />}
+            <Button small label="Repos long" onPress={() => patch(longRestValues(ch, canHp))} />
+          </Row>
+        )}
+      </Row>
+      {(ch.hp === 0 || ch.death_successes > 0 || ch.death_failures > 0) ? (
+        <View style={{ gap: 8 }}>
+          <Label>Jets contre la mort</Label>
+          <Row style={{ gap: 16 }}>
+            <Row style={{ gap: 8 }}><Body muted>Réussites</Body><Boxes n={ch.death_successes} color={t.good} field="death_successes" /></Row>
+            <Row style={{ gap: 8 }}><Body muted>Échecs</Body><Boxes n={ch.death_failures} color={t.bad} field="death_failures" /></Row>
+          </Row>
+          {canEdit && (
+            <Row>
+              <Button small kind="primary" label="Lancer le jet" onPress={deathSave} />
+              <Button small label="Remettre à zéro" onPress={() => patch({ death_successes: 0, death_failures: 0 })} />
+            </Row>
+          )}
+          {ch.death_successes >= 3 && <Body style={{ color: t.good }}>Stabilisé : plus de jets à faire.</Body>}
+          {ch.death_failures >= 3 && <Body style={{ color: t.bad }}>Trois échecs : le personnage est mort.</Body>}
+        </View>
+      ) : (
+        <Body muted style={{ fontSize: 13 }}>Les jets contre la mort apparaissent ici quand les PV tombent à 0.</Body>
+      )}
+    </Card>
+  );
+}
 
 const EMPTY: Attack = { name: '', ability: 'FOR', proficient: true, dice: '1d6', type: 'contondant', bonus: 0 };
 
@@ -82,6 +166,7 @@ export function CombatTab(props: SheetProps) {
                 </View>
               </Pressable>
               {canInventory && <Button small label="Modifier" onPress={() => startEdit(i)} />}
+              {a.note ? <Text style={{ color: t.muted, fontSize: 13, width: '100%' }}>{a.note}</Text> : null}
             </View>
           );
         })}
@@ -96,6 +181,12 @@ export function CombatTab(props: SheetProps) {
               </View>
               <Field label="Type de dégâts" value={draft.type} onChangeText={(v) => setDraft({ ...draft, type: v })} placeholder="contondant" />
             </Row>
+            <Field
+              label="Notes (portée, propriétés)"
+              value={draft.note ?? ''}
+              onChangeText={(v) => setDraft({ ...draft, note: v })}
+              placeholder="Finesse, légère. Lancer 6/18 m."
+            />
             <Label>Caractéristique utilisée</Label>
             <Row>
               {ABILITIES.map((a) => (
@@ -118,16 +209,18 @@ export function CombatTab(props: SheetProps) {
         )}
       </Card>
 
+      <Vitality {...props} />
       <SpellSlots {...props} />
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  attack: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth },
+  attack: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 10, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth },
   attackMain: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
   nums: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   hitCol: { width: 64, alignItems: 'center' },
   dmgCol: { width: 150 },
+  box: { width: 22, height: 22, borderRadius: 4, borderWidth: 2 },
   hit: { fontFamily: fonts.display, fontSize: 22, fontWeight: '700' },
 });

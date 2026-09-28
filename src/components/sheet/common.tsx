@@ -18,7 +18,17 @@ export type SheetProps = {
   reloadSpells: () => void;
 };
 
-export function Stat({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+/** Repos long : PV, emplacements, moitié des dés de vie ; remet à zéro les jets contre la mort. */
+export function longRestValues(ch: Character, canHp: boolean): Partial<Character> {
+  const values: Partial<Character> = { slots_used: {}, death_successes: 0, death_failures: 0 };
+  if (canHp) {
+    values.hp = ch.hp_max;
+    values.hit_dice_used = Math.max(0, ch.hit_dice_used - Math.max(1, Math.floor(ch.level / 2)));
+  }
+  return values;
+}
+
+export function Stat({ label, value, highlight, hint }: { label: string; value: string; highlight?: boolean; hint?: string }) {
   const t = useTheme();
   return (
     <View style={[styles.stat, { borderColor: highlight ? t.brass : t.line, backgroundColor: t.bg }]}>
@@ -26,6 +36,11 @@ export function Stat({ label, value, highlight }: { label: string; value: string
       <Text style={{ fontFamily: fonts.display, fontSize: 22, fontWeight: '700', color: highlight ? t.brass : t.ink }}>
         {value}
       </Text>
+      {hint ? (
+        <Text numberOfLines={2} style={{ color: t.muted, fontSize: 11, textAlign: 'center', paddingHorizontal: 4 }}>
+          {hint}
+        </Text>
+      ) : null}
     </View>
   );
 }

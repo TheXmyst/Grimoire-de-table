@@ -1,4 +1,4 @@
-import type { Abilities, Attack, CoinKey } from './rules';
+import type { Abilities, Attack, CoinKey, Feature } from './rules';
 
 export type CampaignSettings = {
   ruleset: string;
@@ -52,6 +52,18 @@ export type Character = {
   bonds: string;
   flaws: string;
   backstory: string;
+  alignment: string;
+  ac_note: string;
+  hit_dice_used: number;
+  death_successes: number;
+  death_failures: number;
+  inspiration: boolean;
+  proficiencies: Partial<Record<'armures' | 'armes' | 'outils' | 'langues', string>>;
+  features: Feature[];
+  spell_ability: string;
+  spell_notes: string;
+  pitch: string;
+  play_guide: string;
 };
 
 export type Spell = {
@@ -75,5 +87,6 @@ export type CharacterSpell = {
   spell_id: string;
   status: 'pending' | 'approved';
   prepared: boolean;
+  tag: string;
   spells: Spell;
 };

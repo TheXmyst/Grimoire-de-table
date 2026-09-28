@@ -149,6 +149,8 @@ export type Attack = {
   dice: string;
   type: string;
   bonus: number;
+  /** Portée, propriétés : « Finesse, légère. Lancer 6/18 m. » */
+  note?: string;
 };
 
 /** Lance une expression simple de dés, par exemple « 2d6 » ou « 1d8 ». */
@@ -160,3 +162,32 @@ export function rollDice(expr: string): { total: number; rolls: number[] } {
   const rolls = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * faces));
   return { total: rolls.reduce((a, b) => a + b, 0), rolls };
 }
+
+/** Caractéristique d'incantation par classe. */
+export const SPELL_ABILITY: Record<string, AbilityKey> = {
+  Barde: 'CHA',
+  Clerc: 'SAG',
+  Druide: 'SAG',
+  Ensorceleur: 'CHA',
+  Magicien: 'INT',
+  Occultiste: 'CHA',
+  Paladin: 'CHA',
+  Rôdeur: 'SAG',
+};
+
+export const hitDieOf = (cls: string) => CLASSES.find((c) => c.name === cls)?.hitDie ?? 8;
+
+export const ALIGNMENTS = [
+  'Loyal bon', 'Neutre bon', 'Chaotique bon',
+  'Loyal neutre', 'Neutre', 'Chaotique neutre',
+  'Loyal mauvais', 'Neutre mauvais', 'Chaotique mauvais',
+];
+
+export const PROFICIENCY_KINDS = [
+  { key: 'armures', label: 'Armures' },
+  { key: 'armes', label: 'Armes' },
+  { key: 'outils', label: 'Outils' },
+  { key: 'langues', label: 'Langues' },
+] as const;
+
+export type Feature = { name: string; source: string; description: string };
