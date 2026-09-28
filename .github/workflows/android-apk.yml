@@ -44,10 +44,29 @@ jobs:
         run: |
           sed -i '/^org.gradle.jvmargs=/d' android/gradle.properties
           echo 'org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=2g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8' >> android/gradle.properties
+      - name: Tracer les appels à node pendant la compilation
+        run: |
+          mkdir -p "$RUNNER_TEMP/nodewrap"
+          REAL_NODE="$(command -v node)"
+          cat > "$RUNNER_TEMP/nodewrap/node" <<WRAP
+          #!/usr/bin/env bash
+          err=\$(mktemp)
+          "$REAL_NODE" "\$@" 2> >(tee "\$err" >&2)
+          code=\$?
+          if [ \$code -ne 0 ]; then
+            { echo "=== node \$* (dans \$PWD) -> code \$code"; cat "\$err"; } >> "$RUNNER_TEMP/node-failures.log"
+          fi
+          exit \$code
+          WRAP
+          chmod +x "$RUNNER_TEMP/nodewrap/node"
+          echo "$RUNNER_TEMP/nodewrap" >> "$GITHUB_PATH"
       - name: Compiler l'APK
         working-directory: android
         timeout-minutes: 45
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease --no-daemon --stacktrace
+      - name: Afficher les erreurs de node
+        if: failure()
+        run: cat "$RUNNER_TEMP/node-failures.log" || echo "Aucun appel à node n'a échoué."
       - uses: actions/upload-artifact@v4
         with:
           name: grimoire-de-table-apk
