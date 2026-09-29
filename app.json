@@ -20,7 +20,13 @@
       "package": "com.grimoiredetable.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "output": "single",
+      "name": "Grimoire de Table",
+      "shortName": "Grimoire",
+      "lang": "fr",
+      "themeColor": "#111614",
+      "backgroundColor": "#111614"
     },
     "scheme": "grimoire",
     "plugins": [
@@ -28,6 +34,9 @@
     ],
     "updates": {
       "enabled": false
+    },
+    "experiments": {
+      "baseUrl": "/Grimoire-de-table"
     }
   }
 }
