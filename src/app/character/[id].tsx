@@ -2,6 +2,7 @@ import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-rou
 import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AbilitiesTab, skillTotal } from '../../components/sheet/AbilitiesTab';
+import { LevelPanel } from '../../components/sheet/LevelPanel';
 import { FeaturesTab } from '../../components/sheet/FeaturesTab';
 import { BagTab } from '../../components/sheet/BagTab';
 import { CombatTab } from '../../components/sheet/CombatTab';
@@ -236,6 +237,7 @@ export default function CharacterScreen() {
         <View style={[styles.bar, { backgroundColor: t.sunk }]}>
           <View style={{ width: `${hpPct * 100}%`, height: '100%', backgroundColor: hpPct < 0.3 ? t.bad : t.good }} />
         </View>
+        <LevelPanel ch={ch} isGm={isGm} patch={patch} />
         {ch.pitch ? (
           <View style={[styles.pitch, { borderColor: t.accent, backgroundColor: t.bg }]}>
             <Body>{ch.pitch}</Body>
