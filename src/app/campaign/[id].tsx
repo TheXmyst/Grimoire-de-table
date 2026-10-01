@@ -251,6 +251,11 @@ export default function CampaignScreen() {
             value={campaign.settings.spell_approval}
             onChange={(v) => setSetting('spell_approval', v)}
           />
+          <Toggle
+            label="Option : encombrement des armures (malus en Acrobaties, Athlétisme, initiative)"
+            value={!!campaign.settings.armor_encumbrance}
+            onChange={(v) => setSetting('armor_encumbrance', v)}
+          />
         </Card>
       )}
 

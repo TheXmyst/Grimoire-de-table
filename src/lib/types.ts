@@ -5,6 +5,8 @@ export type CampaignSettings = {
   players_edit_hp: boolean;
   players_edit_inventory: boolean;
   spell_approval: boolean;
+  /** Règle optionnelle : malus d'encombrement des armures */
+  armor_encumbrance?: boolean;
 };
 
 export type Campaign = {

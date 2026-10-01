@@ -3,11 +3,13 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { COINS, coinsInGold, type CoinKey } from '../../lib/rules';
 import { fonts, useTheme } from '../../lib/theme';
 import { Body, Button, Card, Field, Label, Row, Title, Toggle } from '../ui';
+import { ArmoryCard } from './ArmoryCard';
 import type { MagicItem } from '../../lib/types';
 import { parseInventory, serializeInventory, type Item } from '../../lib/inventory';
 import { Collapsible, TextArea, type SheetProps } from './common';
 
-export function BagTab({ ch, canInventory, patch }: SheetProps) {
+export function BagTab(props: SheetProps) {
+  const { ch, canInventory, patch } = props;
   const strength = ch.abilities.FOR;
   const t = useTheme();
   const [step, setStep] = useState('1');
@@ -69,6 +71,8 @@ export function BagTab({ ch, canInventory, patch }: SheetProps) {
           </Row>
         )}
       </Card>
+
+      <ArmoryCard {...props} />
 
       <Card>
         <Title>Équipement porté</Title>
