@@ -18,9 +18,14 @@ export type SheetProps = {
   reloadSpells: () => void;
 };
 
-/** Repos long : PV, emplacements, moitié des dés de vie ; remet à zéro les jets contre la mort. */
+/** Repos long : PV, emplacements, ressources, moitié des dés de vie, un niveau d'épuisement ; remet à zéro les jets contre la mort. */
 export function longRestValues(ch: Character, canHp: boolean): Partial<Character> {
   const values: Partial<Character> = { slots_used: {}, death_successes: 0, death_failures: 0 };
+  // Champs de la migration 0005 : envoyés seulement s'il y a quelque chose à remettre à zéro
+  if (ch.concentration) values.concentration = '';
+  if (ch.resources.some((r) => r.used > 0)) values.resources = ch.resources.map((r) => ({ ...r, used: 0 }));
+  // Un repos long (avec nourriture et boisson) retire un niveau d'épuisement
+  if (ch.exhaustion > 0) values.exhaustion = ch.exhaustion - 1;
   if (canHp) {
     values.hp = ch.hp_max;
     values.hit_dice_used = Math.max(0, ch.hit_dice_used - Math.max(1, Math.floor(ch.level / 2)));

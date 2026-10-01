@@ -1,11 +1,63 @@
 import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { FEATS } from '../../lib/feats';
 import { PROFICIENCY_KINDS, type Feature } from '../../lib/rules';
+import type { DefenseKey } from '../../lib/types';
 import { useTheme } from '../../lib/theme';
 import { Body, Button, Card, Field, Label, Row, Title } from '../ui';
 import { TextArea, type SheetProps } from './common';
 
 const EMPTY: Feature = { name: '', source: '', description: '' };
+
+const DEFENSES: { key: DefenseKey; label: string; placeholder: string }[] = [
+  { key: 'senses', label: 'Sens', placeholder: 'Vision dans le noir 18 m' },
+  { key: 'resistances', label: 'Résistances', placeholder: 'Poison (nain), feu…' },
+  { key: 'immunities', label: 'Immunités', placeholder: 'Maladies…' },
+  { key: 'vulnerabilities', label: 'Vulnérabilités', placeholder: '' },
+];
+
+/** Liste des dons du Manuel des joueurs, à ajouter aux capacités d'un toucher. */
+function FeatPicker({ ch, patch }: { ch: SheetProps['ch']; patch: SheetProps['patch'] }) {
+  const t = useTheme();
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const q = query.trim().toLowerCase();
+  const list = FEATS.filter((f) => !q || f.name.toLowerCase().includes(q) || f.summary.toLowerCase().includes(q));
+  const has = new Set(ch.features.map((f) => f.name));
+
+  return (
+    <Card>
+      <Row style={{ justifyContent: 'space-between' }}>
+        <Title>Dons</Title>
+        <Button small label={open ? 'Fermer' : 'Choisir un don'} onPress={() => setOpen(!open)} />
+      </Row>
+      {!open && <Body muted>Au lieu d'une amélioration de caractéristique, un personnage peut prendre un don si tu l'autorises.</Body>}
+      {open && (
+        <>
+          <Field label="Rechercher" value={query} onChangeText={setQuery} placeholder="Chanceux, sentinelle, armure…" />
+          {list.map((f) => (
+            <View key={f.name} style={[styles.feature, { borderColor: t.line }]}>
+              <Row style={{ justifyContent: 'space-between' }}>
+                <Text style={{ color: t.ink, fontWeight: '700', fontSize: 16, flexShrink: 1 }}>{f.name}</Text>
+                {has.has(f.name) ? (
+                  <Body muted>Ajouté</Body>
+                ) : (
+                  <Button
+                    small
+                    label="Ajouter"
+                    onPress={() => patch({ features: [...ch.features, { name: f.name, source: 'Don', description: f.summary }] })}
+                  />
+                )}
+              </Row>
+              {f.prerequisite ? <Body muted style={{ fontSize: 13 }}>Prérequis : {f.prerequisite}</Body> : null}
+              <Body>{f.summary}</Body>
+            </View>
+          ))}
+        </>
+      )}
+    </Card>
+  );
+}
 
 export function FeaturesTab({ ch, isGm, patch }: SheetProps) {
   const t = useTheme();
@@ -81,6 +133,28 @@ export function FeaturesTab({ ch, isGm, patch }: SheetProps) {
             </Row>
           </View>
         )}
+      </Card>
+
+      {isGm && <FeatPicker ch={ch} patch={patch} />}
+
+      <Card>
+        <Title>Défenses et sens</Title>
+        {DEFENSES.map((k) => (
+          <View key={k.key} style={{ gap: 4 }}>
+            <Label>{k.label}</Label>
+            {isGm ? (
+              <TextArea
+                value={ch.defenses[k.key] ?? ''}
+                editable
+                minHeight={44}
+                placeholder={k.placeholder}
+                onSave={(v) => patch({ defenses: { ...ch.defenses, [k.key]: v } })}
+              />
+            ) : (
+              <Body>{ch.defenses[k.key] || '—'}</Body>
+            )}
+          </View>
+        ))}
       </Card>
 
       <Card>

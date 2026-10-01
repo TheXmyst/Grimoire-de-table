@@ -16,7 +16,7 @@ import { errorText, supabase } from '../../lib/supabase';
 import { fonts, useTheme } from '../../lib/theme';
 import type { Campaign, Character, CharacterSpell, Member } from '../../lib/types';
 
-// Valeurs par défaut si la base n'a pas encore les colonnes de la migration 0003
+// Valeurs par défaut si la base n'a pas encore les colonnes des dernières migrations
 const withDefaults = (c: Character): Character => ({
   ...c,
   subclass: c.subclass ?? '',
@@ -42,6 +42,13 @@ const withDefaults = (c: Character): Character => ({
   spell_notes: c.spell_notes ?? '',
   pitch: c.pitch ?? '',
   play_guide: c.play_guide ?? '',
+  conditions: c.conditions ?? [],
+  exhaustion: c.exhaustion ?? 0,
+  concentration: c.concentration ?? '',
+  resources: c.resources ?? [],
+  magic_items: c.magic_items ?? [],
+  defenses: c.defenses ?? {},
+  details: c.details ?? {},
 });
 
 type TabKey = 'combat' | 'caracs' | 'capacites' | 'sorts' | 'sac' | 'perso';

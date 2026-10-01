@@ -6,6 +6,7 @@ import { fonts, useTheme } from '../../lib/theme';
 import { Body, Button, Card, Field, Label, Row, Title, Toggle } from '../ui';
 import { NumField, longRestValues, type SheetProps } from './common';
 import { SpellSlots } from './SpellsTab';
+import { ResourcesCard, StatusCard } from './StatusCards';
 
 /** Dés de vie et jets contre la mort. */
 function Vitality({ ch, isGm, isOwner, canHp, patch, onRoll }: SheetProps) {
@@ -213,6 +214,8 @@ export function CombatTab(props: SheetProps) {
         )}
       </Card>
 
+      <StatusCard {...props} />
+      <ResourcesCard {...props} />
       <Vitality {...props} />
       <SpellSlots {...props} />
     </>

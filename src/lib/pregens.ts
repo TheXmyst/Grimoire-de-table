@@ -5,6 +5,7 @@ import type { Character } from "./types";
 export type Pregen = Omit<
   Character,
   "id" | "campaign_id" | "player_id" | "xp" | "temp_hp" | "slots_used" | "notes" | "backstory" | "hit_dice_used" | "death_successes" | "death_failures" | "inspiration" | "spell_ability"
+  | "conditions" | "exhaustion" | "concentration" | "resources" | "magic_items" | "defenses" | "details"
 > & { spells: { name: string; tag: string; prepared: boolean }[] };
 
 export const PREGENS: Pregen[] = [

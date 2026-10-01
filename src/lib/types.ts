@@ -64,7 +64,20 @@ export type Character = {
   spell_notes: string;
   pitch: string;
   play_guide: string;
+  conditions: string[];
+  exhaustion: number;
+  concentration: string;
+  resources: Resource[];
+  magic_items: MagicItem[];
+  defenses: Partial<Record<DefenseKey, string>>;
+  details: Partial<Record<DetailKey, string>>;
 };
+
+/** Ressource de classe à usages limités : rage, ki, conduit divin… */
+export type Resource = { name: string; max: number; used: number; reset: 'court' | 'long' };
+export type MagicItem = { name: string; attuned: boolean; description: string };
+export type DefenseKey = 'resistances' | 'immunities' | 'vulnerabilities' | 'senses';
+export type DetailKey = 'age' | 'height' | 'weight' | 'eyes' | 'skin' | 'hair' | 'appearance' | 'allies' | 'treasure';
 
 export type Spell = {
   id: string;

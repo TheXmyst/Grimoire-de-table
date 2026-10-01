@@ -1,0 +1,3176 @@
+[
+ {
+  "name": "Amis",
+  "level": 0,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu as l'avantage aux tests de Charisme contre une créature non hostile. À la fin du sort, elle comprend qu'elle a été influencée et peut devenir hostile."
+ },
+ {
+  "name": "Fouet épineux",
+  "level": 0,
+  "school": "Transmutation",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Attaque de sort au corps à corps (allonge 9 m) : 1d6 dégâts perforants et tu tires une cible de taille Grande ou moins de 3 m vers toi. Dégâts accrus aux niveaux 5, 11 et 17."
+ },
+ {
+  "name": "Protection contre les armes",
+  "level": 0,
+  "school": "Abjuration",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S",
+  "duration": "1 round",
+  "concentration": false,
+  "ritual": false,
+  "description": "Jusqu'à la fin de ton prochain tour, tu as la résistance aux dégâts contondants, perforants et tranchants infligés par des attaques avec une arme."
+ },
+ {
+  "name": "Armure d'Agathys",
+  "level": 1,
+  "school": "Abjuration",
+  "classes": [
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu gagnes 5 PV temporaires. Tant qu'ils durent, une créature qui te touche au corps à corps subit 5 dégâts de froid. +5 PV et +5 dégâts par niveau d'emplacement au-delà du 1er."
+ },
+ {
+  "name": "Carreau ensorcelé",
+  "level": 1,
+  "school": "Évocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Attaque de sort à distance : 1d12 dégâts de foudre. Les tours suivants, ton action maintient l'arc pour 1d12 automatiques tant que la cible reste à portée. +1d12 initial par niveau au-delà du 1er."
+ },
+ {
+  "name": "Disque flottant de Tenser",
+  "level": 1,
+  "school": "Invocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": true,
+  "description": "Un disque de force d'environ 1 m flotte à 1 m du sol et porte jusqu'à 250 kg. Il te suit à 6 m de distance et disparaît si tu t'éloignes de plus de 30 m."
+ },
+ {
+  "name": "Duel forcé",
+  "level": 1,
+  "school": "Enchantement",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "9 m",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Jet de Sagesse : en cas d'échec, la cible a le désavantage pour attaquer d'autres créatures que toi et doit réussir un nouveau jet pour s'éloigner à plus de 9 m de toi."
+ },
+ {
+  "name": "Frappe ardente",
+  "level": 1,
+  "school": "Évocation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque armée qui touche ajoute 1d6 dégâts de feu et enflamme la cible : 1d6 de feu au début de chacun de ses tours jusqu'à un jet de Constitution réussi. +1d6 initial par niveau au-delà du 1er."
+ },
+ {
+  "name": "Frappe colérique",
+  "level": 1,
+  "school": "Évocation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque armée au corps à corps qui touche inflige 1d6 dégâts psychiques de plus. Jet de Sagesse ou la cible est effrayée ; elle peut retenter avec un test de Sagesse en action."
+ },
+ {
+  "name": "Frappe piégeuse",
+  "level": 1,
+  "school": "Invocation",
+  "classes": [
+   "Rôdeur"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque armée qui touche fait surgir des ronces : jet de Force ou la cible est entravée et subit 1d6 dégâts perforants à chacun de ses tours (avantage si Grande ou plus). +1d6 par niveau au-delà du 1er."
+ },
+ {
+  "name": "Frappe tonitruante",
+  "level": 1,
+  "school": "Évocation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque armée au corps à corps qui touche ajoute 2d6 dégâts de tonnerre. Jet de Force ou la cible est repoussée de 3 m et jetée à terre."
+ },
+ {
+  "name": "Grêle d'épines",
+  "level": 1,
+  "school": "Invocation",
+  "classes": [
+   "Rôdeur"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque à distance qui touche fait éclater une pluie d'épines : la cible et chaque créature à 1,50 m font un jet de Dextérité, 1d10 dégâts perforants (moitié si réussi). +1d10 par niveau au-delà du 1er (max 6d10)."
+ },
+ {
+  "name": "Maléfice",
+  "level": 1,
+  "school": "Enchantement",
+  "classes": [
+   "Occultiste"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "27 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tes attaques qui touchent la cible maudite infligent 1d6 dégâts nécrotiques de plus, et elle a le désavantage aux tests d'une caractéristique choisie. Transférable par action bonus si elle tombe à 0 PV. Durée allongée aux niveaux supérieurs."
+ },
+ {
+  "name": "Murmures dissonants",
+  "level": 1,
+  "school": "Enchantement",
+  "classes": [
+   "Barde"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Jet de Sagesse : 3d6 dégâts psychiques et la cible doit fuir immédiatement avec sa réaction (moitié et pas de fuite si réussi). +1d6 par niveau au-delà du 1er."
+ },
+ {
+  "name": "Orbe chromatique",
+  "level": 1,
+  "school": "Évocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "27 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Attaque de sort à distance : 3d8 dégâts d'acide, de froid, de feu, de foudre, de poison ou de tonnerre, au choix. +1d8 par niveau au-delà du 1er."
+ },
+ {
+  "name": "Rayon empoisonné",
+  "level": 1,
+  "school": "Nécromancie",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Attaque de sort à distance : 2d8 dégâts de poison, puis jet de Constitution ou la cible est empoisonnée jusqu'à la fin de ton prochain tour. +1d8 par niveau au-delà du 1er."
+ },
+ {
+  "name": "Tentacules d'Hadar",
+  "level": 1,
+  "school": "Invocation",
+  "classes": [
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (rayon de 3 m)",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Chaque créature à 3 m de toi fait un jet de Force : 2d6 dégâts nécrotiques et plus de réaction ce tour (moitié seulement si réussi). +1d6 par niveau au-delà du 1er."
+ },
+ {
+  "name": "Cordon de flèches",
+  "level": 2,
+  "school": "Transmutation",
+  "classes": [
+   "Rôdeur"
+  ],
+  "casting_time": "1 action",
+  "range": "1,50 m",
+  "components": "V, S, M",
+  "duration": "8 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu plantes quatre flèches ou carreaux qui tirent sur toute créature non exemptée arrivant à 9 m : attaque à distance, 1d6 dégâts perforants. +2 projectiles par niveau au-delà du 2e."
+ },
+ {
+  "name": "Couronne du dément",
+  "level": 2,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Jet de Sagesse ou un humanoïde est charmé : à chacun de ses tours, il attaque au corps à corps une créature que tu désignes. Tu dois utiliser ton action pour maintenir le sort ; nouveau jet à chaque fin de tour."
+ },
+ {
+  "name": "Force fantasmagorique",
+  "level": 2,
+  "school": "Illusion",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Jet d'Intelligence ou la cible perçoit une illusion de la taille d'un cube de 3 m qu'elle croit réelle. Elle peut lui infliger 1d6 dégâts psychiques par tour. Une action d'examen (Investigation) permet de la percer."
+ },
+ {
+  "name": "Frappe lumineuse",
+  "level": 2,
+  "school": "Évocation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque armée qui touche ajoute 2d6 dégâts radiants ; la cible émet de la lumière faible et ne peut plus être invisible. +1d6 par niveau au-delà du 2e."
+ },
+ {
+  "name": "Nuée de dagues",
+  "level": 2,
+  "school": "Invocation",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un cube de 1,50 m rempli de dagues tournoyantes inflige 4d4 dégâts tranchants à toute créature qui y entre ou y commence son tour. +2d4 par niveau au-delà du 2e."
+ },
+ {
+  "name": "Sens animal",
+  "level": 2,
+  "school": "Divination",
+  "classes": [
+   "Druide",
+   "Rôdeur"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "S",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": true,
+  "description": "Tu touches une bête consentante et peux, par une action, voir et entendre à travers ses sens ; tu es alors aveugle et sourd pour ton propre corps."
+ },
+ {
+  "name": "Appétit d'Hadar",
+  "level": 3,
+  "school": "Invocation",
+  "classes": [
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "45 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une sphère de 6 m de ténèbres magiques et de terrain difficile. Les créatures qui y commencent leur tour subissent 2d6 dégâts de froid, et 2d6 d'acide en fin de tour sur un jet de Dextérité raté. +1d6 de froid par niveau au-delà du 3e."
+ },
+ {
+  "name": "Arme élémentaire",
+  "level": 3,
+  "school": "Transmutation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une arme non magique devient une arme +1 et inflige 1d4 dégâts supplémentaires d'acide, froid, feu, foudre ou tonnerre. Bonus et dés augmentent aux niveaux 5 et 7."
+ },
+ {
+  "name": "Aura de vitalité",
+  "level": 3,
+  "school": "Évocation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (rayon de 9 m)",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Aura de 9 m de rayon : à chaque tour, par une action bonus, tu rends 2d6 PV à une créature de l'aura, toi compris."
+ },
+ {
+  "name": "Aura du croisé",
+  "level": 3,
+  "school": "Évocation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Aura de 9 m de rayon : les attaques armées des créatures non hostiles qui s'y trouvent infligent 1d4 dégâts radiants supplémentaires."
+ },
+ {
+  "name": "Croissance végétale",
+  "level": 3,
+  "school": "Transmutation",
+  "classes": [
+   "Barde",
+   "Druide",
+   "Rôdeur"
+  ],
+  "casting_time": "1 action ou 8 heures",
+  "range": "45 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "En une action, la végétation d'un rayon de 30 m devient si dense que se déplacer coûte 4 fois plus. En 8 heures, les cultures d'un rayon de 800 m sont enrichies et donnent double récolte pendant un an."
+ },
+ {
+  "name": "Esprits gardiens",
+  "level": 3,
+  "school": "Invocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (rayon de 4,50 m)",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Des esprits t'entourent : la zone devient terrain difficile pour tes ennemis et chacun qui y entre ou y commence son tour fait un jet de Sagesse, 3d8 dégâts radiants ou nécrotiques (moitié si réussi). +1d8 par niveau au-delà du 3e."
+ },
+ {
+  "name": "Feindre la mort",
+  "level": 3,
+  "school": "Nécromancie",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": true,
+  "description": "Une créature consentante semble morte : elle est aveuglée et neutralisée, sa vitesse tombe à 0 et elle résiste à tous les dégâts sauf psychiques. Elle est immunisée à l'empoisonnement."
+ },
+ {
+  "name": "Flèche de foudre",
+  "level": 3,
+  "school": "Transmutation",
+  "classes": [
+   "Rôdeur"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque à distance devient un éclair : 4d8 dégâts de foudre (moitié si raté), puis chaque créature à 3 m de la cible fait un jet de Dextérité, 2d8 dégâts (moitié si réussi). +1d8 aux deux par niveau au-delà du 3e."
+ },
+ {
+  "name": "Frappe aveuglante",
+  "level": 3,
+  "school": "Évocation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque armée qui touche ajoute 3d8 dégâts radiants. Jet de Constitution ou la cible est aveuglée ; elle retente le jet à la fin de chacun de ses tours."
+ },
+ {
+  "name": "Invoquer un tir de barrage",
+  "level": 3,
+  "school": "Invocation",
+  "classes": [
+   "Rôdeur"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (cône de 18 m)",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu démultiplies une munition ou arme de jet : chaque créature du cône fait un jet de Dextérité, 3d8 dégâts du type de l'arme (moitié si réussi). La munition est consommée."
+ },
+ {
+  "name": "Monture fantôme",
+  "level": 3,
+  "school": "Illusion",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 minute",
+  "range": "9 m",
+  "components": "V, S",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": true,
+  "description": "Crée un cheval de taille Grande, quasi réel, avec selle et harnais, que toi ou une créature désignée pouvez monter. Il a une vitesse de 30 m et disparaît s'il subit des dégâts."
+ },
+ {
+  "name": "Assassin imaginaire",
+  "level": 4,
+  "school": "Illusion",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Jet de Sagesse ou la cible est effrayée par une illusion de ses pires peurs. À la fin de chacun de ses tours, nouveau jet : en cas d'échec, 4d10 dégâts psychiques ; une réussite met fin au sort. +1d10 par niveau au-delà du 4e."
+ },
+ {
+  "name": "Aura de pureté",
+  "level": 4,
+  "school": "Abjuration",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (rayon de 9 m)",
+  "components": "V",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Aura de 9 m : les créatures non hostiles ne peuvent pas tomber malades, résistent aux dégâts de poison et ont l'avantage aux sauvegardes contre la plupart des états (aveuglé, charmé, effrayé, paralysé, empoisonné, etc.)."
+ },
+ {
+  "name": "Aura de vie",
+  "level": 4,
+  "school": "Abjuration",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (rayon de 9 m)",
+  "components": "V",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Aura de 9 m : les créatures non hostiles résistent aux dégâts nécrotiques et leur maximum de PV ne peut être réduit. Une créature alliée à 0 PV qui commence son tour dans l'aura récupère 1 PV."
+ },
+ {
+  "name": "Bannissement",
+  "level": 4,
+  "school": "Abjuration",
+  "classes": [
+   "Clerc",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste",
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Jet de Charisme ou la cible est envoyée sur un demi-plan inoffensif (ou son plan d'origine si elle est extraplanaire et que le sort dure 1 minute complète). +1 cible par niveau au-delà du 4e."
+ },
+ {
+  "name": "Bouclier de feu",
+  "level": 4,
+  "school": "Évocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "10 minutes",
+  "concentration": false,
+  "ritual": false,
+  "description": "Des flammes t'entourent et éclairent. Bouclier chaud : résistance au froid ; bouclier froid : résistance au feu. Qui te touche au corps à corps subit 2d8 dégâts de feu ou de froid selon le bouclier."
+ },
+ {
+  "name": "Chien de garde de Mordenkainen",
+  "level": 4,
+  "school": "Invocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "8 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un chien fantomatique invisible garde un point, aboie quand un intrus approche à 9 m et mord une créature hostile à 1,50 m : attaque avec ton bonus, 4d8 dégâts perforants."
+ },
+ {
+  "name": "Coffre secret de Léomund",
+  "level": 4,
+  "school": "Invocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu caches un coffre précieux (et son contenu) dans le plan éthéré ; tu peux le rappeler par une action grâce à sa réplique miniature. Après 60 jours, l'effet peut prendre fin."
+ },
+ {
+  "name": "Compulsion",
+  "level": 4,
+  "school": "Enchantement",
+  "classes": [
+   "Barde"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Les créatures choisies qui t'entendent font un jet de Sagesse. En cas d'échec, tu peux, par une action bonus, imposer une direction à leurs déplacements ; elles retentent le jet après chaque mouvement."
+ },
+ {
+  "name": "Confusion",
+  "level": 4,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Druide",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "27 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Chaque créature dans une sphère de 3 m fait un jet de Sagesse ; en cas d'échec, un d10 détermine son comportement à chaque tour (errance, inaction, attaque aléatoire…). +1,50 m de rayon par niveau au-delà du 4e."
+ },
+ {
+  "name": "Contrôle de l'eau",
+  "level": 4,
+  "school": "Transmutation",
+  "classes": [
+   "Clerc",
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "90 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu contrôles l'eau dans un cube de 30 m : inondation, séparation des eaux, redirection d'un courant ou tourbillon (jet de Force, 2d8 dégâts contondants)."
+ },
+ {
+  "name": "Divination",
+  "level": 4,
+  "school": "Divination",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": true,
+  "description": "Tu poses une question à ta divinité sur un événement des 7 prochains jours et reçois une réponse véridique, parfois cryptique. Les lancers répétés le même jour peuvent donner une réponse aléatoire."
+ },
+ {
+  "name": "Dominer une bête",
+  "level": 4,
+  "school": "Enchantement",
+  "classes": [
+   "Druide",
+   "Ensorceleur"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Jet de Sagesse ou la bête est charmée et t'obéit par lien télépathique ; tu peux contrôler précisément ses actions. Nouveau jet à chaque dégât subi. Durée accrue aux niveaux supérieurs."
+ },
+ {
+  "name": "Fabrication",
+  "level": 4,
+  "school": "Transmutation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "10 minutes",
+  "range": "36 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Transforme des matériaux bruts en un produit fini de même matière (pont, corde, vêtements…), jusqu'à un cube de 3 m (1,50 m pour les minéraux). Les objets de qualité demandent la maîtrise des outils adaptés."
+ },
+ {
+  "name": "Façonnage de la pierre",
+  "level": 4,
+  "school": "Transmutation",
+  "classes": [
+   "Clerc",
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu modèles un bloc de pierre de 1,50 m de côté maximum pour lui donner la forme voulue : arme, passage, porte grossière, statue…"
+ },
+ {
+  "name": "Flétrissement",
+  "level": 4,
+  "school": "Nécromancie",
+  "classes": [
+   "Druide",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Jet de Constitution : 8d8 dégâts nécrotiques (moitié si réussi). Sans effet sur les morts-vivants et artificiels ; les plantes ont le désavantage et subissent le maximum. +1d8 par niveau au-delà du 4e."
+ },
+ {
+  "name": "Frappe assommante",
+  "level": 4,
+  "school": "Évocation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque armée qui touche ajoute 4d6 dégâts psychiques. Jet de Sagesse ou la cible a le désavantage à ses attaques et tests et ne peut pas réagir jusqu'à la fin de son prochain tour."
+ },
+ {
+  "name": "Gardien de la foi",
+  "level": 4,
+  "school": "Invocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V",
+  "duration": "8 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un gardien spectral occupe un emplacement. Tout ennemi qui arrive à 3 m de lui fait un jet de Dextérité : 20 dégâts radiants (moitié si réussi). Il disparaît après avoir infligé 60 dégâts."
+ },
+ {
+  "name": "Insecte géant",
+  "level": 4,
+  "school": "Transmutation",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Transforme jusqu'à dix mille-pattes, trois araignées, cinq guêpes ou un scorpion en versions géantes qui obéissent à tes ordres verbaux."
+ },
+ {
+  "name": "Invisibilité supérieure",
+  "level": 4,
+  "school": "Illusion",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "La créature touchée devient invisible pour la durée du sort, même si elle attaque ou lance des sorts."
+ },
+ {
+  "name": "Invoquer des élémentaires mineurs",
+  "level": 4,
+  "school": "Invocation",
+  "classes": [
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "1 minute",
+  "range": "27 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu invoques des élémentaires amicaux : un de FP 2, deux de FP 1, quatre de FP 1/2 ou huit de FP 1/4. Ils obéissent à tes ordres. Plus de créatures avec un emplacement de niveau 6 ou 8."
+ },
+ {
+  "name": "Invoquer des êtres des bois",
+  "level": 4,
+  "school": "Invocation",
+  "classes": [
+   "Druide",
+   "Rôdeur"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu invoques des créatures féeriques amicales : une de FP 2, deux de FP 1, quatre de FP 1/2 ou huit de FP 1/4. Elles obéissent à tes ordres. Plus de créatures avec un emplacement de niveau 6 ou 8."
+ },
+ {
+  "name": "Liane agrippeuse",
+  "level": 4,
+  "school": "Invocation",
+  "classes": [
+   "Druide",
+   "Rôdeur"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "9 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une liane surgit à portée. Par une action bonus, tu la fais saisir une créature à 9 m d'elle : jet de Dextérité ou la cible est tirée de 6 m vers la liane."
+ },
+ {
+  "name": "Liberté de mouvement",
+  "level": 4,
+  "school": "Abjuration",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide",
+   "Rôdeur"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": false,
+  "description": "La créature touchée ignore le terrain difficile, ne peut être ralentie, paralysée ou entravée par la magie, et peut s'échapper d'une entrave avec 1,50 m de mouvement. Elle se déplace normalement sous l'eau."
+ },
+ {
+  "name": "Localiser une créature",
+  "level": 4,
+  "school": "Divination",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide",
+   "Magicien",
+   "Paladin",
+   "Rôdeur"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu sens la direction d'une créature connue ou d'un type de créature, si elle est à moins de 300 m. L'eau courante bloque le sort."
+ },
+ {
+  "name": "Mur de feu",
+  "level": 4,
+  "school": "Évocation",
+  "classes": [
+   "Druide",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un mur de feu (18 m de long, ou anneau de 6 m de diamètre). À l'apparition, jet de Dextérité : 5d8 dégâts de feu (moitié si réussi). Un côté brûle aussi ceux qui s'approchent à 3 m ou le traversent. +1d8 par niveau au-delà du 4e."
+ },
+ {
+  "name": "Métamorphose",
+  "level": 4,
+  "school": "Transmutation",
+  "classes": [
+   "Barde",
+   "Druide",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Jet de Sagesse (si non consentante) ou la créature devient une bête de FP inférieur ou égal au sien. Elle prend les PV de cette forme et reprend sa forme normale quand ils tombent à 0."
+ },
+ {
+  "name": "Peau de pierre",
+  "level": 4,
+  "school": "Abjuration",
+  "classes": [
+   "Druide",
+   "Ensorceleur",
+   "Magicien",
+   "Rôdeur"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une créature consentante gagne la résistance aux dégâts contondants, perforants et tranchants non magiques."
+ },
+ {
+  "name": "Porte dimensionnelle",
+  "level": 4,
+  "school": "Invocation",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "150 m",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu te téléportes à un endroit visible ou décrit à portée, avec un passager consentant éventuel. Si la destination est occupée, vous subissez 4d6 dégâts de force et le sort échoue."
+ },
+ {
+  "name": "Protection contre la mort",
+  "level": 4,
+  "school": "Abjuration",
+  "classes": [
+   "Clerc",
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S",
+  "duration": "8 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "La première fois que la cible devrait tomber à 0 PV, elle reste à 1 PV et le sort prend fin. Annule aussi un effet qui la tuerait instantanément sans infliger de dégâts."
+ },
+ {
+  "name": "Sanctuaire privé de Mordenkainen",
+  "level": 4,
+  "school": "Abjuration",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "10 minutes",
+  "range": "36 m",
+  "components": "V, S, M",
+  "duration": "24 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Protège une zone (cube jusqu'à 30 m) au choix : sons bloqués, opacité, divination impossible, téléportation et voyage planaire bloqués. Plus grand aux niveaux supérieurs ; permanent si lancé un an au même endroit."
+ },
+ {
+  "name": "Sphère résiliente d'Otiluke",
+  "level": 4,
+  "school": "Évocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Jet de Dextérité (si non consentante) ou une sphère de force indestructible enferme une créature ou un objet de taille Grande ou moins. Rien ne la traverse ; l'occupant peut la faire rouler. Désintégration la détruit."
+ },
+ {
+  "name": "Tempête de grêle",
+  "level": 4,
+  "school": "Évocation",
+  "classes": [
+   "Druide",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "90 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Cylindre de 6 m de rayon : jet de Dextérité, 2d8 contondants + 4d6 froid (moitié si réussi). Le sol devient terrain difficile jusqu'à ton prochain tour. +1d8 contondants par niveau au-delà du 4e."
+ },
+ {
+  "name": "Tentacules noirs d'Evard",
+  "level": 4,
+  "school": "Invocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "27 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un carré de 6 m devient terrain difficile. Toute créature qui y entre ou y commence son tour fait un jet de Dextérité ou subit 3d6 dégâts contondants et est entravée (3d6 de plus à chaque tour)."
+ },
+ {
+  "name": "Terrain hallucinatoire",
+  "level": 4,
+  "school": "Illusion",
+  "classes": [
+   "Barde",
+   "Druide",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "10 minutes",
+  "range": "90 m",
+  "components": "V, S, M",
+  "duration": "24 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Dans un cube de 45 m, le terrain naturel paraît, sonne et sent comme un autre type de terrain. Les structures et créatures ne sont pas modifiées ; un test d'Intelligence (Investigation) permet de déceler l'illusion."
+ },
+ {
+  "name": "Œil magique",
+  "level": 4,
+  "school": "Divination",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un œil invisible flotte et te transmet ce qu'il voit, avec vision dans le noir sur 9 m. Par une action, tu le déplaces de 9 m ; il ne traverse pas les obstacles solides."
+ },
+ {
+  "name": "Animation des objets",
+  "level": 5,
+  "school": "Transmutation",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Jusqu'à dix petits objets non portés s'animent et t'obéissent ; les objets plus gros comptent pour plusieurs. Une action bonus leur donne des ordres. +2 objets par niveau d'emplacement au-delà du 5e."
+ },
+ {
+  "name": "Apparence trompeuse",
+  "level": 5,
+  "school": "Illusion",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S",
+  "duration": "8 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu modifies l'apparence (corps, vêtements, équipement) d'autant de créatures visibles que tu veux. Une cible non consentante fait un JS de Charisme. Un test d'Intelligence (Investigation) perce l'illusion."
+ },
+ {
+  "name": "Carquois magique",
+  "level": 5,
+  "school": "Transmutation",
+  "classes": [
+   "Rôdeur"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ton carquois fournit des munitions infinies. À chacun de tes tours, tu peux faire deux attaques avec une arme à distance par une action bonus."
+ },
+ {
+  "name": "Cercle de pouvoir",
+  "level": 5,
+  "school": "Abjuration",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (rayon de 9 m)",
+  "components": "V",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Toi et tes alliés dans un rayon de 9 m avez l'avantage aux JS contre les sorts et effets magiques. Un JS réussi contre un effet qui inflige la moitié des dégâts n'en inflige aucun."
+ },
+ {
+  "name": "Cercle de téléportation",
+  "level": 5,
+  "school": "Invocation",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 minute",
+  "range": "3 m",
+  "components": "V, M",
+  "duration": "1 round",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu traces un cercle qui ouvre un portail vers un cercle de téléportation permanent dont tu connais la séquence de symboles, sur le même plan. Tu peux créer un cercle permanent en lançant le sort au même endroit chaque jour pendant un an."
+ },
+ {
+  "name": "Coercition mystique",
+  "level": 5,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide",
+   "Magicien",
+   "Paladin"
+  ],
+  "casting_time": "1 minute",
+  "range": "18 m",
+  "components": "V",
+  "duration": "30 jours",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature qui rate un JS de Sagesse doit accomplir une tâche que tu lui imposes. Chaque jour où elle s'y oppose, elle subit 5d10 dégâts psychiques. Durée prolongée aux emplacements 7 (1 an) et 9 (permanent)."
+ },
+ {
+  "name": "Colonne de flamme",
+  "level": 5,
+  "school": "Évocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un cylindre de feu divin de 3 m de rayon et 12 m de haut : JS de Dextérité, 4d6 dégâts de feu + 4d6 dégâts radiants (moitié si réussi). +1d6 (feu ou radiant) par niveau au-delà du 5e."
+ },
+ {
+  "name": "Communion",
+  "level": 5,
+  "school": "Divination",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 minute",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "1 minute",
+  "concentration": false,
+  "ritual": true,
+  "description": "Tu contactes ta divinité ou un intermédiaire et poses jusqu'à trois questions fermées (oui/non). Lancé plusieurs fois avant un repos long, chaque nouvelle tentative risque de rester sans réponse."
+ },
+ {
+  "name": "Communion avec la nature",
+  "level": 5,
+  "school": "Divination",
+  "classes": [
+   "Druide",
+   "Rôdeur"
+  ],
+  "casting_time": "1 minute",
+  "range": "Personnelle",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": true,
+  "description": "Tu obtiens des connaissances sur le terrain environnant (5 km en extérieur, 90 m sous terre) : jusqu'à trois faits parmi relief, eaux, plantes, animaux, créatures puissantes, influences planaires ou constructions."
+ },
+ {
+  "name": "Contacter un autre plan",
+  "level": 5,
+  "school": "Divination",
+  "classes": [
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 minute",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "1 minute",
+  "concentration": false,
+  "ritual": true,
+  "description": "Tu interroges une entité d'un autre plan (jusqu'à cinq questions). JS d'Intelligence DD 15 : en cas d'échec, 6d6 dégâts psychiques et folie jusqu'au prochain repos long."
+ },
+ {
+  "name": "Contagion",
+  "level": 5,
+  "school": "Nécromancie",
+  "classes": [
+   "Clerc",
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S",
+  "duration": "7 jours",
+  "concentration": false,
+  "ritual": false,
+  "description": "Attaque de sort au corps à corps : la cible est empoisonnée. Après trois JS de Constitution ratés, elle contracte pour 7 jours une maladie de ton choix (aveuglement, mal pourrissant, fièvre, etc.) ; trois réussites la guérissent."
+ },
+ {
+  "name": "Coquille antivie",
+  "level": 5,
+  "school": "Abjuration",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (rayon de 3 m)",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une barrière de 3 m de rayon se déplace avec toi et empêche toutes les créatures sauf les morts-vivants et les créatures artificielles d'y entrer ou d'y passer quoi que ce soit."
+ },
+ {
+  "name": "Création",
+  "level": 5,
+  "school": "Illusion",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 minute",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "Spéciale",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu crées un objet non vivant de matière végétale ou minérale (cube de 1,50 m max). Sa durée dépend du matériau (de 1 jour pour le bois à 1 minute pour les gemmes). Cube plus grand de 1,50 m par niveau au-delà du 5e."
+ },
+ {
+  "name": "Cône de froid",
+  "level": 5,
+  "school": "Évocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (cône de 18 m)",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un souffle glacé dans un cône de 18 m : JS de Constitution, 8d8 dégâts de froid (moitié si réussi). Une créature tuée devient une statue gelée. +1d8 par niveau au-delà du 5e."
+ },
+ {
+  "name": "Dissipation du mal et du bien",
+  "level": 5,
+  "school": "Abjuration",
+  "classes": [
+   "Clerc",
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Les célestes, élémentaires, fées, fiélons et morts-vivants ont le désavantage pour t'attaquer. Tu peux mettre fin au sort pour rompre un charme ou une possession par contact, ou pour renvoyer une telle créature sur son plan (JS de Charisme)."
+ },
+ {
+  "name": "Dominer un humanoïde",
+  "level": 5,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un humanoïde qui rate un JS de Sagesse est charmé et obéit à tes ordres télépathiques ; tu peux contrôler précisément ses actions. Nouveau JS à chaque dégât subi. Durée accrue aux emplacements 6 (10 min), 7 (1 h) et 8 (8 h)."
+ },
+ {
+  "name": "Entrave planaire",
+  "level": 5,
+  "school": "Abjuration",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "1 heure",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "24 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature céleste, élémentaire, féerique ou fiélon qui rate un JS de Charisme doit te servir pendant la durée. Durée accrue aux emplacements 6 (10 jours), 7 (30 jours), 8 (180 jours) et 9 (1 an et 1 jour)."
+ },
+ {
+  "name": "Fléau d'insectes",
+  "level": 5,
+  "school": "Invocation",
+  "classes": [
+   "Clerc",
+   "Druide",
+   "Ensorceleur"
+  ],
+  "casting_time": "1 action",
+  "range": "90 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une nuée de sauterelles remplit une sphère de 6 m de rayon (terrain difficile, visibilité réduite) : JS de Constitution, 4d10 dégâts perforants (moitié si réussi). +1d10 par niveau au-delà du 5e."
+ },
+ {
+  "name": "Frappe du bannissement",
+  "level": 5,
+  "school": "Abjuration",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Ta prochaine attaque armée qui touche inflige 5d10 dégâts de force supplémentaires. Si la cible tombe à 50 PV ou moins, elle est bannie sur son plan d'origine (ou un demi-plan si elle est native) jusqu'à la fin du sort."
+ },
+ {
+  "name": "Immobiliser un monstre",
+  "level": 5,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "27 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une créature (pas un mort-vivant) qui rate un JS de Sagesse est paralysée ; elle refait le JS à la fin de chacun de ses tours. +1 cible par niveau au-delà du 5e."
+ },
+ {
+  "name": "Invoquer un élémentaire",
+  "level": 5,
+  "school": "Invocation",
+  "classes": [
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "1 minute",
+  "range": "27 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu invoques un élémentaire de FP 5 maximum, amical, qui obéit à tes ordres. Si ta concentration est rompue, il devient hostile. FP +1 par niveau au-delà du 5e."
+ },
+ {
+  "name": "Invoquer une volée de projectiles",
+  "level": 5,
+  "school": "Invocation",
+  "classes": [
+   "Rôdeur"
+  ],
+  "casting_time": "1 action",
+  "range": "45 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Des projectiles s'abattent dans un cylindre de 12 m de rayon et 6 m de haut : JS de Dextérité, dégâts de l'arme utilisée (8d8 au lieu de son dé, moitié si réussi)."
+ },
+ {
+  "name": "Lien télépathique de Rary",
+  "level": 5,
+  "school": "Divination",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": true,
+  "description": "Tu relies télépathiquement jusqu'à huit créatures consentantes, qui peuvent communiquer entre elles quelle que soit leur langue et à n'importe quelle distance sur le même plan."
+ },
+ {
+  "name": "Légende",
+  "level": 5,
+  "school": "Divination",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Magicien"
+  ],
+  "casting_time": "10 minutes",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu nommes ou décris une personne, un lieu ou un objet important et obtiens un résumé de son histoire et de ses légendes. Plus tu en sais déjà, plus l'information est précise."
+ },
+ {
+  "name": "Main de Bigby",
+  "level": 5,
+  "school": "Évocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une grande main de force (PV = tes PV max) agit sur ton action bonus : poing (4d8 dégâts de force), pousser, agripper (2d6+mod contondants par tour) ou s'interposer. +2d8 au poing et +2d6 à l'étreinte par niveau au-delà du 5e."
+ },
+ {
+  "name": "Modification de mémoire",
+  "level": 5,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une créature qui rate un JS de Sagesse est charmée ; tu peux effacer ou modifier ses souvenirs des dernières 24 heures (10 minutes max). Remonte plus loin aux emplacements 6 (7 jours), 7 (30 jours), 8 (1 an) et 9 (tout)."
+ },
+ {
+  "name": "Mur de force",
+  "level": 5,
+  "school": "Évocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un mur invisible de force (dôme, sphère ou dix panneaux de 3 m) bloque physiquement tout ce qui le traverse, y compris sur le plan éthéré. Il est immunisé contre tous les dégâts ; seul désintégration le détruit."
+ },
+ {
+  "name": "Mur de pierre",
+  "level": 5,
+  "school": "Évocation",
+  "classes": [
+   "Druide",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu crées un mur de pierre (dix panneaux de 3 m x 3 m, 15 cm d'épaisseur). Les créatures prises dedans font un JS de Dextérité pour s'écarter. Après 10 minutes de concentration, il devient permanent."
+ },
+ {
+  "name": "Nuage mortel",
+  "level": 5,
+  "school": "Invocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une sphère de brouillard empoisonné de 6 m de rayon s'éloigne de toi de 3 m par tour : JS de Constitution, 5d8 dégâts de poison (moitié si réussi). +1d8 par niveau au-delà du 5e."
+ },
+ {
+  "name": "Passage par les arbres",
+  "level": 5,
+  "school": "Invocation",
+  "classes": [
+   "Druide",
+   "Rôdeur"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une fois par tour, tu peux entrer dans un arbre vivant et ressortir d'un arbre de même espèce situé à 150 m ou moins, pour 1,50 m de déplacement."
+ },
+ {
+  "name": "Passe-muraille",
+  "level": 5,
+  "school": "Transmutation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un passage de 1,50 m de large, 2,40 m de haut et 6 m de profondeur s'ouvre dans un mur de bois, de plâtre ou de pierre. À la fin du sort, les créatures dedans sont expulsées sans danger."
+ },
+ {
+  "name": "Relever les morts",
+  "level": 5,
+  "school": "Nécromancie",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Paladin"
+  ],
+  "casting_time": "1 heure",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Ramène à la vie une créature morte depuis 10 jours ou moins, avec 1 PV. Elle subit un malus de -4 à ses jets, réduit de 1 à chaque repos long. Ne restaure pas les parties du corps manquantes."
+ },
+ {
+  "name": "Restauration supérieure",
+  "level": 5,
+  "school": "Abjuration",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu supprimes un effet affaiblissant : un niveau d'épuisement, un charme, une pétrification, une malédiction, une réduction de caractéristique ou de PV maximum."
+ },
+ {
+  "name": "Réincarnation",
+  "level": 5,
+  "school": "Transmutation",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 heure",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un humanoïde mort depuis 10 jours ou moins revient à la vie dans un nouveau corps dont la race est tirée au hasard sur une table ; il conserve ses souvenirs et ses capacités."
+ },
+ {
+  "name": "Rêve",
+  "level": 5,
+  "school": "Illusion",
+  "classes": [
+   "Barde",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 minute",
+  "range": "Spéciale",
+  "components": "V, S, M",
+  "duration": "8 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu entres en contact par le rêve avec une créature connue sur le même plan. Tu peux lui parler ou lui envoyer un cauchemar (JS de Sagesse : pas de repos et 3d6 dégâts psychiques au réveil)."
+ },
+ {
+  "name": "Sanctification",
+  "level": 5,
+  "school": "Évocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "24 heures",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Jusqu'à dissipation",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une zone de 18 m de rayon est consacrée : les célestes, élémentaires, fées, fiélons et morts-vivants ne peuvent y entrer, et tu y ajoutes un effet au choix (courage, ténèbres, lumière, protection contre l'énergie, etc.)."
+ },
+ {
+  "name": "Scrutation",
+  "level": 5,
+  "school": "Divination",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "10 minutes",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu observes à distance une créature du même plan via un capteur invisible ; elle fait un JS de Sagesse modifié par ta connaissance d'elle. Tu peux aussi viser un lieu que tu connais."
+ },
+ {
+  "name": "Soin des blessures de groupe",
+  "level": 5,
+  "school": "Évocation",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Jusqu'à six créatures dans une sphère de 9 m de rayon récupèrent chacune 3d8 + ton modificateur de caractéristique d'incantation en PV. +1d8 par niveau au-delà du 5e."
+ },
+ {
+  "name": "Tromperie",
+  "level": 5,
+  "school": "Illusion",
+  "classes": [
+   "Barde",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "S",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu deviens invisible pendant qu'un double illusoire apparaît à ta place. Tu peux déplacer le double, voir et entendre par ses sens. L'invisibilité cesse si tu attaques ou lances un sort."
+ },
+ {
+  "name": "Télékinésie",
+  "level": 5,
+  "school": "Transmutation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Par ton action, tu déplaces une créature (test opposé avec ta caractéristique d'incantation contre sa Force) ou un objet de 500 kg max, jusqu'à 9 m, et tu peux la maintenir entravée."
+ },
+ {
+  "name": "Vague destructrice",
+  "level": 5,
+  "school": "Évocation",
+  "classes": [
+   "Paladin"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (rayon de 9 m)",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Les créatures de ton choix à 9 m font un JS de Constitution : 5d6 dégâts de tonnerre + 5d6 radiants ou nécrotiques et à terre en cas d'échec (moitié des dégâts sinon)."
+ },
+ {
+  "name": "Éveil",
+  "level": 5,
+  "school": "Transmutation",
+  "classes": [
+   "Barde",
+   "Druide"
+  ],
+  "casting_time": "8 heures",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une bête ou une plante dont l'Intelligence est de 3 ou moins gagne une Intelligence de 10 et parle une langue que tu connais. Elle est charmée par toi pendant 30 jours."
+ },
+ {
+  "name": "Allié planaire",
+  "level": 6,
+  "school": "Invocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "10 minutes",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu demandes l'aide d'une entité d'un autre plan, qui envoie un céleste, un élémentaire ou un fiélon. Il accomplit une tâche en échange d'un paiement négocié."
+ },
+ {
+  "name": "Barrière de lames",
+  "level": 6,
+  "school": "Évocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action",
+  "range": "27 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un mur de lames tourbillonnantes (30 m de long ou anneau de 18 m) procure un abri aux trois quarts et constitue un terrain difficile. Le traverser : JS de Dextérité, 6d10 dégâts tranchants (moitié si réussi)."
+ },
+ {
+  "name": "Cercle de mort",
+  "level": 6,
+  "school": "Nécromancie",
+  "classes": [
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "45 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une sphère d'énergie négative de 18 m de rayon : JS de Constitution, 8d6 dégâts nécrotiques (moitié si réussi). +2d6 par niveau au-delà du 6e."
+ },
+ {
+  "name": "Chaîne d'éclairs",
+  "level": 6,
+  "school": "Évocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "45 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un éclair frappe une cible puis rebondit sur jusqu'à trois autres à 9 m : JS de Dextérité, 10d8 dégâts de foudre (moitié si réussi). +1 rebond par niveau au-delà du 6e."
+ },
+ {
+  "name": "Contamination",
+  "level": 6,
+  "school": "Nécromancie",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature fait un JS de Constitution : 14d6 dégâts nécrotiques (moitié si réussi) et son maximum de PV baisse d'autant pendant 1 heure. Ce sort ne peut pas réduire ses PV max sous 1."
+ },
+ {
+  "name": "Contingence",
+  "level": 6,
+  "school": "Évocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "10 minutes",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "10 jours",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu associes un sort de niveau 5 ou moins (1 action, pouvant te cibler) à une condition déclencheuse : il se lance automatiquement sur toi quand elle se produit. Une seule contingence active à la fois."
+ },
+ {
+  "name": "Convocations instantanées de Drawmij",
+  "level": 6,
+  "school": "Invocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 minute",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Jusqu'à dissipation",
+  "concentration": false,
+  "ritual": true,
+  "description": "Tu marques un objet de 5 kg max avec un saphir. En écrasant le saphir par une action, l'objet apparaît instantanément dans ta main, où qu'il soit sur ton plan."
+ },
+ {
+  "name": "Création de mort-vivant",
+  "level": 6,
+  "school": "Nécromancie",
+  "classes": [
+   "Clerc",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 minute",
+  "range": "3 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "De nuit, tu animes jusqu'à trois cadavres d'humanoïdes en goules, que tu contrôles 24 heures. Plus de créatures et des types plus puissants (blêmes, momies) aux emplacements 7, 8 et 9."
+ },
+ {
+  "name": "Danse irrésistible d'Otto",
+  "level": 6,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une créature se met à danser sans JS initial : elle dépense tout son mouvement, a le désavantage aux jets d'attaque et aux JS de Dextérité, et les autres ont l'avantage contre elle. JS de Sagesse par action pour s'en libérer."
+ },
+ {
+  "name": "Déplacer la terre",
+  "level": 6,
+  "school": "Transmutation",
+  "classes": [
+   "Druide",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 2 heures",
+  "concentration": true,
+  "ritual": false,
+  "description": "Toutes les 10 minutes, tu remodèles le terrain (terre, sable, argile) dans une zone de 12 m de côté : creuser, élever, aplanir. Ne peut pas manipuler la pierre naturelle."
+ },
+ {
+  "name": "Désintégration",
+  "level": 6,
+  "school": "Transmutation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un rayon vert : JS de Dextérité ou 10d6+40 dégâts de force. Une créature réduite à 0 PV est réduite en poussière. Détruit aussi un mur de force ou un objet non magique. +3d6 par niveau au-delà du 6e."
+ },
+ {
+  "name": "Festin des héros",
+  "level": 6,
+  "school": "Invocation",
+  "classes": [
+   "Clerc",
+   "Druide"
+  ],
+  "casting_time": "10 minutes",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un banquet pour 12 convives : après 1 heure de repas, ils sont guéris des maladies et du poison, immunisés contre le poison et la peur, ont l'avantage aux JS de Sagesse et +2d10 PV max pendant 24 heures."
+ },
+ {
+  "name": "Globe d'invulnérabilité",
+  "level": 6,
+  "school": "Abjuration",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (rayon de 3 m)",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une barrière de 3 m de rayon bloque les sorts de niveau 5 ou moins lancés de l'extérieur. +1 niveau de sort bloqué par niveau d'emplacement au-delà du 6e."
+ },
+ {
+  "name": "Guérison",
+  "level": 6,
+  "school": "Évocation",
+  "classes": [
+   "Clerc",
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature récupère 70 PV et est guérie de l'aveuglement, de la surdité et des maladies. +10 PV par niveau au-delà du 6e."
+ },
+ {
+  "name": "Illusion programmée",
+  "level": 6,
+  "school": "Illusion",
+  "classes": [
+   "Barde",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à dissipation",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu crées une illusion visuelle et sonore qui se déclenche quand une condition que tu fixes est remplie, joue sa scène pendant 5 minutes, puis se réinitialise."
+ },
+ {
+  "name": "Interdiction",
+  "level": 6,
+  "school": "Abjuration",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "10 minutes",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "1 jour",
+  "concentration": false,
+  "ritual": true,
+  "description": "Une zone jusqu'à 3 700 m² empêche la téléportation et les voyages planaires, et inflige 5d10 dégâts radiants ou nécrotiques aux types de créatures choisis qui y entrent ou y commencent leur tour."
+ },
+ {
+  "name": "Invoquer une fée",
+  "level": 6,
+  "school": "Invocation",
+  "classes": [
+   "Druide",
+   "Occultiste"
+  ],
+  "casting_time": "1 minute",
+  "range": "27 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu invoques une fée de FP 6 maximum, ou un esprit féerique à forme de bête, qui t'obéit. Si ta concentration est rompue, elle devient hostile. FP +1 par niveau au-delà du 6e."
+ },
+ {
+  "name": "Marche sur le vent",
+  "level": 6,
+  "school": "Transmutation",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 minute",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "8 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Toi et jusqu'à dix créatures consentantes prenez une forme gazeuse et volez à 90 m de vitesse. Reprendre forme solide (ou l'inverse) prend 1 minute."
+ },
+ {
+  "name": "Mauvais œil",
+  "level": 6,
+  "school": "Nécromancie",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Chaque tour, par une action, tu vises une créature à 18 m qui fait un JS de Sagesse ou subit un effet au choix : sommeil, panique (effrayée et fuit) ou nausée (désavantage aux attaques et tests)."
+ },
+ {
+  "name": "Mot de retour",
+  "level": 6,
+  "school": "Invocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action",
+  "range": "1,50 m",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Toi et jusqu'à cinq créatures consentantes êtes téléportés vers un sanctuaire que tu as préalablement désigné dans un temple de ta divinité."
+ },
+ {
+  "name": "Mur d'épines",
+  "level": 6,
+  "school": "Invocation",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un mur de ronces (18 m de long ou anneau) bloque la vue. Y entrer : JS de Dextérité, 7d8 dégâts perforants (moitié si réussi) ; terrain très difficile. +1d8 par niveau au-delà du 6e."
+ },
+ {
+  "name": "Mur de glace",
+  "level": 6,
+  "school": "Évocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un mur ou dôme de glace apparaît ; les créatures prises dedans font un JS de Dextérité, 10d6 dégâts de froid (moitié si réussi). Traverser une section brisée inflige 5d6 dégâts de froid. +2d6/+1d6 par niveau au-delà du 6e."
+ },
+ {
+  "name": "Portail magique",
+  "level": 6,
+  "school": "Invocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "150 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu relies deux points visibles à 150 m par des portails : tout ce qui entre par l'un ressort par l'autre. Une action bonus tourne les portails."
+ },
+ {
+  "name": "Possession",
+  "level": 6,
+  "school": "Nécromancie",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 minute",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "Jusqu'à dissipation",
+  "concentration": false,
+  "ritual": false,
+  "description": "Ton âme entre dans un réceptacle, d'où tu peux posséder un humanoïde à 30 m (JS de Charisme), dont tu prends le contrôle du corps en gardant tes caractéristiques mentales."
+ },
+ {
+  "name": "Protections et sceaux",
+  "level": 6,
+  "school": "Abjuration",
+  "classes": [
+   "Barde",
+   "Magicien"
+  ],
+  "casting_time": "10 minutes",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "24 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu protèges un bâtiment (jusqu'à 230 m²) : couloirs embrumés, portes verrouillées et masquées, escaliers couverts de toiles, et des effets magiques au choix contre les intrus."
+ },
+ {
+  "name": "Pétrification",
+  "level": 6,
+  "school": "Transmutation",
+  "classes": [
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une créature qui rate un JS de Constitution est entravée. Elle refait le JS chaque tour : trois échecs la changent en pierre (pétrifiée), trois réussites la libèrent."
+ },
+ {
+  "name": "Rayon de soleil",
+  "level": 6,
+  "school": "Évocation",
+  "classes": [
+   "Druide",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (ligne de 18 m)",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un rayon de lumière sur une ligne de 18 m : JS de Constitution, 6d8 dégâts radiants et aveuglé jusqu'à ton prochain tour (moitié et pas aveuglé si réussi). Tu peux recommencer par une action chaque tour."
+ },
+ {
+  "name": "Sphère glacée d'Otiluke",
+  "level": 6,
+  "school": "Évocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "90 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un globe explose en une sphère de 18 m de rayon : JS de Constitution, 10d6 dégâts de froid (moitié si réussi). Peut geler l'eau ou être gardé pour être lancé plus tard. +1d6 par niveau au-delà du 6e."
+ },
+ {
+  "name": "Suggestion de groupe",
+  "level": 6,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, M",
+  "duration": "24 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Jusqu'à douze créatures qui ratent un JS de Sagesse suivent une suggestion raisonnable que tu formules. Durée accrue aux emplacements 7 (10 jours), 8 (30 jours) et 9 (1 an et 1 jour)."
+ },
+ {
+  "name": "Transport végétal",
+  "level": 6,
+  "school": "Invocation",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "3 m",
+  "components": "V, S",
+  "duration": "1 round",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu relies une grande plante proche à une autre plante de taille Grande ou plus, connue, sur le même plan. Toute créature peut passer de l'une à l'autre pendant ce round."
+ },
+ {
+  "name": "Trouver un chemin",
+  "level": 6,
+  "school": "Divination",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide"
+  ],
+  "casting_time": "1 minute",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 jour",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu connais le chemin physique le plus court et le plus direct vers un lieu fixe que tu connais, sur le même plan."
+ },
+ {
+  "name": "Vision suprême",
+  "level": 6,
+  "school": "Divination",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": false,
+  "description": "La créature touchée bénéficie de vision véritable sur 36 m : elle voit dans les ténèbres magiques, les créatures invisibles, perce les illusions et voit dans le plan éthéré."
+ },
+ {
+  "name": "Boule de feu à explosion retardée",
+  "level": 7,
+  "school": "Évocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "45 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une bille luisante explose à la fin du sort : JS de Dextérité, 12d6 dégâts de feu (moitié si réussi) dans un rayon de 6 m, +1d6 par tour d'attente. +1d6 par niveau au-delà du 7e."
+ },
+ {
+  "name": "Cage de force",
+  "level": 7,
+  "school": "Évocation",
+  "classes": [
+   "Barde",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "30 m",
+  "components": "V, S, M",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une prison invisible de force (cage ou boîte) enferme une zone. Les créatures ne peuvent en sortir que par magie et après un JS de Charisme. Ne peut pas être dissipée."
+ },
+ {
+  "name": "Changement de plan",
+  "level": 7,
+  "school": "Invocation",
+  "classes": [
+   "Clerc",
+   "Druide",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Toi et jusqu'à huit créatures voyagez vers un autre plan d'existence. Tu peux aussi bannir une créature touchée (attaque au corps à corps, JS de Charisme) vers un plan au choix."
+ },
+ {
+  "name": "Doigt de mort",
+  "level": 7,
+  "school": "Nécromancie",
+  "classes": [
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "JS de Constitution : 7d8+30 dégâts nécrotiques (moitié si réussi). Un humanoïde tué se relève en zombi sous ton contrôle permanent."
+ },
+ {
+  "name": "Embruns prismatiques",
+  "level": 7,
+  "school": "Évocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (cône de 18 m)",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Huit rayons colorés dans un cône de 18 m : chaque créature fait un JS de Dextérité et subit au hasard 10d6 dégâts (feu, acide, foudre, poison, froid), pétrification, cécité ou bannissement."
+ },
+ {
+  "name": "Forme éthérée",
+  "level": 7,
+  "school": "Transmutation",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S",
+  "duration": "Jusqu'à 8 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu passes dans le plan éthéré limitrophe, où tu te déplaces en voyant le plan matériel en gris. +3 créatures consentantes par niveau au-delà du 7e."
+ },
+ {
+  "name": "Image projetée",
+  "level": 7,
+  "school": "Illusion",
+  "classes": [
+   "Barde",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "750 km",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 jour",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu crées un double illusoire de toi en un lieu déjà vu. Tu vois, entends et parles par lui et peux le déplacer. Un contact physique révèle qu'il est illusoire."
+ },
+ {
+  "name": "Inversion de la gravité",
+  "level": 7,
+  "school": "Transmutation",
+  "classes": [
+   "Druide",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "30 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Dans un cylindre de 15 m de rayon et 30 m de haut, la gravité s'inverse : tout ce qui n'est pas ancré tombe vers le haut. JS de Dextérité pour s'agripper."
+ },
+ {
+  "name": "Invoquer un céleste",
+  "level": 7,
+  "school": "Invocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 minute",
+  "range": "27 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu invoques un céleste de FP 4 maximum, amical, qui obéit à tes ordres. FP 5 avec un emplacement de niveau 9."
+ },
+ {
+  "name": "Manoir somptueux de Mordenkainen",
+  "level": 7,
+  "school": "Invocation",
+  "classes": [
+   "Barde",
+   "Magicien"
+  ],
+  "casting_time": "1 minute",
+  "range": "90 m",
+  "components": "V, S, M",
+  "duration": "24 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu crées une porte vers une demeure extradimensionnelle meublée de 50 cubes de 3 m, avec 100 serviteurs et un festin pour 100 personnes."
+ },
+ {
+  "name": "Mirage",
+  "level": 7,
+  "school": "Illusion",
+  "classes": [
+   "Barde",
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "10 minutes",
+  "range": "Vision",
+  "components": "V, S",
+  "duration": "10 jours",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un terrain de 2,5 km² prend l'apparence, le son et la texture d'un autre terrain, y compris des structures. Seule la vision véritable révèle l'illusion."
+ },
+ {
+  "name": "Parole divine",
+  "level": 7,
+  "school": "Évocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action bonus",
+  "range": "9 m",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Les créatures choisies à 9 m qui t'entendent font un JS de Charisme. Selon leurs PV : sourdes (50 ou moins), aveuglées et sourdes (40), étourdies aussi (30) ou tuées (20 ou moins). Bannit aussi les extraplanaires."
+ },
+ {
+  "name": "Régénération",
+  "level": 7,
+  "school": "Transmutation",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Druide"
+  ],
+  "casting_time": "1 minute",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": false,
+  "description": "La cible récupère 4d8+15 PV puis 1 PV par round pendant la durée. Ses membres amputés repoussent en 2 minutes."
+ },
+ {
+  "name": "Résurrection",
+  "level": 7,
+  "school": "Nécromancie",
+  "classes": [
+   "Barde",
+   "Clerc"
+  ],
+  "casting_time": "1 heure",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Ramène à la vie avec tous ses PV une créature morte depuis 100 ans ou moins (pas de vieillesse). Régénère les membres manquants, mais impose un malus de -4 s'amenuisant à chaque repos long."
+ },
+ {
+  "name": "Simulacre",
+  "level": 7,
+  "school": "Illusion",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "12 heures",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Jusqu'à dissipation",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu crées un double fait de neige ou de glace d'une bête ou d'un humanoïde, avec la moitié de ses PV. Il t'obéit et ne peut pas progresser ; seul un simulacre peut exister à la fois."
+ },
+ {
+  "name": "Symbole",
+  "level": 7,
+  "school": "Abjuration",
+  "classes": [
+   "Barde",
+   "Clerc",
+   "Magicien"
+  ],
+  "casting_time": "1 minute",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Jusqu'à dissipation ou déclenchement",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu inscris un glyphe qui se déclenche selon une condition : effet au choix sur 18 m (mort 10d10, discorde, peur, désespoir, folie, douleur, sommeil, étourdissement) avec JS approprié."
+ },
+ {
+  "name": "Séquestration",
+  "level": 7,
+  "school": "Transmutation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Jusqu'à dissipation",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature ou un objet est rendu invisible et indétectable par la divination. Une créature est plongée en animation suspendue. Tu peux fixer une condition qui met fin au sort."
+ },
+ {
+  "name": "Tempête de feu",
+  "level": 7,
+  "school": "Évocation",
+  "classes": [
+   "Clerc",
+   "Druide",
+   "Ensorceleur"
+  ],
+  "casting_time": "1 action",
+  "range": "45 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Dix cubes de flammes de 3 m de côté : JS de Dextérité, 7d10 dégâts de feu (moitié si réussi). Tu peux épargner la végétation."
+ },
+ {
+  "name": "Téléportation",
+  "level": 7,
+  "school": "Invocation",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "3 m",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Toi et jusqu'à huit créatures (ou un objet) êtes transportés vers une destination sur le même plan. La précision dépend de ta familiarité avec le lieu (risque d'incident)."
+ },
+ {
+  "name": "Épée de Mordenkainen",
+  "level": 7,
+  "school": "Évocation",
+  "classes": [
+   "Barde",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une épée de force plane près de toi : attaque de sort au corps à corps, 3d10 dégâts de force. Une action bonus la déplace de 6 m et la fait attaquer de nouveau."
+ },
+ {
+  "name": "Aura sacrée",
+  "level": 8,
+  "school": "Abjuration",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Les créatures de ton choix à 9 m ont l'avantage à tous les JS et les attaquants sont désavantagés. Un fiélon ou mort-vivant qui les touche au corps à corps est aveuglé (JS de Constitution)."
+ },
+ {
+  "name": "Bagou",
+  "level": 8,
+  "school": "Transmutation",
+  "classes": [
+   "Barde",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": false,
+  "description": "Pour tes tests de Charisme, tu peux remplacer le résultat du dé par 15. La magie qui détecte le mensonge te considère toujours comme sincère."
+ },
+ {
+  "name": "Champ antimagie",
+  "level": 8,
+  "school": "Abjuration",
+  "classes": [
+   "Clerc",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle (sphère de 3 m)",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une sphère de 3 m de rayon centrée sur toi annule toute magie : sorts, objets magiques, créatures invoquées et téléportation n'y fonctionnent pas."
+ },
+ {
+  "name": "Clone",
+  "level": 8,
+  "school": "Nécromancie",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 heure",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu fais pousser un double inerte d'une créature vivante dans un récipient scellé. Il mûrit en 120 jours ; à la mort de l'original, son âme y transfère."
+ },
+ {
+  "name": "Contrôle du climat",
+  "level": 8,
+  "school": "Transmutation",
+  "classes": [
+   "Clerc",
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "10 minutes",
+  "range": "Personnelle (rayon de 7,5 km)",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 8 heures",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu modifies progressivement la météo (précipitations, température, vent) dans un rayon de 7,5 km. Les changements prennent 1d4 × 10 minutes à s'installer."
+ },
+ {
+  "name": "Demi-plan",
+  "level": 8,
+  "school": "Invocation",
+  "classes": [
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "S",
+  "duration": "1 heure",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu crées une porte sur une surface plate menant à une pièce vide extradimensionnelle de 9 m de côté. Tu peux retrouver le même demi-plan en relançant le sort."
+ },
+ {
+  "name": "Dominer un monstre",
+  "level": 8,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une créature qui rate un JS de Sagesse est charmée et obéit à tes ordres télépathiques. Nouveau JS à chaque dégât subi. Durée 8 heures avec un emplacement de niveau 9."
+ },
+ {
+  "name": "Esprit faible",
+  "level": 8,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Druide",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "45 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "4d6 dégâts psychiques ; si la cible rate un JS d'Intelligence, son Intelligence et son Charisme tombent à 1 : plus de sorts ni de communication intelligible. Nouveau JS tous les 30 jours."
+ },
+ {
+  "name": "Esprit impénétrable",
+  "level": 8,
+  "school": "Abjuration",
+  "classes": [
+   "Barde",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S",
+  "duration": "24 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature est immunisée contre les dégâts psychiques, la lecture des pensées, la divination et l'état charmé pendant 24 heures."
+ },
+ {
+  "name": "Formes animales",
+  "level": 8,
+  "school": "Transmutation",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 24 heures",
+  "concentration": true,
+  "ritual": false,
+  "description": "Autant de créatures consentantes que tu veux se transforment en bêtes de FP 4 maximum, de taille Grande ou moins. Tu peux changer leur forme par une action."
+ },
+ {
+  "name": "Labyrinthe",
+  "level": 8,
+  "school": "Invocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 10 minutes",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu bannis une créature dans un demi-plan labyrinthique. Elle peut s'en échapper avec un test d'Intelligence DD 20 par action."
+ },
+ {
+  "name": "Mot de pouvoir étourdissant",
+  "level": 8,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature à 150 PV ou moins est étourdie. Elle refait un JS de Constitution à la fin de chacun de ses tours pour se libérer."
+ },
+ {
+  "name": "Nuage incendiaire",
+  "level": 8,
+  "school": "Invocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "45 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un nuage de braises de 6 m de rayon se déplace de 3 m par tour : JS de Dextérité, 10d8 dégâts de feu (moitié si réussi) en y entrant ou en y finissant son tour."
+ },
+ {
+  "name": "Répulsion/attirance",
+  "level": 8,
+  "school": "Enchantement",
+  "classes": [
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "1 heure",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "10 jours",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une cible (zone ou objet) repousse ou attire un type de créature que tu désignes. JS de Sagesse pour résister ; effrayée ou attirée sinon."
+ },
+ {
+  "name": "Tremblement de terre",
+  "level": 8,
+  "school": "Évocation",
+  "classes": [
+   "Clerc",
+   "Druide",
+   "Ensorceleur"
+  ],
+  "casting_time": "1 action",
+  "range": "150 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un séisme de 30 m de rayon : JS de Dextérité pour ne pas tomber à terre, la concentration est perturbée, des fissures s'ouvrent et les bâtiments peuvent s'effondrer."
+ },
+ {
+  "name": "Tsunami",
+  "level": 8,
+  "school": "Invocation",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 minute",
+  "range": "Champ de vision",
+  "components": "V, S",
+  "duration": "Jusqu'à 6 rounds",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un mur d'eau de 90 m de long et 90 m de haut : JS de Force, 6d10 dégâts contondants (moitié si réussi). Il avance de 15 m par tour et perd en puissance."
+ },
+ {
+  "name": "Télépathie",
+  "level": 8,
+  "school": "Évocation",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Illimitée",
+  "components": "V, S, M",
+  "duration": "24 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu crées un lien télépathique avec une créature consentante familière, sur le même plan, pour échanger mots, images et sensations."
+ },
+ {
+  "name": "Éclat du soleil",
+  "level": 8,
+  "school": "Évocation",
+  "classes": [
+   "Druide",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "45 m",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Lumière solaire sur 18 m de rayon : JS de Constitution, 12d6 dégâts radiants et aveuglé 1 minute (moitié et pas aveuglé si réussi). Les morts-vivants et vases ont le désavantage."
+ },
+ {
+  "name": "Arrêt du temps",
+  "level": 9,
+  "school": "Transmutation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Le temps s'arrête pour tous sauf toi : tu joues 1d4+1 tours d'affilée. Le sort cesse si tu affectes une autre créature ou un objet porté."
+ },
+ {
+  "name": "Changement de forme",
+  "level": 9,
+  "school": "Transmutation",
+  "classes": [
+   "Druide",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu prends la forme d'une créature de FP inférieur ou égal à ton niveau, en gardant tes caractéristiques mentales. Tu peux changer de forme par une action."
+ },
+ {
+  "name": "Emprisonnement",
+  "level": 9,
+  "school": "Abjuration",
+  "classes": [
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 minute",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à dissipation",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature qui rate un JS de Sagesse est emprisonnée magiquement (enterrement, chaînage, prison, minimus ou sommeil). Tu fixes une condition qui la libère."
+ },
+ {
+  "name": "Guérison de groupe",
+  "level": 9,
+  "school": "Évocation",
+  "classes": [
+   "Clerc"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Tu répartis jusqu'à 700 PV entre des créatures visibles et les soignes de l'aveuglement, de la surdité et des maladies."
+ },
+ {
+  "name": "Mot de pouvoir guérisseur",
+  "level": 9,
+  "school": "Évocation",
+  "classes": [
+   "Barde"
+  ],
+  "casting_time": "1 action",
+  "range": "Contact",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature récupère tous ses PV et n'est plus charmée, effrayée, paralysée ni étourdie. Elle peut se relever par sa réaction."
+ },
+ {
+  "name": "Mot de pouvoir mortel",
+  "level": 9,
+  "school": "Enchantement",
+  "classes": [
+   "Barde",
+   "Ensorceleur",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Une créature à 100 PV ou moins meurt instantanément."
+ },
+ {
+  "name": "Mur prismatique",
+  "level": 9,
+  "school": "Abjuration",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S",
+  "duration": "10 minutes",
+  "concentration": false,
+  "ritual": false,
+  "description": "Un mur ou une sphère de sept couches colorées. Chaque couche traversée inflige un effet (dégâts de feu, acide, foudre, poison, froid, pétrification, cécité, bannissement) à éviter par JS de Dextérité."
+ },
+ {
+  "name": "Métamorphose suprême",
+  "level": 9,
+  "school": "Transmutation",
+  "classes": [
+   "Barde",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 action",
+  "range": "9 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 heure",
+  "concentration": true,
+  "ritual": false,
+  "description": "Une créature (JS de Sagesse) ou un objet devient une autre créature ou un objet. Si tu restes concentré la durée totale, la transformation devient permanente."
+ },
+ {
+  "name": "Nuée de météores",
+  "level": 9,
+  "school": "Évocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "1,5 km",
+  "components": "V, S",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Quatre météores frappent des points visibles : JS de Dextérité, 20d6 dégâts de feu + 20d6 contondants dans un rayon de 12 m (moitié si réussi)."
+ },
+ {
+  "name": "Portail",
+  "level": 9,
+  "school": "Invocation",
+  "classes": [
+   "Clerc",
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "18 m",
+  "components": "V, S, M",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Tu ouvres un portail vers un autre plan. Tu peux aussi nommer une créature précise pour l'attirer à travers le portail."
+ },
+ {
+  "name": "Projection astrale",
+  "level": 9,
+  "school": "Nécromancie",
+  "classes": [
+   "Clerc",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 heure",
+  "range": "3 m",
+  "components": "V, S, M",
+  "duration": "Spéciale",
+  "concentration": false,
+  "ritual": false,
+  "description": "Toi et jusqu'à huit créatures projetez votre forme astrale dans le plan astral, reliée à votre corps par un cordon d'argent. Couper le cordon tue la créature."
+ },
+ {
+  "name": "Prémonition",
+  "level": 9,
+  "school": "Divination",
+  "classes": [
+   "Barde",
+   "Druide",
+   "Magicien",
+   "Occultiste"
+  ],
+  "casting_time": "1 minute",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "8 heures",
+  "concentration": false,
+  "ritual": false,
+  "description": "La créature touchée a l'avantage aux jets d'attaque, tests de caractéristique et JS ; les autres ont le désavantage contre elle. Elle ne peut pas être surprise."
+ },
+ {
+  "name": "Résurrection suprême",
+  "level": 9,
+  "school": "Nécromancie",
+  "classes": [
+   "Clerc",
+   "Druide"
+  ],
+  "casting_time": "1 heure",
+  "range": "Contact",
+  "components": "V, S, M",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Ramène à la vie une créature morte depuis 200 ans ou moins, avec tous ses PV, sans séquelles, même si son corps a été détruit."
+ },
+ {
+  "name": "Souhait",
+  "level": 9,
+  "school": "Invocation",
+  "classes": [
+   "Ensorceleur",
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "Personnelle",
+  "components": "V",
+  "duration": "Instantanée",
+  "concentration": false,
+  "ritual": false,
+  "description": "Reproduis n'importe quel sort de niveau 8 ou moins sans composantes, ou formule un souhait plus large au risque d'effets imprévus et de perdre la capacité de lancer ce sort."
+ },
+ {
+  "name": "Tempête vengeresse",
+  "level": 9,
+  "school": "Invocation",
+  "classes": [
+   "Druide"
+  ],
+  "casting_time": "1 action",
+  "range": "Champ de vision",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Un nuage d'orage de 108 m de rayon : JS de Constitution, 2d6 dégâts de tonnerre et sourd, puis chaque tour un effet (pluie acide, éclairs, grêle, tempête glaciale)."
+ },
+ {
+  "name": "Étrangeté",
+  "level": 9,
+  "school": "Illusion",
+  "classes": [
+   "Magicien"
+  ],
+  "casting_time": "1 action",
+  "range": "36 m",
+  "components": "V, S",
+  "duration": "Jusqu'à 1 minute",
+  "concentration": true,
+  "ritual": false,
+  "description": "Les créatures dans une sphère de 9 m font un JS de Sagesse : effrayées et 4d10 dégâts psychiques par tour jusqu'à ce qu'elles réussissent le JS."
+ }
+]

@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { COINS, coinsInGold, type CoinKey } from '../../lib/rules';
 import { fonts, useTheme } from '../../lib/theme';
-import { Body, Button, Card, Label, Row, Title } from '../ui';
+import { Body, Button, Card, Field, Label, Row, Title, Toggle } from '../ui';
+import type { MagicItem } from '../../lib/types';
 import { parseInventory, serializeInventory, type Item } from '../../lib/inventory';
 import { Collapsible, TextArea, type SheetProps } from './common';
 
 export function BagTab({ ch, canInventory, patch }: SheetProps) {
+  const strength = ch.abilities.FOR;
   const t = useTheme();
   const [step, setStep] = useState('1');
   const n = Math.max(1, parseInt(step, 10) || 1);
@@ -76,8 +78,13 @@ export function BagTab({ ch, canInventory, patch }: SheetProps) {
         ))}
       </Card>
 
+      <MagicItems ch={ch} canEdit={canInventory} patch={patch} />
+
       <Card>
         <Title>Sac</Title>
+        <Body muted style={{ fontSize: 13 }}>
+          Tu peux porter jusqu'à {String(strength * 7.5).replace('.', ',')} kg (FOR × 7,5), et pousser ou tirer le double.
+        </Body>
         {carried.length === 0 && <Body muted>Le sac est vide.</Body>}
         {carried.map(({ item, index }) => (
           <ItemRow key={index} text={item.text} worn={false} canEdit={canInventory} onToggle={() => toggle(index)} onRemove={() => remove(index)} />
@@ -103,6 +110,93 @@ export function BagTab({ ch, canInventory, patch }: SheetProps) {
         )}
       </Card>
     </>
+  );
+}
+
+const EMPTY_MAGIC: MagicItem = { name: '', attuned: false, description: '' };
+
+/** Objets magiques, avec le lien (3 au maximum). */
+function MagicItems({ ch, canEdit, patch }: { ch: SheetProps['ch']; canEdit: boolean; patch: SheetProps['patch'] }) {
+  const t = useTheme();
+  const [editing, setEditing] = useState<number | null>(null);
+  const [draft, setDraft] = useState<MagicItem>(EMPTY_MAGIC);
+  const attuned = ch.magic_items.filter((m) => m.attuned).length;
+
+  async function save() {
+    if (editing === null) return;
+    const list = [...ch.magic_items];
+    list[editing] = { ...draft, name: draft.name.trim() || 'Objet magique' };
+    await patch({ magic_items: list });
+    setEditing(null);
+  }
+
+  return (
+    <Card>
+      <Row style={{ justifyContent: 'space-between' }}>
+        <Title>Objets magiques</Title>
+        <Body muted style={{ color: attuned > 3 ? t.bad : t.muted }}>Lien {attuned}/3</Body>
+      </Row>
+      {ch.magic_items.length === 0 && editing === null && <Body muted>Aucun objet magique pour l'instant.</Body>}
+      {ch.magic_items.map((m, i) => (
+        <View key={i} style={[styles.item, { borderColor: t.line, alignItems: 'flex-start' }]}>
+          <View style={{ flex: 1, gap: 2 }}>
+            <Text style={{ color: t.ink, fontSize: 16, fontWeight: '700' }}>
+              {m.name}
+              {m.attuned ? <Text style={{ color: t.brass }}>  · lié</Text> : null}
+            </Text>
+            {m.description ? <Text style={{ color: t.ink, fontSize: 15 }}>{m.description}</Text> : null}
+          </View>
+          {canEdit && editing === null && (
+            <Button
+              small
+              label="Modifier"
+              onPress={() => {
+                setDraft(m);
+                setEditing(i);
+              }}
+            />
+          )}
+        </View>
+      ))}
+      {canEdit && editing === null && (
+        <Button
+          small
+          label="Ajouter un objet magique"
+          onPress={() => {
+            setDraft(EMPTY_MAGIC);
+            setEditing(ch.magic_items.length);
+          }}
+        />
+      )}
+      {editing !== null && (
+        <View style={{ gap: 10, borderTopWidth: 1, borderColor: t.line, paddingTop: 12 }}>
+          <Field label="Nom" value={draft.name} onChangeText={(v) => setDraft({ ...draft, name: v })} placeholder="Cape de protection" />
+          <Field
+            label="Effet"
+            value={draft.description}
+            onChangeText={(v) => setDraft({ ...draft, description: v })}
+            placeholder="+1 à la CA et aux jets de sauvegarde"
+            multiline
+            style={{ minHeight: 70, textAlignVertical: 'top' }}
+          />
+          <Toggle label="Lié (harmonisé) à ce personnage" value={draft.attuned} onChange={(v) => setDraft({ ...draft, attuned: v })} />
+          <Row>
+            <Button kind="primary" label="Enregistrer" onPress={save} />
+            <Button label="Annuler" onPress={() => setEditing(null)} />
+            {editing < ch.magic_items.length && (
+              <Button
+                kind="danger"
+                label="Supprimer"
+                onPress={async () => {
+                  await patch({ magic_items: ch.magic_items.filter((_, j) => j !== editing) });
+                  setEditing(null);
+                }}
+              />
+            )}
+          </Row>
+        </View>
+      )}
+    </Card>
   );
 }
 

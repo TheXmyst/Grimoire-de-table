@@ -16,7 +16,7 @@ Application Android pour jouer à D&D 5e (règles 2014) sans papier.
 ## Mise en route
 
 1. Crée un projet gratuit sur supabase.com.
-2. Dans **SQL Editor**, colle et exécute `supabase/migrations/0001_init.sql`, puis `0002_srd_spells.sql` (164 sorts du SRD en français, niveaux 0 à 3), `0003_fiche_complete.sql` et `0004_fiche_pretiree.sql`.
+2. Dans **SQL Editor**, colle et exécute `supabase/migrations/0001_init.sql`, puis `0002_srd_spells.sql` (164 sorts du SRD en français, niveaux 0 à 3), `0003_fiche_complete.sql`, `0004_fiche_pretiree.sql`, `0005_fiche_manuel.sql` (états, ressources, objets magiques…) et `0006_sorts_manuel.sql` (197 sorts du Manuel des joueurs, niveaux 0 à 9).
    À chaque nouvelle migration, exécute uniquement le nouveau fichier.
 3. Dans **Project Settings → API**, récupère l'URL du projet et la clé `anon` publique.
 4. Sur GitHub, dans **Settings → Secrets and variables → Actions**, ajoute `SUPABASE_URL` et `SUPABASE_ANON_KEY`.

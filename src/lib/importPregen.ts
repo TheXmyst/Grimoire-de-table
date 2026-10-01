@@ -1,15 +1,15 @@
+import { classResources } from './conditions';
 import type { Pregen } from './pregens';
 import { supabase } from './supabase';
 
 /** Crée la fiche d'un personnage prétiré dans une campagne, avec ses sorts du DRS. */
 export async function importPregen(campaignId: string, p: Pregen): Promise<string> {
   const { spells, ...fields } = p;
-  const { data, error } = await supabase
-    .from('characters')
-    .insert({ ...fields, campaign_id: campaignId })
-    .select('id')
-    .single();
-  if (error) throw error;
+  const insert = (row: object) => supabase.from('characters').insert(row).select('id').single();
+  let { data, error } = await insert({ ...fields, campaign_id: campaignId, resources: classResources(p.class, p.level, p.abilities) });
+  // Base sans la migration 0005 : on crée la fiche sans les ressources
+  if (error && error.message.includes('resources')) ({ data, error } = await insert({ ...fields, campaign_id: campaignId }));
+  if (error || !data) throw error ?? new Error('Création impossible');
 
   if (spells.length > 0) {
     const { data: found, error: e2 } = await supabase
