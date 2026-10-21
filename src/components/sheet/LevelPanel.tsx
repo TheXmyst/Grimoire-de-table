@@ -7,7 +7,7 @@ import { useTheme } from '../../lib/theme';
 import type { Character } from '../../lib/types';
 import { Body, Button, Label, Row } from '../ui';
 
-type Props = { ch: Character; isGm: boolean; patch: (values: Partial<Character>) => Promise<void> };
+type Props = { ch: Character; isGm: boolean; patch: (values: Partial<Character>) => Promise<unknown> };
 
 /** Emplacements gagnés entre deux niveaux, en texte (« 1 emplacement de niveau 2 »). */
 function newSlots(cls: string, from: number, to: number): string[] {

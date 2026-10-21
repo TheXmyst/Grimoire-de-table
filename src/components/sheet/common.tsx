@@ -13,7 +13,7 @@ export type SheetProps = {
   isOwner: boolean;
   canHp: boolean;
   canInventory: boolean;
-  patch: (values: Partial<Character>) => Promise<void>;
+  patch: (values: Partial<Character>) => Promise<unknown>;
   onRoll: (label: string, total: number, detail: string) => void;
   reloadSpells: () => void;
 };

@@ -31,6 +31,8 @@ export type Character = {
   name: string;
   class: string;
   subclass: string;
+  /** Lien ou data URL de l'image choisie par le MJ, vide sinon */
+  avatar: string;
   race: string;
   background: string;
   level: number;

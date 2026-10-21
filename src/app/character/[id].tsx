@@ -6,6 +6,7 @@ import { LevelPanel } from '../../components/sheet/LevelPanel';
 import { FeaturesTab } from '../../components/sheet/FeaturesTab';
 import { BagTab } from '../../components/sheet/BagTab';
 import { CombatTab } from '../../components/sheet/CombatTab';
+import { Avatar } from '../../components/sheet/Avatar';
 import { NumField, Stat, Tabs, type SheetProps } from '../../components/sheet/common';
 import { RoleplayTab } from '../../components/sheet/RoleplayTab';
 import { SpellsTab } from '../../components/sheet/SpellsTab';
@@ -49,6 +50,7 @@ const withDefaults = (c: Character): Character => ({
   magic_items: c.magic_items ?? [],
   defenses: c.defenses ?? {},
   details: c.details ?? {},
+  avatar: c.avatar ?? '',
 });
 
 type TabKey = 'combat' | 'caracs' | 'capacites' | 'sorts' | 'sac' | 'perso';
@@ -138,8 +140,8 @@ export default function CharacterScreen() {
   const passivePerception = 10 + skillTotal(ch, 'perception');
   const hpPct = ch.hp_max > 0 ? Math.max(0, Math.min(1, ch.hp / ch.hp_max)) : 0;
 
-  async function patch(values: Partial<Character>) {
-    if (!ch) return;
+  async function patch(values: Partial<Character>): Promise<boolean> {
+    if (!ch) return false;
     setError('');
     // Mise à jour fonctionnelle : deux appuis rapides s'additionnent au lieu de s'écraser
     setCh((cur) => (cur ? { ...cur, ...values } : cur));
@@ -154,6 +156,7 @@ export default function CharacterScreen() {
       setCh(echo.current);
     }
     if (pending.current === 0) echo.current = null;
+    return !error;
   }
 
   function changeHp(sign: 1 | -1) {
@@ -205,8 +208,9 @@ export default function CharacterScreen() {
       <Stack.Screen options={{ title: ch.name }} />
 
       <Card>
-        <Row style={{ justifyContent: 'space-between' }}>
-          <View style={{ flexShrink: 1 }}>
+        <Row style={{ alignItems: 'flex-start', flexWrap: 'nowrap' }}>
+          <Avatar ch={ch} isGm={isGm} patch={patch} />
+          <View style={{ flex: 1, gap: 6 }}>
             <Text style={[styles.name, { color: t.ink }]}>{ch.name}</Text>
             <Body muted>
               {ch.race} · {ch.class}
@@ -214,17 +218,19 @@ export default function CharacterScreen() {
               {ch.background ? ` · ${ch.background}` : ''}
               {ch.alignment ? ` · ${ch.alignment}` : ''}
             </Body>
+            <Row>
+              <Pressable
+                accessibilityRole="switch"
+                accessibilityState={{ checked: ch.inspiration }}
+                disabled={!isGm && !isOwner}
+                onPress={() => patch({ inspiration: !ch.inspiration })}
+                style={[styles.inspiration, { borderColor: ch.inspiration ? t.brass : t.line, backgroundColor: ch.inspiration ? t.brass : 'transparent' }]}
+              >
+                <Text style={{ color: ch.inspiration ? t.bg : t.muted, fontWeight: '700', fontSize: 12, letterSpacing: 1 }}>INSPIRATION</Text>
+              </Pressable>
+              {isGm && !editing && <Button small label="Modifier la fiche" onPress={() => setEditing(true)} />}
+            </Row>
           </View>
-          <Pressable
-            accessibilityRole="switch"
-            accessibilityState={{ checked: ch.inspiration }}
-            disabled={!isGm && !isOwner}
-            onPress={() => patch({ inspiration: !ch.inspiration })}
-            style={[styles.inspiration, { borderColor: ch.inspiration ? t.brass : t.line, backgroundColor: ch.inspiration ? t.brass : 'transparent' }]}
-          >
-            <Text style={{ color: ch.inspiration ? t.bg : t.muted, fontWeight: '700', fontSize: 12, letterSpacing: 1 }}>INSPIRATION</Text>
-          </Pressable>
-          {isGm && !editing && <Button small label="Modifier la fiche" onPress={() => setEditing(true)} />}
         </Row>
 
         <View style={styles.stats}>
