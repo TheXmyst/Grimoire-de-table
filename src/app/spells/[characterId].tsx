@@ -1,12 +1,15 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, View } from 'react-native';
-import { Body, Button, Card, ErrorText, Field, Label, Pill, Row, Screen, Title, Toggle } from '../../components/ui';
+import { Body, Button, Card, ErrorText, Field, Label, Loading, Pill, Row, Screen, Title, Toggle } from '../../components/ui';
 import { useUserId } from '../../lib/auth';
 import { SPELL_LEVEL_LABEL, hasCantrips, maxSpellLevel } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
 import { useTheme } from '../../lib/theme';
 import type { Campaign, Character, Spell } from '../../lib/types';
+
+/** Sorts déjà téléchargés, par campagne, le temps que l'appli reste ouverte. */
+const spellCache = new Map<string, Spell[]>();
 
 export default function SpellPicker() {
   const { characterId } = useLocalSearchParams<{ characterId: string }>();
@@ -19,6 +22,8 @@ export default function SpellPicker() {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  // Niveaux dépliés : on n'affiche pas des centaines de sorts d'un coup
+  const [openLevels, setOpenLevels] = useState<Set<number> | null>(null);
   const [error, setError] = useState('');
 
   // Sort maison (MJ)
@@ -27,17 +32,24 @@ export default function SpellPicker() {
   const [hbDesc, setHbDesc] = useState('');
 
   const load = useCallback(async () => {
-    const { data: c, error } = await supabase.from('characters').select('*').eq('id', characterId).single();
-    if (error) return setError(errorText(error));
-    setCh(c as Character);
-    const [camp, sp, cs] = await Promise.all([
-      supabase.from('campaigns').select('*').eq('id', c.campaign_id).single(),
-      supabase.from('spells').select('*').or(`campaign_id.is.null,campaign_id.eq.${c.campaign_id}`).order('level').order('name'),
+    // La fiche (avec sa campagne) et les sorts déjà connus partent en même temps
+    const [res, cs] = await Promise.all([
+      supabase.from('characters').select('*, campaigns(*)').eq('id', characterId).single(),
       supabase.from('character_spells').select('spell_id').eq('character_id', characterId),
     ]);
-    if (camp.data) setCampaign(camp.data as Campaign);
-    if (sp.data) setSpells(sp.data as Spell[]);
+    if (res.error) return setError(errorText(res.error));
+    const { campaigns: camp, ...c } = res.data as Character & { campaigns: Campaign };
+    setCh(c as Character);
+    setCampaign(camp);
     if (cs.data) setKnown(new Set(cs.data.map((r) => r.spell_id as string)));
+    // La liste des sorts (lourde) est gardée en mémoire : la 2e ouverture est immédiate
+    const cached = spellCache.get(c.campaign_id);
+    if (cached) setSpells(cached);
+    const sp = await supabase.from('spells').select('*').or(`campaign_id.is.null,campaign_id.eq.${c.campaign_id}`).order('level').order('name');
+    if (sp.data) {
+      spellCache.set(c.campaign_id, sp.data as Spell[]);
+      setSpells(sp.data as Spell[]);
+    }
   }, [characterId]);
 
   useEffect(() => {
@@ -82,7 +94,7 @@ export default function SpellPicker() {
     load();
   }
 
-  if (!ch || !campaign) return <Screen><ErrorText>{error}</ErrorText></Screen>;
+  if (!ch || !campaign) return error ? <Screen><ErrorText>{error}</ErrorText></Screen> : <Loading />;
 
   const levels = [...new Set(available.map((s) => s.level))];
 
@@ -98,10 +110,28 @@ export default function SpellPicker() {
         {isGm && <Toggle label="Montrer tous les sorts (hors classe et niveau)" value={showAll} onChange={setShowAll} />}
       </Card>
 
-      {levels.map((lvl) => (
+      {levels.map((lvl) => {
+        const count = available.filter((s) => s.level === lvl).length;
+        // Par défaut : tout est déplié pour une recherche ou une petite liste, sinon le plus haut niveau seulement
+        const expanded = openLevels ? openLevels.has(lvl) : query.trim() !== '' || available.length <= 40 || lvl === levels[levels.length - 1];
+        const toggleLevel = () => {
+          const base = openLevels ?? new Set(levels.filter((l) => l === levels[levels.length - 1] || available.length <= 40));
+          const next = new Set(base);
+          if (expanded) next.delete(lvl);
+          else next.add(lvl);
+          setOpenLevels(next);
+        };
+        return (
         <Card key={lvl}>
-          <Title>{SPELL_LEVEL_LABEL(lvl)}</Title>
-          {available
+          <Pressable accessibilityRole="button" onPress={toggleLevel}>
+            <Row style={{ justifyContent: 'space-between' }}>
+              <Title>{SPELL_LEVEL_LABEL(lvl)}</Title>
+              <Body muted>
+                {count} sort{count > 1 ? 's' : ''} {expanded ? '−' : '+'}
+              </Body>
+            </Row>
+          </Pressable>
+          {expanded && available
             .filter((s) => s.level === lvl)
             .map((s) => (
               <View key={s.id} style={{ borderTopWidth: 1, borderColor: t.line, paddingTop: 8, gap: 6 }}>
@@ -130,7 +160,8 @@ export default function SpellPicker() {
               </View>
             ))}
         </Card>
-      ))}
+        );
+      })}
 
       {available.length === 0 && (
         <Card>

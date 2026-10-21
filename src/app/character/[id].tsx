@@ -1,5 +1,5 @@
 import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { AbilitiesTab, skillTotal } from '../../components/sheet/AbilitiesTab';
 import { LevelPanel } from '../../components/sheet/LevelPanel';
@@ -9,7 +9,7 @@ import { CombatTab } from '../../components/sheet/CombatTab';
 import { NumField, Stat, Tabs, type SheetProps } from '../../components/sheet/common';
 import { RoleplayTab } from '../../components/sheet/RoleplayTab';
 import { SpellsTab } from '../../components/sheet/SpellsTab';
-import { Body, Button, Card, ErrorText, Field, Label, Pill, Row, Screen, Title } from '../../components/ui';
+import { Body, Button, Card, ErrorText, Field, Label, Loading, Pill, Row, Screen, Title } from '../../components/ui';
 import { useUserId } from '../../lib/auth';
 import { ABILITIES, ALIGNMENTS, CLASSES, CLASS_SAVES, SUBCLASS_LABEL, hitDieOf, modifier, proficiencyBonus, signed } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
@@ -84,18 +84,24 @@ export default function CharacterScreen() {
     else setSpells((data as CharacterSpell[]).sort((a, b) => a.spells.level - b.spells.level || a.spells.name.localeCompare(b.spells.name)));
   }, [id]);
 
+  // Modifications envoyées mais pas encore confirmées : on ignore pendant ce temps l'écho
+  // du temps réel, sinon la fiche « revient en arrière » quand on tape vite
+  const pending = useRef(0);
+  const echo = useRef<Character | null>(null);
+
   const load = useCallback(async () => {
-    const { data, error } = await supabase.from('characters').select('*').eq('id', id).single();
-    if (error) return setError(errorText(error));
-    const c = withDefaults(data as Character);
-    setCh(c);
-    const [camp, mem] = await Promise.all([
-      supabase.from('campaigns').select('*').eq('id', c.campaign_id).single(),
-      supabase.from('campaign_members').select('*, profiles(display_name)').eq('campaign_id', c.campaign_id),
+    // La fiche (avec sa campagne) et les sorts partent en même temps
+    const [res] = await Promise.all([
+      supabase.from('characters').select('*, campaigns(*)').eq('id', id).single(),
+      loadSpells(),
     ]);
-    if (camp.data) setCampaign(camp.data as Campaign);
+    if (res.error) return setError(errorText(res.error));
+    const { campaigns: camp, ...row } = res.data as Character & { campaigns: Campaign };
+    const c = withDefaults(row as Character);
+    setCh(c);
+    setCampaign(camp);
+    const mem = await supabase.from('campaign_members').select('*, profiles(display_name)').eq('campaign_id', c.campaign_id);
     if (mem.data) setMembers(mem.data as Member[]);
-    loadSpells();
   }, [id, loadSpells]);
 
   useFocusEffect(
@@ -108,9 +114,11 @@ export default function CharacterScreen() {
   useEffect(() => {
     const channel = supabase
       .channel(`character-${id}`)
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'characters', filter: `id=eq.${id}` }, (payload) =>
-        setCh(withDefaults(payload.new as Character)),
-      )
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'characters', filter: `id=eq.${id}` }, (payload) => {
+        const next = withDefaults(payload.new as Character);
+        if (pending.current > 0) echo.current = next;
+        else setCh(next);
+      })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'character_spells', filter: `character_id=eq.${id}` }, () =>
         loadSpells(),
       )
@@ -120,7 +128,7 @@ export default function CharacterScreen() {
     };
   }, [id, loadSpells]);
 
-  if (!ch || !campaign) return <Screen><ErrorText>{error}</ErrorText></Screen>;
+  if (!ch || !campaign) return error ? <Screen><ErrorText>{error}</ErrorText></Screen> : <Loading />;
 
   const isGm = campaign.gm_id === me;
   const isOwner = ch.player_id === me;
@@ -133,13 +141,19 @@ export default function CharacterScreen() {
   async function patch(values: Partial<Character>) {
     if (!ch) return;
     setError('');
-    const previous = ch;
-    setCh({ ...ch, ...values });
+    // Mise à jour fonctionnelle : deux appuis rapides s'additionnent au lieu de s'écraser
+    setCh((cur) => (cur ? { ...cur, ...values } : cur));
+    pending.current += 1;
     const { error } = await supabase.from('characters').update(values).eq('id', ch.id);
+    pending.current -= 1;
     if (error) {
       setError(errorText(error));
-      setCh(previous);
+      load();
+    } else if (pending.current === 0 && echo.current) {
+      // Dernière version du serveur, au cas où quelqu'un d'autre a modifié la fiche entre-temps
+      setCh(echo.current);
     }
+    if (pending.current === 0) echo.current = null;
   }
 
   function changeHp(sign: 1 | -1) {
