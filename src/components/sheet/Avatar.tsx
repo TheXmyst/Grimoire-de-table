@@ -4,7 +4,7 @@ import { fonts, useTheme } from '../../lib/theme';
 import type { Character } from '../../lib/types';
 import { Body, Button, Card, ErrorText, Field, Row, Title } from '../ui';
 
-const SIZE = 76;
+const SIZE = 133;
 const MAX_SIDE = 320;
 
 /** Sur le web : choisir une image sur l'appareil, la réduire et la renvoyer en data URL (JPEG, ~30 ko). */
@@ -75,7 +75,7 @@ export function Avatar({ ch, isGm, patch }: { ch: Character; isGm: boolean; patc
         ) : (
           <View style={styles.empty}>
             <Text style={[styles.initial, { color: t.muted }]}>{ch.name.trim().charAt(0).toUpperCase() || '?'}</Text>
-            <Text style={{ color: t.muted, fontSize: 11 }}>+ image</Text>
+            <Text style={{ color: t.muted, fontSize: 13 }}>+ image</Text>
           </View>
         )}
       </Pressable>
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   frame: { width: SIZE, height: SIZE, borderRadius: 14, borderWidth: 2, overflow: 'hidden', flexShrink: 0 },
   image: { width: '100%', height: '100%' },
   empty: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  initial: { fontFamily: fonts.display, fontSize: 28, fontWeight: '700' },
+  initial: { fontFamily: fonts.display, fontSize: 48, fontWeight: '700' },
   backdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center', justifyContent: 'center', padding: 16 },
   large: { width: '100%', aspectRatio: 1, borderRadius: 14, borderWidth: 2 },
 });
