@@ -42,6 +42,7 @@ export function SpellSlots({ ch, isGm, isOwner, canHp, patch }: SheetProps) {
       )}
       {(isGm || isOwner) && (
         <Row>
+          {ch.class === 'Sorcier' && <Button small label="Repos court" onPress={() => patch({ slots_used: {} })} />}
           <Button small label="Repos long" onPress={() => patch(longRestValues(ch, canHp))} />
         </Row>
       )}

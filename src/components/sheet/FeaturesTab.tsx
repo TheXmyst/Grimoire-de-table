@@ -6,6 +6,7 @@ import type { DefenseKey } from '../../lib/types';
 import { useTheme } from '../../lib/theme';
 import { Body, Button, Card, Field, Label, Row, Title } from '../ui';
 import { TextArea, type SheetProps } from './common';
+import { WarlockCard } from './WarlockCard';
 
 const EMPTY: Feature = { name: '', source: '', description: '' };
 
@@ -59,7 +60,8 @@ function FeatPicker({ ch, patch }: { ch: SheetProps['ch']; patch: SheetProps['pa
   );
 }
 
-export function FeaturesTab({ ch, isGm, patch }: SheetProps) {
+export function FeaturesTab(props: SheetProps) {
+  const { ch, isGm, patch } = props;
   const t = useTheme();
   const [editing, setEditing] = useState<number | null>(null);
   const [draft, setDraft] = useState<Feature>(EMPTY);
@@ -88,6 +90,8 @@ export function FeaturesTab({ ch, isGm, patch }: SheetProps) {
 
   return (
     <>
+      {ch.class === 'Sorcier' && <WarlockCard {...props} />}
+
       <Card>
         <Row style={{ justifyContent: 'space-between' }}>
           <Title>Capacités</Title>

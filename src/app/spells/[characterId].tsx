@@ -7,6 +7,7 @@ import { SPELL_LEVEL_LABEL, hasCantrips, maxSpellLevel } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
 import { useTheme } from '../../lib/theme';
 import type { Campaign, Character, Spell } from '../../lib/types';
+import { anyCantrip, extraSpellNames } from '../../lib/warlock';
 
 /** Sorts déjà téléchargés, par campagne, le temps que l'appli reste ouverte. */
 const spellCache = new Map<string, Spell[]>();
@@ -62,12 +63,17 @@ export default function SpellPicker() {
   const available = useMemo(() => {
     if (!ch) return [];
     const q = query.trim().toLowerCase();
+    // Sorcier : sorts de son protecteur, et tous les sorts mineurs avec le pacte du grimoire
+    const extra = extraSpellNames(ch);
+    const allCantrips = anyCantrip(ch);
     return spells.filter((s) => {
       if (q && !s.name.toLowerCase().includes(q)) return false;
       if (showAll && isGm) return true;
       // Les sorts maison sans classe sont ouverts à tous ; sinon la classe doit correspondre
       // « Occultiste » : ancien nom du Sorcier, tant que la migration 0007 n'est pas passée
-      const classOk = s.classes.length === 0 || s.classes.includes(ch.class) || (ch.class === 'Sorcier' && s.classes.includes('Occultiste'));
+      const classOk = s.classes.length === 0 || s.classes.includes(ch.class) || (ch.class === 'Sorcier' && s.classes.includes('Occultiste')) ||
+        extra.has(s.name) ||
+        (allCantrips && s.level === 0);
       const levelOk = s.level <= maxLvl && (s.level > 0 || hasCantrips(ch.class));
       return classOk && levelOk;
     });

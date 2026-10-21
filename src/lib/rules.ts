@@ -68,6 +68,8 @@ export function maxSpellLevel(cls: string, level: number): number {
   if (caster === 'none') return -1;
   const slots = spellSlots(cls, level);
   if (slots.length === 0) return caster === 'half' ? -1 : 0;
+  // Sorcier : l'arcanum mystique ouvre un sort de niveau 6 au niveau 11, puis 7, 8 et 9
+  if (caster === 'pact') return Math.max(slots.length, [11, 13, 15, 17].filter((l) => level >= l).length + 5);
   return slots.length;
 }
 
@@ -122,7 +124,7 @@ export const SUBCLASS_LABEL: Record<string, string> = {
   Guerrier: 'Archétype martial',
   Magicien: 'Tradition arcanique',
   Moine: 'Tradition monastique',
-  Sorcier: 'Patron d’outre-monde',
+  Sorcier: 'Protecteur d’outre-monde',
   Paladin: 'Serment sacré',
   Rôdeur: 'Archétype de rôdeur',
   Roublard: 'Archétype de roublard',
