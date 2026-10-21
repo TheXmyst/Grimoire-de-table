@@ -342,10 +342,20 @@ export default function CharacterScreen() {
                 key={a.key}
                 label={a.key}
                 value={d.abilities[a.key]}
-                onChange={(v) => setDraft({ ...draft, abilities: { ...d.abilities, [a.key]: v } })}
+                onChange={(v) => {
+                  const abilities = { ...d.abilities, [a.key]: v };
+                  if (a.key !== 'CON') return setDraft({ ...draft, abilities });
+                  // La CON compte à chaque niveau : les PV max suivent son modificateur
+                  const delta = (modifier(v) - modifier(d.abilities.CON)) * d.level;
+                  const hp_max = Math.max(1, d.hp_max + delta);
+                  setDraft({ ...draft, abilities, hp_max, hp: Math.max(0, Math.min(hp_max, d.hp + delta)) });
+                }}
               />
             ))}
           </Row>
+          <Body muted style={{ fontSize: 13 }}>
+            Changer la CON ajuste tout seul les PV max : un point de modificateur vaut 1 PV par niveau.
+          </Body>
           <Field label="Détail de la CA" value={d.ac_note} onChangeText={(v) => setDraft({ ...draft, ac_note: v })} placeholder="cotte de mailles 16 + bouclier 2" />
           <Field
             label="Présentation du personnage"
