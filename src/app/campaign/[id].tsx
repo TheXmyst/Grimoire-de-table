@@ -1,3 +1,4 @@
+import { BackButton } from '../../components/BackButton';
 import * as Clipboard from 'expo-clipboard';
 import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -108,7 +109,7 @@ export default function CampaignScreen() {
 
   return (
     <Screen>
-      <Stack.Screen options={{ title: campaign.name }} />
+      <Stack.Screen options={{ title: campaign.name, headerLeft: () => <BackButton to="/" label="Accueil" /> }} />
 
       {isGm && (
         <Card>

@@ -6,6 +6,7 @@ import { LevelPanel } from '../../components/sheet/LevelPanel';
 import { FeaturesTab } from '../../components/sheet/FeaturesTab';
 import { BagTab } from '../../components/sheet/BagTab';
 import { CombatTab } from '../../components/sheet/CombatTab';
+import { BackButton } from '../../components/BackButton';
 import { Avatar } from '../../components/sheet/Avatar';
 import { NumField, Stat, Tabs, type SheetProps } from '../../components/sheet/common';
 import { RoleplayTab } from '../../components/sheet/RoleplayTab';
@@ -212,7 +213,12 @@ export default function CharacterScreen() {
 
   return (
     <Screen overlay={rollBanner}>
-      <Stack.Screen options={{ title: ch.name }} />
+      <Stack.Screen
+        options={{
+          title: ch.name,
+          headerLeft: () => (isGm ? <BackButton to={`/campaign/${ch.campaign_id}`} label="Campagne" /> : <BackButton to="/" label="Accueil" />),
+        }}
+      />
 
       <Card>
         <Row style={{ alignItems: 'flex-start', flexWrap: 'nowrap' }}>
