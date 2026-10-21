@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { levelUpChanges } from '../../lib/levelUp';
 import { XP_THRESHOLDS, levelUpSummary } from '../../lib/progression';
 import { hitDieOf, modifier, proficiencyBonus, signed, spellSlots } from '../../lib/rules';
 import { useTheme } from '../../lib/theme';
@@ -35,6 +36,7 @@ export function LevelPanel({ ch, isGm, patch }: Props) {
   const conMod = modifier(ch.abilities.CON);
   const summary = maxed ? null : levelUpSummary(ch.class, next, conMod, hitDieOf(ch.class));
   const slots = maxed ? [] : newSlots(ch.class, ch.level, next);
+  const auto = summary ? levelUpChanges(ch, next, summary.hpAverage, summary.gain.features) : null;
 
   async function addXp() {
     const n = parseInt(gain, 10) || 0;
@@ -42,15 +44,9 @@ export function LevelPanel({ ch, isGm, patch }: Props) {
   }
 
   async function levelUp() {
-    if (!summary) return;
+    if (!auto) return;
     setBusy(true);
-    const known = new Set(ch.features.map((f) => f.name));
-    await patch({
-      level: next,
-      hp_max: ch.hp_max + summary.hpAverage,
-      hp: ch.hp + summary.hpAverage,
-      features: [...ch.features, ...summary.gain.features.filter((f) => !known.has(f.name))],
-    });
+    await patch(auto.values);
     setBusy(false);
     setOpen(false);
   }
@@ -128,6 +124,14 @@ export function LevelPanel({ ch, isGm, patch }: Props) {
                   • {n}
                 </Body>
               ))}
+              {auto && (
+                <Gain title="Mis à jour tout seul en passant le niveau">
+                  {[
+                    ...auto.changes,
+                    'bonus de maîtrise, attaques, sauvegardes, compétences, DD et emplacements de sorts (calculés à partir du niveau)',
+                  ].join(' · ')}
+                </Gain>
+              )}
               {isGm && (
                 <Button
                   kind="primary"
@@ -138,8 +142,8 @@ export function LevelPanel({ ch, isGm, patch }: Props) {
               )}
               {isGm && (
                 <Body muted style={{ fontSize: 13 }}>
-                  Ajoute les PV moyens et les nouvelles capacités à la fiche. Les caractéristiques, la sous-classe et les sorts se règlent
-                  ensuite à la main.
+                  Restent à faire avec ton joueur : l'amélioration de caractéristique ou le don, la sous-classe, et le choix des
+                  nouveaux sorts.
                 </Body>
               )}
             </View>
