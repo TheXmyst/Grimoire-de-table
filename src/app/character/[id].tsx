@@ -244,7 +244,9 @@ export default function CharacterScreen() {
         <Label>Points de vie</Label>
         <Row>
           <Text style={[styles.big, { color: t.ink }]}>{ch.hp}</Text>
-          <Body muted>/ {ch.hp_max} · dé de vie {ch.level}d{hitDieOf(ch.class)}</Body>
+          <Body muted>
+            / {ch.hp_max} · dés de vie (d{hitDieOf(ch.class)}) : {Math.max(0, ch.level - ch.hit_dice_used)} sur {ch.level}
+          </Body>
           {ch.temp_hp > 0 && <Pill text={`+${ch.temp_hp} temp.`} tone="warn" />}
           <View style={{ flex: 1 }} />
           {canHp && (
