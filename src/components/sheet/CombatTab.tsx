@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { ABILITIES, hitDieOf, modifier, proficiencyBonus, rollDice, signed, type Attack } from '../../lib/rules';
+import { dropWeapon } from '../../lib/equipment';
 import { equippedItems, itemLabel } from '../../lib/inventory';
 import { fonts, useTheme } from '../../lib/theme';
 import { Body, Button, Card, Field, Label, Row, Title, Toggle } from '../ui';
@@ -122,7 +123,8 @@ export function CombatTab(props: SheetProps) {
 
   async function remove() {
     if (editing === null) return;
-    await patch({ attacks: ch.attacks.filter((_, i) => i !== editing) });
+    // L'arme portée part avec son attaque
+    await patch({ attacks: ch.attacks.filter((_, i) => i !== editing), inventory: dropWeapon(ch.inventory, ch.attacks[editing].name) });
     setEditing(null);
   }
 

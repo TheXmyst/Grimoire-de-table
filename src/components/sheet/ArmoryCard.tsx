@@ -9,6 +9,7 @@ import {
   computeAc,
   weaponAttack,
   weaponProficient,
+  wieldWeapon,
   wornArmor,
   type Armor,
   type Weapon,
@@ -76,9 +77,9 @@ export function ArmoryCard({ ch, campaign, isGm, canInventory, patch }: SheetPro
   }
 
   async function addWeapon(weapon: Weapon) {
-    const items = parseInventory(ch.inventory);
-    items.unshift({ text: weapon.name, equipped: true, qty: 1 });
-    await patch({ attacks: [...ch.attacks, weaponAttack(ch, weapon)], inventory: serializeInventory(items) });
+    // Une deuxième dague devient « Dague ×2 » ; l'attaque n'est ajoutée qu'une fois
+    const attacks = ch.attacks.some((a) => a.name === weapon.name) ? ch.attacks : [...ch.attacks, weaponAttack(ch, weapon)];
+    await patch({ attacks, inventory: wieldWeapon(ch.inventory, weapon) });
   }
 
   const warnings: string[] = [];

@@ -1,5 +1,6 @@
 // Armures et armes du Manuel des joueurs (5e, 2014) : valeurs de jeu et courtes notes
 // rédigées pour l'appli. Prix en pièces d'or, poids en kilos.
+import { parseInventory, serializeInventory } from './inventory';
 import { modifier, signed, type AbilityKey, type Attack } from './rules';
 import type { Character } from './types';
 
@@ -262,4 +263,25 @@ const WEARABLE = /\b(armure|bouclier|vetements?|habits?|tenue|robe|cape|manteau|
 /** Objet qu'on peut « porter » : arme, armure, bouclier ou objet qui se porte sur soi. */
 export function isEquipment(line: string): boolean {
   return !!armorOfLine(line) || !!weaponOfLine(line) || WEARABLE.test(norm(line));
+}
+
+/** Ajoute une arme tenue en main : une de plus si la même est déjà portée. */
+export function wieldWeapon(inventory: string, weapon: Weapon): string {
+  const items = parseInventory(inventory);
+  const same = items.findIndex((it) => it.equipped && weaponOfLine(it.text)?.name === weapon.name);
+  if (same >= 0) items[same] = { ...items[same], qty: items[same].qty + 1 };
+  else items.unshift({ text: weapon.name, equipped: true, qty: 1 });
+  return serializeInventory(items);
+}
+
+/** Quand on supprime l'attaque d'une arme, on retire aussi l'arme portée correspondante (une seule). */
+export function dropWeapon(inventory: string, attackName: string): string {
+  const weapon = weaponOfLine(attackName);
+  if (!weapon) return inventory;
+  const items = parseInventory(inventory);
+  const i = items.findIndex((it) => it.equipped && weaponOfLine(it.text)?.name === weapon.name);
+  if (i < 0) return inventory;
+  if (items[i].qty > 1) items[i] = { ...items[i], qty: items[i].qty - 1 };
+  else items.splice(i, 1);
+  return serializeInventory(items);
 }
