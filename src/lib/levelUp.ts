@@ -11,7 +11,7 @@ const monkSpeed = (l: number) => (l >= 18 ? 9 : l >= 14 ? 7.5 : l >= 10 ? 6 : l 
 const rageDamage = (l: number) => (l >= 16 ? 4 : l >= 9 ? 3 : 2);
 const rageCount = (l: number) => (l >= 17 ? 6 : l >= 12 ? 5 : l >= 6 ? 4 : l >= 3 ? 3 : 2);
 
-const UNARMED = /mains nues|poing|arts martiaux/i;
+const UNARMED = /mains? nues?|poing|arts martiaux/i;
 const meters = (n: number) => `${String(n).replace('.', ',')} m`;
 
 /** Les valeurs à écrire sur la fiche et la liste, en clair, de ce qui change. */
@@ -43,7 +43,7 @@ export function levelUpChanges(ch: Character, next: number, hpAverage: number, n
     const before = martialDie(ch.level);
     const after = martialDie(next);
     if (before !== after) {
-      attacks = attacks.map((a) => (UNARMED.test(a.name) && a.dice === before ? { ...a, dice: after } : a));
+      attacks = attacks.map((a) => (UNARMED.test(`${a.name} ${a.note ?? ''}`) && a.dice === before ? { ...a, dice: after } : a));
       rewrite('Arts martiaux', (d) => d.replaceAll(before, after));
       changes.push(`Coups à mains nues : ${before} → ${after}`);
     }
