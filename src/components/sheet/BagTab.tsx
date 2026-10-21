@@ -5,6 +5,7 @@ import { fonts, useTheme } from '../../lib/theme';
 import { Body, Button, Card, Field, Label, Row, Title, Toggle } from '../ui';
 import { ArmoryCard } from './ArmoryCard';
 import type { MagicItem } from '../../lib/types';
+import { isEquipment } from '../../lib/equipment';
 import { parseInventory, serializeInventory, type Item } from '../../lib/inventory';
 import { Collapsible, TextArea, type SheetProps } from './common';
 
@@ -30,9 +31,11 @@ export function BagTab(props: SheetProps) {
   const save = (next: Item[]) => patch({ inventory: serializeInventory(next) });
   const toggle = (index: number) => save(items.map((it, i) => (i === index ? { ...it, equipped: !it.equipped } : it)));
   const remove = (index: number) => save(items.filter((_, i) => i !== index));
+  const count = (index: number, delta: number) => save(items.map((it, i) => (i === index ? { ...it, qty: Math.max(1, it.qty + delta) } : it)));
   function add() {
     if (!draft.trim()) return;
-    save([...items, { text: draft.trim(), equipped: false }]);
+    // « Ration ×5 » tapé directement garde sa quantité
+    save([...items, ...parseInventory(draft.replace(/\n/g, ' '))]);
     setDraft('');
   }
 
@@ -78,7 +81,7 @@ export function BagTab(props: SheetProps) {
         <Title>Équipement porté</Title>
         {worn.length === 0 && <Body muted>Rien de porté. Appuie sur « Porter » à côté d'un objet du sac.</Body>}
         {worn.map(({ item, index }) => (
-          <ItemRow key={index} text={item.text} worn canEdit={canInventory} onToggle={() => toggle(index)} onRemove={() => remove(index)} />
+          <ItemRow key={index} item={item} canEdit={canInventory} onToggle={() => toggle(index)} onRemove={() => remove(index)} onCount={(d) => count(index, d)} />
         ))}
       </Card>
 
@@ -91,7 +94,7 @@ export function BagTab(props: SheetProps) {
         </Body>
         {carried.length === 0 && <Body muted>Le sac est vide.</Body>}
         {carried.map(({ item, index }) => (
-          <ItemRow key={index} text={item.text} worn={false} canEdit={canInventory} onToggle={() => toggle(index)} onRemove={() => remove(index)} />
+          <ItemRow key={index} item={item} canEdit={canInventory} onToggle={() => toggle(index)} onRemove={() => remove(index)} onCount={(d) => count(index, d)} />
         ))}
         {canInventory && (
           <Row>
@@ -205,30 +208,45 @@ function MagicItems({ ch, canEdit, patch }: { ch: SheetProps['ch']; canEdit: boo
 }
 
 function ItemRow({
-  text,
-  worn,
+  item,
   canEdit,
   onToggle,
   onRemove,
+  onCount,
 }: {
-  text: string;
-  worn: boolean;
+  item: Item;
   canEdit: boolean;
   onToggle: () => void;
   onRemove: () => void;
+  onCount: (delta: number) => void;
 }) {
   const t = useTheme();
+  const worn = item.equipped;
+  // « Porter » seulement pour ce qui se porte : armes, armures, vêtements, bijoux…
+  const wearable = worn || isEquipment(item.text);
   return (
     <View style={[styles.item, { borderColor: t.line }]}>
-      <Text style={{ color: t.ink, fontSize: 16, flex: 1, fontWeight: worn ? '700' : '400' }}>{text}</Text>
-      {canEdit && <Button small label={worn ? 'Ranger' : 'Porter'} onPress={onToggle} />}
+      <Text style={{ color: t.ink, fontSize: 16, flex: 1, minWidth: 140, fontWeight: worn ? '700' : '400' }}>{item.text}</Text>
+      {canEdit ? (
+        <Row style={{ gap: 4 }}>
+          <Button small label="−" disabled={item.qty <= 1} onPress={() => onCount(-1)} />
+          <Text style={[styles.qty, { color: t.ink }]} accessibilityLabel={`Quantité ${item.qty}`}>
+            ×{item.qty}
+          </Text>
+          <Button small label="+" onPress={() => onCount(1)} />
+        </Row>
+      ) : (
+        item.qty > 1 && <Text style={[styles.qty, { color: t.ink }]}>×{item.qty}</Text>
+      )}
+      {canEdit && wearable && <Button small label={worn ? 'Ranger' : 'Porter'} onPress={onToggle} />}
       {canEdit && !worn && <Button small kind="danger" label="✕" onPress={onRemove} />}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  item: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth },
+  qty: { minWidth: 34, textAlign: 'center', fontWeight: '700', fontSize: 16 },
+  item: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth },
   newItem: { flex: 1, borderWidth: 1, borderRadius: 6, paddingHorizontal: 10, paddingVertical: 8, fontSize: 16 },
   coins: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   coin: { flexGrow: 1, flexBasis: 110, borderWidth: 1, borderRadius: 8, padding: 8, alignItems: 'center', gap: 4 },

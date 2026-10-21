@@ -61,7 +61,7 @@ export function ArmoryCard({ ch, campaign, isGm, canInventory, patch }: SheetPro
     if (next) {
       const owned = items.findIndex((it) => armorOfLine(it.text)?.name === next.name);
       if (owned >= 0) items[owned] = { ...items[owned], equipped: true };
-      else items.unshift({ text: next.name, equipped: true });
+      else items.unshift({ text: next.name, equipped: true, qty: 1 });
     }
     const inventory = serializeInventory(items);
     const values: Parameters<typeof patch>[0] = { inventory };
@@ -77,7 +77,7 @@ export function ArmoryCard({ ch, campaign, isGm, canInventory, patch }: SheetPro
 
   async function addWeapon(weapon: Weapon) {
     const items = parseInventory(ch.inventory);
-    items.unshift({ text: weapon.name, equipped: true });
+    items.unshift({ text: weapon.name, equipped: true, qty: 1 });
     await patch({ attacks: [...ch.attacks, weaponAttack(ch, weapon)], inventory: serializeInventory(items) });
   }
 

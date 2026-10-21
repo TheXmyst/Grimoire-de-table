@@ -249,3 +249,17 @@ export function computeAc(ch: Character, armor?: Armor, shield?: Armor): { ac: n
   }
   return { ac, note: parts.join(', ') };
 }
+
+/** Arme du tableau des armes dont le nom ouvre la ligne d'inventaire (« Dague (×2) », « Javelines »). */
+export function weaponOfLine(line: string): Weapon | undefined {
+  const l = norm(line.replace(/^\s*\*\s*/, '').trim());
+  return [...WEAPONS].sort((a, b) => b.name.length - a.name.length).find((w) => l.startsWith(norm(w.name)));
+}
+
+// Ce qui se porte sur soi ou se tient en main : vêtements, bijoux, focaliseurs, carquois…
+const WEARABLE = /\b(armure|bouclier|vetements?|habits?|tenue|robe|cape|manteau|cap(uche)?|bottes|chaussures|gants|gantelets|anneau|bague|amulette|collier|medaillon|pendentif|ceinture|baudrier|chapeau|casque|heaume|couronne|diademe|lunettes|bracelets?|brassards|symbole sacre|embleme|reliquaire|focaliseur|baguette|orbe|sceptre|totem|branche de gui|carquois|fourreau|etui a carreaux|masque)\b/;
+
+/** Objet qu'on peut « porter » : arme, armure, bouclier ou objet qui se porte sur soi. */
+export function isEquipment(line: string): boolean {
+  return !!armorOfLine(line) || !!weaponOfLine(line) || WEARABLE.test(norm(line));
+}
