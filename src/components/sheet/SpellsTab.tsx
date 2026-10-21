@@ -50,7 +50,22 @@ export function SpellSlots({ ch, isGm, isOwner, canHp, patch }: SheetProps) {
   );
 }
 
-function SpellRow({ s, isGm, isOwner, onChange }: { s: CharacterSpell; isGm: boolean; isOwner: boolean; onChange: () => void }) {
+// Ces classes connaissent leurs sorts : ils sont toujours prêts, rien à préparer
+const KNOWN_CASTERS = ['Barde', 'Ensorceleur', 'Sorcier', 'Rôdeur'];
+
+function SpellRow({
+  s,
+  isGm,
+  isOwner,
+  prepares,
+  onChange,
+}: {
+  s: CharacterSpell;
+  isGm: boolean;
+  isOwner: boolean;
+  prepares: boolean;
+  onChange: () => void;
+}) {
   const t = useTheme();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
@@ -88,7 +103,7 @@ function SpellRow({ s, isGm, isOwner, onChange }: { s: CharacterSpell; isGm: boo
         </Pressable>
         <Row>
           {s.status === 'pending' && <Pill text="En attente du MJ" tone="warn" />}
-          {sp.level > 0 && s.status === 'approved' && (
+          {prepares && sp.level > 0 && s.status === 'approved' && (
             <Button small label={s.prepared ? 'Préparé' : 'Non préparé'} kind={s.prepared ? 'primary' : 'default'} disabled={!isGm && !isOwner} onPress={togglePrepared} />
           )}
           {isGm && s.status === 'pending' && <Button small kind="primary" label="Valider" onPress={approve} />}
@@ -191,7 +206,7 @@ export function SpellsTab(props: SheetProps) {
         </Row>
         {cantrips.length === 0 && <Body muted>Aucun tour de magie appris.</Body>}
         {cantrips.map((s) => (
-          <SpellRow key={s.spell_id} s={s} isGm={isGm} isOwner={isOwner} onChange={reloadSpells} />
+          <SpellRow key={s.spell_id} s={s} isGm={isGm} isOwner={isOwner} prepares={!KNOWN_CASTERS.includes(ch.class)} onChange={reloadSpells} />
         ))}
       </Card>
 
@@ -209,7 +224,7 @@ export function SpellsTab(props: SheetProps) {
             {leveled
               .filter((s) => s.spells.level === lvl)
               .map((s) => (
-                <SpellRow key={s.spell_id} s={s} isGm={isGm} isOwner={isOwner} onChange={reloadSpells} />
+                <SpellRow key={s.spell_id} s={s} isGm={isGm} isOwner={isOwner} prepares={!KNOWN_CASTERS.includes(ch.class)} onChange={reloadSpells} />
               ))}
           </View>
         ))}
