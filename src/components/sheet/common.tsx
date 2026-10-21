@@ -50,10 +50,36 @@ export function Stat({ label, value, highlight, hint }: { label: string; value: 
   );
 }
 
-export function NumField({ label, value, onChange }: { label: string; value: number; onChange: (v: number) => void }) {
+export function NumField({
+  label,
+  value,
+  onChange,
+  allowNegative,
+}: {
+  label: string;
+  value: number;
+  onChange: (v: number) => void;
+  allowNegative?: boolean;
+}) {
+  // Le texte tapé reste tel quel (vide, « - ») tant qu'il ne forme pas encore un nombre
+  const [text, setText] = useState(String(value));
+  useEffect(() => {
+    setText((cur) => (parseInt(cur, 10) === value ? cur : String(value)));
+  }, [value]);
   return (
     <View style={{ flexBasis: 90, flexGrow: 1 }}>
-      <Field label={label} value={String(value)} keyboardType="number-pad" onChangeText={(v) => onChange(parseInt(v, 10) || 0)} />
+      <Field
+        label={label}
+        value={text}
+        keyboardType={allowNegative ? 'numbers-and-punctuation' : 'number-pad'}
+        onChangeText={(v) => {
+          const clean = v.replace('−', '-');
+          setText(clean);
+          const n = parseInt(clean, 10);
+          if (!Number.isNaN(n)) onChange(allowNegative ? n : Math.abs(n));
+        }}
+        onBlur={() => setText(String(value))}
+      />
     </View>
   );
 }

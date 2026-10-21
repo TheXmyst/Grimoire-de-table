@@ -111,6 +111,7 @@ function SpellRow({ s, isGm, isOwner, onChange }: { s: CharacterSpell; isGm: boo
 export function SpellsTab(props: SheetProps) {
   const { ch, spells, isGm, isOwner, reloadSpells } = props;
   const router = useRouter();
+  const t = useTheme();
   const maxLvl = maxSpellLevel(ch.class, ch.level);
   const cantrips = spells.filter((s) => s.spells.level === 0);
   const leveled = spells.filter((s) => s.spells.level > 0);
@@ -126,7 +127,6 @@ export function SpellsTab(props: SheetProps) {
     );
   }
 
-  const t = useTheme();
   const ability = ((ch.spell_ability || SPELL_ABILITY[ch.class]) ?? 'INT') as AbilityKey;
   const abilityLabel = ABILITIES.find((a) => a.key === ability)?.label ?? ability;
   const attack = modifier(ch.abilities[ability]) + proficiencyBonus(ch.level);

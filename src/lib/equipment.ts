@@ -254,7 +254,10 @@ export function computeAc(ch: Character, armor?: Armor, shield?: Armor): { ac: n
 /** Arme du tableau des armes dont le nom ouvre la ligne d'inventaire (« Dague (×2) », « Javelines »). */
 export function weaponOfLine(line: string): Weapon | undefined {
   const l = norm(line.replace(/^\s*\*\s*/, '').trim());
-  return [...WEAPONS].sort((a, b) => b.name.length - a.name.length).find((w) => l.startsWith(norm(w.name)));
+  // Le nom de l'arme doit être un mot entier : « Piquets de tente » n'est pas une pique
+  return [...WEAPONS]
+    .sort((a, b) => b.name.length - a.name.length)
+    .find((w) => l.startsWith(norm(w.name)) && /^(s|\s|\(|×|$)/.test(l.slice(norm(w.name).length)));
 }
 
 // Ce qui se porte sur soi ou se tient en main : vêtements, bijoux, focaliseurs, carquois…

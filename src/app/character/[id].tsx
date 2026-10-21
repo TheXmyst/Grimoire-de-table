@@ -170,7 +170,11 @@ export default function CharacterScreen() {
       const fromTemp = Math.min(ch.temp_hp, n);
       patch({ temp_hp: ch.temp_hp - fromTemp, hp: Math.max(0, ch.hp - (n - fromTemp)) });
     } else {
-      patch({ hp: Math.min(ch.hp_max, ch.hp + n) });
+      // Les soins ne baissent jamais les PV ; revenir de 0 efface les jets contre la mort
+      patch({
+        hp: Math.max(ch.hp, Math.min(ch.hp_max, ch.hp + n)),
+        ...(ch.hp === 0 && n > 0 ? { death_successes: 0, death_failures: 0 } : {}),
+      });
     }
   }
 

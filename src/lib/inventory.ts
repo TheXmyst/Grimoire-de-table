@@ -5,12 +5,13 @@
 export type Item = { text: string; equipped: boolean; qty: number };
 
 const EQUIPPED = /^\*\s*/;
-const QTY = /\s*(?:\(\s*[x×]\s*(\d+)\s*\)|[x×]\s*(\d+))$/i;
+// « x » seul doit être précédé d'une espace : « Noix 10 » ou « Boîte 4x4 » ne sont pas des quantités
+const QTY = /(?:\s*\(\s*[x×]\s*(\d+)\s*\)|\s*×\s*(\d+)|\s+x\s*(\d+))$/i;
 
 function splitQty(line: string): { text: string; qty: number } {
   const m = line.match(QTY);
   if (!m || m.index === 0) return { text: line, qty: 1 };
-  return { text: line.slice(0, m.index).trim(), qty: Math.max(1, parseInt(m[1] ?? m[2], 10)) };
+  return { text: line.slice(0, m.index).trim(), qty: Math.max(1, parseInt(m[1] ?? m[2] ?? m[3], 10)) };
 }
 
 export function parseInventory(inventory: string): Item[] {

@@ -5,7 +5,7 @@ import { fonts, useTheme } from '../../lib/theme';
 import { Body, Button, Card, Field, Label, Row, Title, Toggle } from '../ui';
 import { ArmoryCard } from './ArmoryCard';
 import type { MagicItem } from '../../lib/types';
-import { isEquipment } from '../../lib/equipment';
+import { armorOfLine, isEquipment } from '../../lib/equipment';
 import { parseInventory, serializeInventory, type Item } from '../../lib/inventory';
 import { Collapsible, TextArea, type SheetProps } from './common';
 
@@ -29,7 +29,20 @@ export function BagTab(props: SheetProps) {
   const [draft, setDraft] = useState('');
 
   const save = (next: Item[]) => patch({ inventory: serializeInventory(next) });
-  const toggle = (index: number) => save(items.map((it, i) => (i === index ? { ...it, equipped: !it.equipped } : it)));
+  function toggle(index: number) {
+    const target = items[index];
+    const armor = !target.equipped ? armorOfLine(target.text) : undefined;
+    const isShield = armor?.category === 'bouclier';
+    save(
+      items.map((it, i) => {
+        if (i === index) return { ...it, equipped: !it.equipped };
+        // Une seule armure et un seul bouclier à la fois : on range l'ancien
+        const other = armor && it.equipped ? armorOfLine(it.text) : undefined;
+        if (other && (other.category === 'bouclier') === isShield) return { ...it, equipped: false };
+        return it;
+      }),
+    );
+  }
   const remove = (index: number) => save(items.filter((_, i) => i !== index));
   const count = (index: number, delta: number) => save(items.map((it, i) => (i === index ? { ...it, qty: Math.max(1, it.qty + delta) } : it)));
   function add() {

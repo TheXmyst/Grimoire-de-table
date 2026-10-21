@@ -21,15 +21,20 @@ function Vitality({ ch, isGm, isOwner, canHp, patch, onRoll }: SheetProps) {
     const r = 1 + Math.floor(Math.random() * die);
     const con = modifier(ch.abilities.CON);
     const gain = Math.max(0, r + con);
-    patch({ hit_dice_used: ch.hit_dice_used + 1, hp: Math.min(ch.hp_max, ch.hp + gain) });
+    patch({
+      hit_dice_used: ch.hit_dice_used + 1,
+      hp: Math.max(ch.hp, Math.min(ch.hp_max, ch.hp + gain)),
+      ...(ch.hp === 0 && gain > 0 ? { death_successes: 0, death_failures: 0 } : {}),
+    });
     onRoll(`Dé de vie : +${gain} PV`, gain, `d${die} (${r}) ${signed(con)} CON`);
   }
 
   function deathSave() {
     const r = 1 + Math.floor(Math.random() * 20);
     if (r === 20) {
-      patch({ hp: 1, death_successes: 0, death_failures: 0 });
-      onRoll('Jet contre la mort : 20 naturel, tu te relèves avec 1 PV !', r, 'd20');
+      // Sans le droit de toucher aux PV, le joueur remet ses jets à zéro et le MJ donne le PV
+      patch(canHp ? { hp: 1, death_successes: 0, death_failures: 0 } : { death_successes: 0, death_failures: 0 });
+      onRoll(canHp ? 'Jet contre la mort : 20 naturel, tu te relèves avec 1 PV !' : 'Jet contre la mort : 20 naturel ! Ton MJ te remet à 1 PV.', r, 'd20');
     } else if (r === 1) {
       patch({ death_failures: Math.min(3, ch.death_failures + 2) });
       onRoll('Jet contre la mort : 1 naturel, deux échecs', r, 'd20');
@@ -79,7 +84,7 @@ function Vitality({ ch, isGm, isOwner, canHp, patch, onRoll }: SheetProps) {
           </Row>
           {canEdit && (
             <Row>
-              <Button small kind="primary" label="Lancer le jet" onPress={deathSave} />
+              <Button small kind="primary" label="Lancer le jet" disabled={ch.death_successes >= 3 || ch.death_failures >= 3} onPress={deathSave} />
               <Button small label="Remettre à zéro" onPress={() => patch({ death_successes: 0, death_failures: 0 })} />
             </Row>
           )}
@@ -202,7 +207,7 @@ export function CombatTab(props: SheetProps) {
             </Row>
             <Toggle label="Maîtrisée (ajoute le bonus de maîtrise)" value={draft.proficient} onChange={(v) => setDraft({ ...draft, proficient: v })} />
             <View style={{ maxWidth: 200 }}>
-              <NumField label="Bonus magique (+1, +2…)" value={draft.bonus} onChange={(v) => setDraft({ ...draft, bonus: v })} />
+              <NumField label="Bonus magique (+1, −1…)" allowNegative value={draft.bonus} onChange={(v) => setDraft({ ...draft, bonus: v })} />
             </View>
             <Body muted>
               Résultat : {signed(attackNumbers(ch, draft).toHit)} pour toucher, {attackNumbers(ch, draft).damage}

@@ -81,9 +81,12 @@ export default function SpellPicker() {
 
   async function learn(spellId: string) {
     setError('');
-    const { error } = await supabase.from('character_spells').insert({ character_id: characterId, spell_id: spellId });
+    // Le MJ n'a pas à valider ses propres choix
+    const { error } = await supabase
+      .from('character_spells')
+      .insert({ character_id: characterId, spell_id: spellId, ...(isGm ? { status: 'approved' } : {}) });
     if (error) return setError(errorText(error));
-    setKnown(new Set([...known, spellId]));
+    setKnown((prev) => new Set(prev).add(spellId));
   }
 
   async function addHomebrew() {
