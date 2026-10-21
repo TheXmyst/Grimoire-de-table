@@ -249,7 +249,7 @@ const DATA: Record<string, ClassData> = {
       20: { f: [['Perfection de l’être', 'Si tu n’as plus de ki en lançant l’initiative, tu en récupères 4.']] },
     },
   },
-  Occultiste: {
+  Sorcier: {
     cantrips: CANTRIPS(2),
     known: [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15],
     raw: {

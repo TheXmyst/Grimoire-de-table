@@ -2,14 +2,14 @@
 
 Sorts du System Reference Document 5.1 (Wizards of the Coast, CC-BY-4.0),
 traduits et résumés en français. Niveaux 0 à 3 pour l'instant.
-Classes : B=Barde C=Clerc D=Druide E=Ensorceleur M=Magicien O=Occultiste P=Paladin R=Rôdeur
+Classes : B=Barde C=Clerc D=Druide E=Ensorceleur M=Magicien O=Sorcier P=Paladin R=Rôdeur
 Drapeaux : c=concentration r=rituel
 """
 
 from pathlib import Path
 
 CLASSES = {'B': 'Barde', 'C': 'Clerc', 'D': 'Druide', 'E': 'Ensorceleur', 'M': 'Magicien',
-           'O': 'Occultiste', 'P': 'Paladin', 'R': 'Rôdeur'}
+           'O': 'Sorcier', 'P': 'Paladin', 'R': 'Rôdeur'}
 
 A, BA, RE, MIN = '1 action', '1 action bonus', '1 réaction', '1 minute'
 

@@ -997,9 +997,9 @@ export const CLASS_TEMPLATES: Pregen[] = [
     "spells": []
   },
   {
-    "name": "Modèle Occultiste",
+    "name": "Modèle Sorcier",
     "race": "Humain",
-    "class": "Occultiste",
+    "class": "Sorcier",
     "subclass": "Fiélon",
     "background": "Charlatan",
     "alignment": "Chaotique neutre",
@@ -1067,7 +1067,7 @@ export const CLASS_TEMPLATES: Pregen[] = [
     "features": [
       {
         "name": "Patron d'outre-monde : Fiélon",
-        "source": "Occultiste",
+        "source": "Sorcier",
         "description": "Un démon ou un diable t'a accordé ses pouvoirs. Il ajoute Mains brûlantes et Injonction à la liste de sorts où tu peux choisir."
       },
       {
@@ -1077,7 +1077,7 @@ export const CLASS_TEMPLATES: Pregen[] = [
       },
       {
         "name": "Magie de pacte",
-        "source": "Occultiste",
+        "source": "Sorcier",
         "description": "Tu lances des sorts grâce à ton Charisme. DD 13, attaque de sort +5. 1 seul emplacement de niveau 1, mais il revient après chaque repos court."
       },
       {

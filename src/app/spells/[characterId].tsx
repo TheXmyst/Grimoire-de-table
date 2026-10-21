@@ -66,7 +66,8 @@ export default function SpellPicker() {
       if (q && !s.name.toLowerCase().includes(q)) return false;
       if (showAll && isGm) return true;
       // Les sorts maison sans classe sont ouverts à tous ; sinon la classe doit correspondre
-      const classOk = s.classes.length === 0 || s.classes.includes(ch.class);
+      // « Occultiste » : ancien nom du Sorcier, tant que la migration 0007 n'est pas passée
+      const classOk = s.classes.length === 0 || s.classes.includes(ch.class) || (ch.class === 'Sorcier' && s.classes.includes('Occultiste'));
       const levelOk = s.level <= maxLvl && (s.level > 0 || hasCantrips(ch.class));
       return classOk && levelOk;
     });

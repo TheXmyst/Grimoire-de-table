@@ -7,7 +7,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "Personnelle",
@@ -40,7 +40,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "Personnelle",
@@ -55,7 +55,7 @@
   "level": 1,
   "school": "Abjuration",
   "classes": [
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "Personnelle",
@@ -72,7 +72,7 @@
   "classes": [
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "9 m",
@@ -192,7 +192,7 @@
   "level": 1,
   "school": "Enchantement",
   "classes": [
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action bonus",
   "range": "27 m",
@@ -254,7 +254,7 @@
   "level": 1,
   "school": "Invocation",
   "classes": [
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "Personnelle (rayon de 3 m)",
@@ -287,7 +287,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "36 m",
@@ -337,7 +337,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "18 m",
@@ -368,7 +368,7 @@
   "level": 3,
   "school": "Invocation",
   "classes": [
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "45 m",
@@ -586,7 +586,7 @@
    "Clerc",
    "Ensorceleur",
    "Magicien",
-   "Occultiste",
+   "Sorcier",
    "Paladin"
   ],
   "casting_time": "1 action",
@@ -763,7 +763,7 @@
    "Druide",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "9 m",
@@ -982,7 +982,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "150 m",
@@ -1078,7 +1078,7 @@
    "Barde",
    "Druide",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "10 minutes",
   "range": "90 m",
@@ -1255,7 +1255,7 @@
   "school": "Divination",
   "classes": [
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 minute",
   "range": "Personnelle",
@@ -1419,7 +1419,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "27 m",
@@ -1658,7 +1658,7 @@
   "classes": [
    "Barde",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 minute",
   "range": "Spéciale",
@@ -1692,7 +1692,7 @@
    "Clerc",
    "Druide",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "10 minutes",
   "range": "Personnelle",
@@ -1819,7 +1819,7 @@
   "classes": [
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "45 m",
@@ -1897,7 +1897,7 @@
   "classes": [
    "Clerc",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 minute",
   "range": "3 m",
@@ -2041,7 +2041,7 @@
   "school": "Invocation",
   "classes": [
    "Druide",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 minute",
   "range": "27 m",
@@ -2074,7 +2074,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "Personnelle",
@@ -2136,7 +2136,7 @@
   "classes": [
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "150 m",
@@ -2183,7 +2183,7 @@
   "school": "Transmutation",
   "classes": [
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "18 m",
@@ -2233,7 +2233,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "18 m",
@@ -2284,7 +2284,7 @@
    "Clerc",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "Contact",
@@ -2317,7 +2317,7 @@
   "classes": [
    "Barde",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "30 m",
@@ -2336,7 +2336,7 @@
    "Druide",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "Contact",
@@ -2353,7 +2353,7 @@
   "classes": [
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "18 m",
@@ -2388,7 +2388,7 @@
    "Clerc",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "Personnelle",
@@ -2645,7 +2645,7 @@
   "school": "Transmutation",
   "classes": [
    "Barde",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "Personnelle",
@@ -2709,7 +2709,7 @@
   "school": "Invocation",
   "classes": [
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "18 m",
@@ -2727,7 +2727,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "18 m",
@@ -2745,7 +2745,7 @@
    "Barde",
    "Druide",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "45 m",
@@ -2809,7 +2809,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "18 m",
@@ -2953,7 +2953,7 @@
   "school": "Abjuration",
   "classes": [
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 minute",
   "range": "9 m",
@@ -3001,7 +3001,7 @@
    "Barde",
    "Ensorceleur",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "18 m",
@@ -3033,7 +3033,7 @@
   "classes": [
    "Barde",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 action",
   "range": "9 m",
@@ -3083,7 +3083,7 @@
   "classes": [
    "Clerc",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 heure",
   "range": "3 m",
@@ -3101,7 +3101,7 @@
    "Barde",
    "Druide",
    "Magicien",
-   "Occultiste"
+   "Sorcier"
   ],
   "casting_time": "1 minute",
   "range": "Contact",
