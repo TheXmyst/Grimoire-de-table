@@ -1,0 +1,23 @@
+name: Garder Supabase éveillé
+
+# La version gratuite de Supabase met le projet en pause après 7 jours sans activité.
+# Une petite lecture deux fois par semaine suffit à l'éviter.
+on:
+  schedule:
+    - cron: '17 6 * * 1,4'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lire un sort dans la base
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' --retry 3 --retry-delay 20 \
+            "$SUPABASE_URL/rest/v1/spells?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+          echo "Réponse de Supabase : $code"
+          test "$code" = "200"
