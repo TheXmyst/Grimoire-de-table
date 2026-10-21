@@ -89,7 +89,7 @@ export default function CharacterScreen() {
   // Modifications envoyées mais pas encore confirmées : on ignore pendant ce temps l'écho
   // du temps réel, sinon la fiche « revient en arrière » quand on tape vite
   const pending = useRef(0);
-  const echo = useRef<Character | null>(null);
+  const echo = useRef<Partial<Character> | null>(null);
 
   const load = useCallback(async () => {
     // La fiche (avec sa campagne) et les sorts partent en même temps
@@ -117,9 +117,11 @@ export default function CharacterScreen() {
     const channel = supabase
       .channel(`character-${id}`)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'characters', filter: `id=eq.${id}` }, (payload) => {
-        const next = withDefaults(payload.new as Character);
-        if (pending.current > 0) echo.current = next;
-        else setCh(next);
+        // Postgres n'envoie pas les grosses colonnes inchangées (capacités, avatar…) :
+        // on fusionne ce qui arrive avec la fiche affichée au lieu de la remplacer
+        const changed = payload.new as Partial<Character>;
+        if (pending.current > 0) echo.current = { ...echo.current, ...changed };
+        else setCh((cur) => (cur ? { ...cur, ...changed } : cur));
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'character_spells', filter: `character_id=eq.${id}` }, () =>
         loadSpells(),
@@ -153,7 +155,8 @@ export default function CharacterScreen() {
       load();
     } else if (pending.current === 0 && echo.current) {
       // Dernière version du serveur, au cas où quelqu'un d'autre a modifié la fiche entre-temps
-      setCh(echo.current);
+      const latest = echo.current;
+      setCh((cur) => (cur ? { ...cur, ...latest } : cur));
     }
     if (pending.current === 0) echo.current = null;
     return !error;
