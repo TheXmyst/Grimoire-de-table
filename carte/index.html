@@ -109,6 +109,7 @@ input[type="checkbox"] { accent-color: var(--ember); width: 16px; height: 16px; 
 .tk.on { border-color: var(--ember); }
 .tk.dead input[type="text"] { text-decoration: line-through; color: var(--ink-dim); }
 .tk .dot { width: 22px; height: 22px; padding: 0; border-radius: 50%; border: 2px solid rgba(255,255,255,.55); flex: none; }
+.seg { display: inline-flex; gap: 4px; flex-wrap: wrap; }
 .tk .kind { width: 4.2rem; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-dim); }
 .tk input[type="text"] { width: 10rem; max-width: 100%; }
 .tk button { padding: 4px 10px; font-size: .88rem; }
@@ -133,6 +134,11 @@ canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block
   border-radius: 6px;
 }
 body.tv .bar, body.tv .panel { display: none; }
+body.player #mapBtns, body.player #btnPanel, body.player #btnFull { display: none; }
+body.player.logged .panel { display: none; }
+body.player .bar { padding-top: 6px; padding-bottom: 6px; }
+.pstat { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); padding: 7px 16px; border-radius: 999px; background: rgba(23,18,14,.92); border: 1px solid var(--line); font-weight: 700; pointer-events: none; max-width: calc(100% - 24px); text-align: center; }
+.pstat.go { border-color: #4fbf6a; color: #bff2c9; }
 </style>
 
 <header class="bar" id="bar">
@@ -185,6 +191,31 @@ body.tv .bar, body.tv .panel { display: none; }
       <label for="nCell">Case <input type="number" id="nCell" min="1" max="6" step="0.1" value="2.5"> cm</label>
     </div>
   </div>
+  <div class="group wide" id="gTable">
+    <span class="label">Table de jeu (déplacements des joueurs)</span>
+    <div class="row">
+      <div class="seg" role="group" aria-label="Qui peut bouger">
+        <button type="button" id="mLocked" aria-pressed="true">Joueurs bloqués</button>
+        <button type="button" id="mFree" aria-pressed="false">Joueurs libres</button>
+        <button type="button" id="mTurn" aria-pressed="false">Au tour par tour</button>
+      </div>
+      <label for="sTurn">Tour de <select id="sTurn"><option value="">(choisir)</option></select></label>
+      <button type="button" id="bGive">Donner la main</button>
+      <button type="button" id="bEnd">Fin du tour</button>
+    </div>
+    <div class="row">
+      <button type="button" id="bUndo">↶ Annuler le dernier déplacement</button>
+      <button type="button" id="bUndoTurn">↶ Revenir au début du tour</button>
+      <button type="button" id="bNewTurn">Nouveau tour (mémoriser les positions)</button>
+      <label for="cZone"><input type="checkbox" id="cZone" checked> Zones vertes (déplacement)</label>
+    </div>
+    <div class="row">
+      <button type="button" id="bPaint" aria-pressed="false">Bloquer des cases : désactivé</button>
+      <button type="button" id="bUnblock">Tout débloquer (cette carte)</button>
+      <label for="cPreview"><input type="checkbox" id="cPreview"> Voir comme les joueurs</label>
+    </div>
+    <p class="keys" id="tStat" style="margin:0"></p>
+  </div>
   <div class="group wide">
     <span class="label">Grimoire de Table (fiches des joueurs)</span>
     <div class="row" id="gLogin">
@@ -228,6 +259,7 @@ body.tv .bar, body.tv .panel { display: none; }
   <canvas id="cv" aria-label="Plan de la carte, vue de dessus"></canvas>
   <div class="loading" id="loading">Allumage des torches…</div>
   <div class="toast" id="toast" hidden></div>
+  <div class="pstat" id="pStat" hidden></div>
 </main>
 
 <script>
@@ -1695,9 +1727,10 @@ function sharFx(c, t, dt, dark) {
 
 /* ---------- état et réglages ---------- */
 const SKEY = 'sanglier-v2', TKEY = 'sanglier-pions';
-const S = { fire: true, candles: true, moon: true, br: {}, grid: true, gridA: 0.18, real: false, scrCm: 70, cellCm: 2.5, map: 'taverne', names: true };
+const S = { fire: true, candles: true, moon: true, br: {}, grid: true, gridA: 0.18, real: false, scrCm: 70, cellCm: 2.5, map: 'taverne', names: true, blocked: {}, lock: 'locked', turn: null, zone: true, preview: false };
 try { Object.assign(S, JSON.parse(localStorage.getItem(SKEY) || '{}')); } catch (e) { /* stockage indisponible */ }
 if (!S.br || typeof S.br !== 'object') S.br = {};
+if (!S.blocked || typeof S.blocked !== 'object') S.blocked = {};
 function save() { try { localStorage.setItem(SKEY, JSON.stringify(S)); } catch (e) { /* ignoré */ } }
 
 const $ = (id) => document.getElementById(id);
@@ -1932,7 +1965,7 @@ function loadTok() {
     if (Array.isArray(a)) TOK = a.filter(t => t && typeof t.id === 'string' && KINDS[t.kind] && isFinite(t.x) && isFinite(t.y) && isFinite(t.size));
   } catch (e) { TOK = []; }
 }
-function saveTok() { try { localStorage.setItem(TKEY, JSON.stringify(TOK)); } catch (e) { /* ignoré */ } }
+function saveTok() { if (role === 'player') return; try { localStorage.setItem(TKEY, JSON.stringify(TOK)); } catch (e) { /* ignoré */ } schedulePush(); }
 loadTok();
 
 function snap(x, y, size) {
@@ -1967,7 +2000,7 @@ function addToken(kind) {
   }
   const cols = KINDS[kind].colors, color = cols[TOK.filter(t => t.kind === kind).length % cols.length];
   const p = freeSpot(M, size);
-  const tk = { id: 't' + Date.now().toString(36) + Math.floor(Math.random() * 1e5).toString(36), map: M.id, kind, name, x: p[0], y: p[1], size, color, dead: false };
+  const tk = { id: 't' + Date.now().toString(36) + Math.floor(Math.random() * 1e5).toString(36), map: M.id, kind, name, x: p[0], y: p[1], size, color, dead: false, speed: 6 };
   TOK.push(tk); sel = tk.id; $('nName').value = '';
   saveTok(); renderList();
 }
@@ -1994,7 +2027,11 @@ function renderList() {
     const ko = el('button'); ko.type = 'button'; ko.id = 'tkk-' + t.id; ko.textContent = t.dead ? 'Relever' : 'KO';
     ko.onclick = () => { t.dead = !t.dead; saveTok(); renderList(); };
     const del = el('button'); del.type = 'button'; del.id = 'tkd-' + t.id; del.textContent = 'Retirer'; del.onclick = () => removeToken(t.id);
-    row.append(dot, kd, inp, sz, ko, del); box.appendChild(row);
+    const spd = el('input'); spd.type = 'number'; spd.min = '0'; spd.max = '40'; spd.value = t.speed != null ? t.speed : 6; spd.id = 'tks2-' + t.id; spd.title = 'Déplacement par tour (en cases)'; spd.setAttribute('aria-label', 'Déplacement en cases'); spd.style.width = '3.6rem';
+    spd.onchange = () => { t.speed = clampN(parseInt(spd.value, 10) || 0, 0, 40); t.speedAuto = false; saveTok(); };
+    const hid = el('button'); hid.type = 'button'; hid.id = 'tkh-' + t.id; hid.textContent = t.hidden ? 'Caché' : 'Visible'; hid.title = 'Caché : les joueurs ne voient pas ce jeton';
+    hid.onclick = () => { t.hidden = !t.hidden; saveTok(); renderList(); };
+    row.append(dot, kd, inp, sz, spd, hid, ko, del); box.appendChild(row);
   });
 }
 
@@ -2011,6 +2048,7 @@ function drawLabel(t) {
   c.fillStyle = '#f3e8d0'; c.fillText(t.name, cx, by + h / 2 + 1);
 }
 function drawToken(t, now) {
+  ctx.globalAlpha = t.hidden ? 0.5 : 1;
   const c = ctx, r = t.size * 0.46 * V.k, cx = V.ox + t.x * V.k, cy = V.oy + t.y * V.k;
   const base = t.dead ? '#6b6b6b' : t.color;
   c.save();
@@ -2059,6 +2097,7 @@ function drawToken(t, now) {
     c.setLineDash([r * 0.25, r * 0.18]); c.lineDashOffset = -now * r * 0.6;
     c.strokeStyle = '#fff'; c.lineWidth = Math.max(2, r * 0.08); c.beginPath(); c.arc(cx, cy, r * 1.24, 0, TAU); c.stroke(); c.setLineDash([]);
   }
+  ctx.globalAlpha = 1;
 }
 
 /* ---------- pointeur : glisser les pions ---------- */
@@ -2076,9 +2115,21 @@ let pan = null;
 cv.addEventListener('wheel', (e) => { e.preventDefault(); camZoom(Math.exp(-e.deltaY * 0.0016), e.clientX, e.clientY); }, { passive: false });
 cv.addEventListener('pointerdown', (e) => {
   if (e.button !== 0 && e.pointerType === 'mouse') return;
-  const p = toCell(e), hit = hitToken(p);
+  const p = toCell(e);
+  let hit = hitToken(p);
+  if (role === 'player' && hit) {
+    const mineOk = hit.cid && GR.mine.has(hit.cid), st = GR.st || {};
+    if (!mineOk) hit = null;
+    else if (!(st.lock === 'free' || (st.lock === 'turn' && st.turn_char === hit.cid))) { toast(st.lock === 'turn' ? 'Ce n\'est pas ton tour.' : 'Le MJ a bloqué les déplacements.'); hit = null; }
+  }
+  if (paintMode && role === 'gm' && !hit) {
+    const c0 = Math.floor(p.x), r0 = Math.floor(p.y);
+    paint = { val: !isBlocked(S.map, c0, r0) }; setBlocked(c0, r0, paint.val);
+    try { cv.setPointerCapture(e.pointerId); } catch (err) { /* ignoré */ }
+    e.preventDefault(); return;
+  }
   if (hit) {
-    sel = hit.id; drag = { id: hit.id, dx: hit.x - p.x, dy: hit.y - p.y };
+    sel = hit.id; drag = { id: hit.id, dx: hit.x - p.x, dy: hit.y - p.y, sx: hit.x, sy: hit.y };
     TOK = TOK.filter(t => t !== hit); TOK.push(hit);
     try { cv.setPointerCapture(e.pointerId); } catch (err) { /* ignoré */ }
     renderList(); e.preventDefault();
@@ -2090,6 +2141,7 @@ cv.addEventListener('pointerdown', (e) => {
   }
 });
 cv.addEventListener('pointermove', (e) => {
+  if (paint) { const q = toCell(e); setBlocked(Math.floor(q.x), Math.floor(q.y), paint.val); return; }
   if (pan) {
     const dx = (e.clientX - pan.x) * pan.d0, dy = (e.clientY - pan.y) * pan.d0;
     if (Math.abs(dx) + Math.abs(dy) > 4) pan.moved = true;
@@ -2102,15 +2154,23 @@ cv.addEventListener('pointermove', (e) => {
   t.x = clampN(p.x + drag.dx, 0.3, COLS - 0.3); t.y = clampN(p.y + drag.dy, 0.3, ROWS - 0.3);
 });
 function endDrag() {
-  pan = null;
+  pan = null; paint = null;
   if (!drag) return;
   const t = TOK.find(x => x.id === drag.id);
-  if (t) { const p = snap(t.x, t.y, t.size); t.x = p[0]; t.y = p[1]; }
+  if (t) {
+    const p = snap(t.x, t.y, t.size); t.x = p[0]; t.y = p[1];
+    const moved = t.x !== drag.sx || t.y !== drag.sy;
+    if (role === 'player') {
+      const why = moved ? moveRefusal(t) : '';
+      if (why) { t.x = drag.sx; t.y = drag.sy; toast(why); } else if (moved) playerPush(t);
+    } else if (moved) histPush(t, drag.sx, drag.sy);
+  }
   drag = null; saveTok();
 }
 cv.addEventListener('pointerup', endDrag);
 cv.addEventListener('pointercancel', endDrag);
 cv.addEventListener('dblclick', (e) => {
+  if (role === 'player') return;
   const hit = hitToken(toCell(e));
   if (hit) { hit.dead = !hit.dead; saveTok(); renderList(); } else setTV(!document.body.classList.contains('tv'));
 });
@@ -2136,7 +2196,7 @@ function toggle(key) { S[key] = !S[key]; syncUI(); save(); }
 function setMap(id) {
   if (!MAPS.some(m => m.id === id)) return;
   S.map = id; camReset(); ensure(curMap()); useDims(curMap()); flames.length = 0; sparks.length = 0; sel = null; drag = null;
-  syncUI(); renderList(); save();
+  syncUI(); renderList(); save(); fillTurnSelect(); pushStateSoon();
 }
 function nextMap() { const i = MAPS.findIndex(m => m.id === S.map); setMap(MAPS[(i + 1) % MAPS.length].id); }
 MAPS.forEach(M => {
@@ -2186,7 +2246,14 @@ document.addEventListener('keydown', (e) => {
   const tg = e.target && e.target.tagName;
   if (tg === 'SELECT' || (tg === 'INPUT' && e.target.type !== 'checkbox' && e.target.type !== 'range')) return;
   const k = e.key.toLowerCase();
-  if (k === 'h') setTV(!document.body.classList.contains('tv'));
+  if (role === 'player' && !(k === '+' || k === '=' || k === '-' || k === '_' || k === '0' || k.indexOf('arrow') === 0)) return;
+  if (role === 'player' && k.indexOf('arrow') === 0) {
+    const d = { arrowleft: [-1, 0], arrowright: [1, 0], arrowup: [0, -1], arrowdown: [0, 1] }[k], s = 4 / CAM.z;
+    CAM.cx = (CAM.cx === null ? COLS / 2 : CAM.cx) + d[0] * s; CAM.cy = (CAM.cy === null ? ROWS / 2 : CAM.cy) + d[1] * s; e.preventDefault(); return;
+  }
+  if (k === 'b') { paintMode = !paintMode; paint = null; syncTable(); }
+  else if (k === 'z' && (e.ctrlKey || e.metaKey)) { undoMove(); e.preventDefault(); }
+  else if (k === 'h') setTV(!document.body.classList.contains('tv'));
   else if (k === 'g') { S.grid = !S.grid; syncUI(); save(); }
   else if (k === 'n') nextMap();
   else if (k === '+' || k === '=') camZoom(1.25);
@@ -2207,8 +2274,161 @@ document.addEventListener('keydown', (e) => {
 });
 
 
+/* ---------- table de jeu : cases bloquées, zones vertes, annuler, tours ---------- */
+let role = 'gm';
+let paintMode = false, paint = null;
+const NOCELLS = [];
+const BLK = {};
+function blkSrc() { return role === 'player' ? ((GR.st && GR.st.blocked) || {}) : S.blocked; }
+function blkSet(id) {
+  const arr = blkSrc()[id] || NOCELLS;
+  let e = BLK[id];
+  if (!e || e.src !== arr) { e = BLK[id] = { src: arr, set: new Set(arr), cells: arr.map(k => k.split(',').map(Number)), v: e ? e.v + 1 : 1 }; }
+  return e;
+}
+const isBlocked = (id, c, r) => blkSet(id).set.has(c + ',' + r);
+function setBlocked(c, r, val) {
+  if (c < 0 || r < 0 || c >= COLS || r >= ROWS) return;
+  const id = S.map, arr = (S.blocked[id] || []).slice(), k = c + ',' + r, i = arr.indexOf(k);
+  if (val && i < 0) arr.push(k); else if (!val && i >= 0) arr.splice(i, 1); else return;
+  S.blocked[id] = arr; save(); pushStateSoon();
+}
+const tokCells = (t) => (t.size === 2 ? [[t.x - 1, t.y - 1], [t.x, t.y - 1], [t.x - 1, t.y], [t.x, t.y]] : [[Math.floor(t.x), Math.floor(t.y)]]);
+
+/* zone verte : les cases atteignables depuis le point de départ du tour, sans traverser une case bloquée */
+const REACH = {};
+function reachOf(t) {
+  const R = Math.max(0, Math.round(t.speed != null ? t.speed : 6));
+  const px = t.ox != null ? t.ox : t.x, py = t.oy != null ? t.oy : t.y, h = t.size === 2 ? 0.5 : 0;
+  const c0 = Math.floor(px - h), r0 = Math.floor(py - h), b = blkSet(t.map), key = [t.map, c0, r0, R, b.v, COLS, ROWS].join('|');
+  if (REACH[key]) return REACH[key];
+  const dist = new Map([[c0 + ',' + r0, 0]]), q = [[c0, r0]];
+  for (let i = 0; i < q.length; i++) {
+    const c = q[i][0], r = q[i][1], d = dist.get(c + ',' + r);
+    if (d >= R) continue;
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
+      if (!dx && !dy) continue;
+      const nc = c + dx, nr = r + dy, k = nc + ',' + nr;
+      if (nc < 0 || nr < 0 || nc >= COLS || nr >= ROWS || dist.has(k) || b.set.has(k)) continue;
+      dist.set(k, d + 1); q.push([nc, nr]);
+    }
+  }
+  if (Object.keys(REACH).length > 60) for (const k in REACH) delete REACH[k];
+  return (REACH[key] = { set: new Set(dist.keys()), cells: q, c0, r0 });
+}
+function zoneTokens() {
+  const out = [];
+  if (role === 'player') {
+    const st = GR.st || {};
+    if (st.lock === 'turn') TOK.forEach(t => { if (t.map === S.map && t.cid && GR.mine.has(t.cid) && t.cid === st.turn_char) out.push(t); });
+    return out;
+  }
+  if (!S.zone) return out;
+  const s = sel && TOK.find(t => t.id === sel);
+  if (s && s.map === S.map && s.kind !== 'pnj') out.push(s);
+  if (S.lock === 'turn' && S.turn) { const t = TOK.find(x => x.map === S.map && x.cid === S.turn); if (t && !out.includes(t)) out.push(t); }
+  return out;
+}
+function drawTable() {
+  const c = ctx, e = blkSet(S.map);
+  c.globalCompositeOperation = 'source-over';
+  if (e.cells.length) {
+    const opaque = role === 'player' || S.preview || document.body.classList.contains('tv');
+    c.fillStyle = opaque ? '#05030b' : 'rgba(5,3,11,0.62)';
+    e.cells.forEach(p => c.fillRect(p[0] - 0.01, p[1] - 0.01, 1.02, 1.02));
+    if (!opaque) { c.strokeStyle = 'rgba(190,120,255,0.55)'; c.lineWidth = 0.05; e.cells.forEach(p => c.strokeRect(p[0] + 0.05, p[1] + 0.05, 0.9, 0.9)); }
+  }
+  zoneTokens().forEach(t => {
+    const z = reachOf(t);
+    c.fillStyle = 'rgba(70,215,110,0.26)';
+    z.cells.forEach(p => c.fillRect(p[0] + 0.03, p[1] + 0.03, 0.94, 0.94));
+    c.strokeStyle = 'rgba(130,255,170,0.85)'; c.lineWidth = 0.06; c.strokeRect(z.c0 + 0.04, z.r0 + 0.04, 0.92, 0.92);
+  });
+}
+function moveRefusal(t) {
+  const st = GR.st || {};
+  if (st.lock === 'turn') { if (t.cid !== st.turn_char) return 'Ce n\'est pas ton tour.'; } else if (st.lock !== 'free') return 'Le MJ a bloqué les déplacements.';
+  const cells = tokCells(t);
+  if (cells.some(p => isBlocked(t.map, p[0], p[1]))) return 'Cette case est bloquée.';
+  if (st.lock === 'turn') { const z = reachOf(t); if (!cells.some(p => z.set.has(p[0] + ',' + p[1]))) return 'Trop loin pour ce tour.'; }
+  return '';
+}
+async function playerPush(t) {
+  try {
+    const r = await gReq('PATCH', 'map_tokens?id=eq.' + encodeURIComponent(t.id), { x: t.x, y: t.y }, 'return=representation');
+    if (!r || !r.length) { toast('Le MJ a refusé ce déplacement.'); playerPoll(); }
+  } catch (e) { toast('Déplacement refusé : ' + gNet(e)); playerPoll(); }
+}
+
+/* retour arrière (MJ) */
+const HIST = [];
+function histPush(t, x, y) { HIST.push({ id: t.id, x, y }); if (HIST.length > 120) HIST.shift(); setTStat(); }
+function undoMove() {
+  while (HIST.length) {
+    const h = HIST.pop(), t = TOK.find(x => x.id === h.id);
+    if (!t) continue;
+    t.x = h.x; t.y = h.y; saveTok(); setTStat(); toast('Déplacement annulé : ' + t.name); return;
+  }
+  toast('Rien à annuler.');
+}
+function undoTurn() {
+  let n = 0;
+  TOK.forEach(t => { if (t.map === S.map && t.ox != null && (t.x !== t.ox || t.y !== t.oy)) { t.x = t.ox; t.y = t.oy; n++; } });
+  HIST.length = 0; saveTok(); setTStat();
+  toast(n ? n + ' jeton(s) remis au début du tour' : 'Aucun jeton à remettre (le début du tour est-il mémorisé ?)');
+}
+function newTurn() { TOK.forEach(t => { if (t.map === S.map) { t.ox = t.x; t.oy = t.y; } }); HIST.length = 0; saveTok(); setTStat(); toast('Positions mémorisées : début du tour'); }
+
+/* modes : joueurs bloqués / libres / au tour par tour */
+function syncTable() {
+  $('mLocked').setAttribute('aria-pressed', S.lock === 'locked');
+  $('mFree').setAttribute('aria-pressed', S.lock === 'free');
+  $('mTurn').setAttribute('aria-pressed', S.lock === 'turn');
+  $('cZone').checked = S.zone !== false; $('cPreview').checked = !!S.preview;
+  $('bPaint').setAttribute('aria-pressed', paintMode);
+  $('bPaint').textContent = 'Bloquer des cases : ' + (paintMode ? 'activé (glisse sur la carte)' : 'désactivé');
+  cv.style.cursor = paintMode ? 'crosshair' : '';
+  setTStat();
+}
+function fillTurnSelect() {
+  const s = $('sTurn'), cur = S.turn || s.value, ids = new Set();
+  s.textContent = '';
+  const o0 = document.createElement('option'); o0.value = ''; o0.textContent = '(choisir)'; s.appendChild(o0);
+  TOK.forEach(t => { if (t.cid && t.map === S.map && !ids.has(t.cid)) { ids.add(t.cid); const o = document.createElement('option'); o.value = t.cid; o.textContent = t.name; s.appendChild(o); } });
+  s.value = ids.has(cur) ? cur : '';
+}
+function setTStat() {
+  const w = S.turn && TOK.find(t => t.cid === S.turn);
+  let m = S.lock === 'free' ? 'Les joueurs peuvent bouger librement.' : S.lock === 'turn' ? (w ? 'Tour de ' + w.name + ' : seul ce joueur peut bouger.' : 'Au tour par tour : choisis un joueur puis « Donner la main ».') : 'Les joueurs ne peuvent pas bouger.';
+  m += gActive() && GR.ready ? ' · synchronisé avec les joueurs' : ' · pas synchronisé (connecte-toi au Grimoire plus bas)';
+  if (HIST.length) m += ' · ' + HIST.length + ' déplacement(s) annulable(s)';
+  $('tStat').textContent = m;
+}
+function setLock(m) { S.lock = m; if (m !== 'turn') S.turn = null; save(); syncTable(); pushStateSoon(); }
+$('mLocked').onclick = () => setLock('locked');
+$('mFree').onclick = () => setLock('free');
+$('mTurn').onclick = () => setLock('turn');
+$('bGive').onclick = () => {
+  const id = $('sTurn').value;
+  if (!id) { toast('Choisis d\'abord un joueur dans la liste « Tour de ».'); return; }
+  S.lock = 'turn'; S.turn = id;
+  TOK.forEach(t => { if (t.map === S.map) { t.ox = t.x; t.oy = t.y; } });
+  HIST.length = 0;
+  const t = TOK.find(x => x.cid === id && x.map === S.map); if (t) sel = t.id;
+  save(); saveTok(); renderList(); syncTable(); pushStateSoon();
+  toast('La main est à ' + (t ? t.name : 'ce joueur'));
+};
+$('bEnd').onclick = () => { setLock('locked'); toast('Fin du tour : les joueurs sont bloqués'); };
+$('bUndo').onclick = undoMove;
+$('bUndoTurn').onclick = undoTurn;
+$('bNewTurn').onclick = newTurn;
+$('cZone').onchange = (e) => { S.zone = e.target.checked; save(); };
+$('cPreview').onchange = (e) => { S.preview = e.target.checked; save(); };
+$('bPaint').onclick = () => { paintMode = !paintMode; paint = null; syncTable(); };
+$('bUnblock').onclick = () => { delete S.blocked[S.map]; save(); pushStateSoon(); toast('Cases débloquées sur cette carte'); };
+
 /* ---------- liaison avec Grimoire de Table (Supabase) ---------- */
-const GR = { url: 'https://cgctevdguolaxjnduedq.supabase.co', key: 'sb_publishable_b_vPBcHYZeQ6ShnPFF-20w_m-6PkTRu', ses: null, chars: [], timer: null, camp: '' };
+const GR = { url: 'https://cgctevdguolaxjnduedq.supabase.co', key: 'sb_publishable_b_vPBcHYZeQ6ShnPFF-20w_m-6PkTRu', ses: null, chars: [], timer: null, timer2: null, camp: '', camps: [], uid: '', st: null, mine: new Set(), sig: {}, pushT: 0, stT: 0 };
 const GKEY = 'sanglier-grimoire';
 const SHKEY = 'sb-cgctevdguolaxjnduedq-auth-token';
 /* même adresse web que l'appli Grimoire : on réutilise sa session, sans second mot de passe */
@@ -2217,6 +2437,7 @@ try { const g = JSON.parse(localStorage.getItem(GKEY) || 'null'); if (g) { GR.se
 { const s = gShared(); if (s) { GR.ses = { access: s.access_token, refresh: s.refresh_token }; GR.shared = true; } }
 function gSave() { try { localStorage.setItem(GKEY, JSON.stringify({ ses: GR.shared ? null : GR.ses, camp: GR.camp, mail: $('gMail').value.trim() })); } catch (e) { /* ignoré */ } }
 function gStat(msg) { $('gStat').textContent = msg; }
+function gUid() { try { const p = GR.ses.access.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'); return JSON.parse(atob(p)).sub || ''; } catch (e) { return ''; } }
 async function gAuth(body, grant) {
   const res = await fetch(GR.url + '/auth/v1/token?grant_type=' + grant, { method: 'POST', headers: { apikey: GR.key, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const j = await res.json().catch(() => ({}));
@@ -2224,25 +2445,47 @@ async function gAuth(body, grant) {
   GR.ses = { access: j.access_token, refresh: j.refresh_token };
   if (GR.shared) { try { const s = gShared() || {}; localStorage.setItem(SHKEY, JSON.stringify(Object.assign(s, { access_token: j.access_token, refresh_token: j.refresh_token, expires_in: j.expires_in, expires_at: j.expires_at || Math.floor(Date.now() / 1000) + (j.expires_in || 3600) }))); } catch (e) { /* ignoré */ } } else gSave();
 }
-async function gGet(path, retry) {
-  const res = await fetch(GR.url + '/rest/v1/' + path, { headers: { apikey: GR.key, Authorization: 'Bearer ' + (GR.ses ? GR.ses.access : GR.key) } });
-  if (res.status === 401 && !retry && GR.shared) { const s = gShared(); if (s && s.access_token !== GR.ses.access) { GR.ses = { access: s.access_token, refresh: s.refresh_token }; return gGet(path, true); } }
-  if (res.status === 401 && !retry && GR.ses && GR.ses.refresh) { await gAuth({ refresh_token: GR.ses.refresh }, 'refresh_token'); return gGet(path, true); }
-  if (!res.ok) throw new Error('Erreur ' + res.status);
-  return res.json();
+async function gReq(method, path, body, prefer, retry) {
+  const h = { apikey: GR.key, Authorization: 'Bearer ' + (GR.ses ? GR.ses.access : GR.key) };
+  if (body !== undefined) h['Content-Type'] = 'application/json';
+  if (prefer) h.Prefer = prefer;
+  const res = await fetch(GR.url + '/rest/v1/' + path, { method, headers: h, body: body === undefined ? undefined : JSON.stringify(body) });
+  if (res.status === 401 && !retry) {
+    if (GR.shared) { const s = gShared(); if (s && s.access_token !== GR.ses.access) { GR.ses = { access: s.access_token, refresh: s.refresh_token }; return gReq(method, path, body, prefer, true); } }
+    if (GR.ses && GR.ses.refresh) { await gAuth({ refresh_token: GR.ses.refresh }, 'refresh_token'); return gReq(method, path, body, prefer, true); }
+  }
+  if (!res.ok) { const j = await res.json().catch(() => ({})); const e = new Error(j.message || ('Erreur ' + res.status)); e.status = res.status; throw e; }
+  return (method === 'GET' || (prefer && /representation/.test(prefer))) ? res.json() : null;
 }
+const gGet = (path) => gReq('GET', path);
 const gNet = (e) => (e && e.message === 'Failed to fetch' ? 'Impossible de joindre Grimoire de Table depuis cette page. Ouvre la carte depuis : https://thexmyst.github.io/Grimoire-de-table/carte/' : (e && e.message) || 'Erreur');
+const gActive = () => !!(GR.ses && GR.camp);
 function gUI() {
   const on = !!GR.ses;
   $('gLogin').hidden = on; $('gLogged').hidden = !on;
 }
+function setRole(r) {
+  role = r;
+  document.body.classList.toggle('player', r === 'player');
+  document.body.classList.toggle('logged', r === 'player' && !!GR.ses);
+  $('gTable').hidden = r === 'player';
+  $('pStat').hidden = r !== 'player';
+  if (r === 'player') { TOK = []; sel = null; drag = null; }
+}
 async function gLoadCamps() {
-  const camps = await gGet('campaigns?select=id,name&order=name');
+  GR.uid = gUid();
+  GR.camps = await gGet('campaigns?select=id,name,gm_id&order=name');
   const sel0 = $('sGCamp'); sel0.textContent = '';
-  camps.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.name; sel0.appendChild(o); });
-  if (!camps.length) { gStat('Connecté, mais aucune campagne trouvée pour ce compte.'); return false; }
-  sel0.value = camps.some(c => c.id === GR.camp) ? GR.camp : camps[0].id; GR.camp = sel0.value; gSave();
+  GR.camps.forEach(c => { const o = document.createElement('option'); o.value = c.id; o.textContent = c.name; sel0.appendChild(o); });
+  if (!GR.camps.length) { gStat('Connecté, mais aucune campagne trouvée pour ce compte.'); return false; }
+  sel0.value = GR.camps.some(c => c.id === GR.camp) ? GR.camp : GR.camps[0].id; GR.camp = sel0.value; gSave();
+  gApplyRole();
   return true;
+}
+function gApplyRole() {
+  const c = GR.camps.find(x => x.id === GR.camp);
+  setRole(c && c.gm_id && c.gm_id !== GR.uid ? 'player' : 'gm');
+  GR.sig = {}; GR.st = null; GR.mine = new Set();
 }
 const AVS = {};
 function gAvatar(url) {
@@ -2251,23 +2494,26 @@ function gAvatar(url) {
   if (!e) { e = AVS[url] = { img: new Image(), ok: false }; e.img.onload = () => { e.ok = true; }; e.img.onerror = () => { e.bad = true; }; e.img.src = url; }
   return e.ok ? e.img : null;
 }
+const cellsOf = (m) => Math.max(1, Math.round((Number(m) || 9) / 1.5));
 async function gSync(quiet) {
-  if (!GR.ses || !GR.camp) return;
+  if (!gActive()) return;
   try {
-    GR.chars = await gGet('characters?campaign_id=eq.' + GR.camp + '&select=id,name,class,level,avatar,hp,hp_max,temp_hp,conditions&order=name');
+    GR.chars = await gGet('characters?campaign_id=eq.' + GR.camp + '&select=id,name,class,level,avatar,hp,hp_max,temp_hp,conditions,speed,player_id&order=name');
+    GR.mine = new Set(GR.chars.filter(c => c.player_id === GR.uid).map(c => c.id));
     let n = 0;
     GR.chars.forEach(ch => {
       TOK.forEach(t => {
         if (t.cid !== ch.id) return;
         const was = t.hp;
         t.hp = ch.hp; t.hpMax = ch.hp_max; t.cond = Array.isArray(ch.conditions) ? ch.conditions.length : 0; t.avatar = ch.avatar || '';
-        if (ch.hp <= 0) t.dead = true; else if (was !== undefined && was <= 0 && ch.hp > 0) t.dead = false;
+        if (role === 'gm') { if (ch.hp <= 0) t.dead = true; else if (was !== undefined && was <= 0 && ch.hp > 0) t.dead = false; if (t.speedAuto !== false) t.speed = cellsOf(ch.speed); }
         n++;
       });
     });
-    saveTok();
-    gStat('Connecté · ' + GR.chars.length + ' personnage(s) · ' + n + ' jeton(s) synchronisé(s) · mis à jour ' + new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
-  } catch (e) { if (!quiet) gStat(gNet(e)); else gStat('Synchronisation interrompue : ' + gNet(e)); }
+    if (role === 'gm') saveTok();
+    fillTurnSelect();
+    gStat((role === 'player' ? 'Connecté comme joueur' : 'Connecté') + ' · ' + GR.chars.length + ' personnage(s) · ' + n + ' jeton(s) · mis à jour ' + new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+  } catch (e) { gStat((quiet ? 'Synchronisation interrompue : ' : '') + gNet(e)); }
 }
 function gImport() {
   if (!GR.chars.length) { gStat('Aucun personnage à importer pour le moment : clique sur Actualiser.'); return; }
@@ -2275,17 +2521,116 @@ function gImport() {
   GR.chars.forEach((ch, i) => {
     if (TOK.some(t => t.cid === ch.id && t.map === M.id)) return;
     const p = freeSpot(M, 1);
-    TOK.push({ id: 't' + Date.now().toString(36) + Math.floor(Math.random() * 1e5).toString(36), map: M.id, kind: 'pj', name: String(ch.name).split(' ')[0].slice(0, 24), x: p[0], y: p[1], size: 1, color: pal[i % pal.length], dead: false, cid: ch.id, hp: ch.hp, hpMax: ch.hp_max, cond: Array.isArray(ch.conditions) ? ch.conditions.length : 0, avatar: ch.avatar || '' });
+    TOK.push({ id: 't' + Date.now().toString(36) + Math.floor(Math.random() * 1e5).toString(36), map: M.id, kind: 'pj', name: String(ch.name).split(' ')[0].slice(0, 24), x: p[0], y: p[1], size: 1, color: pal[i % pal.length], dead: false, cid: ch.id, hp: ch.hp, hpMax: ch.hp_max, cond: Array.isArray(ch.conditions) ? ch.conditions.length : 0, avatar: ch.avatar || '', speed: cellsOf(ch.speed) });
     added++;
   });
   saveTok(); renderList(); gSync();
   gStat(added ? added + ' joueur(s) ajouté(s) sur cette carte.' : 'Tous les joueurs sont déjà sur cette carte.');
 }
+
+/* ---- positions partagées : le MJ pousse, les joueurs lisent et bougent leur jeton ---- */
+const tokSig = (t) => JSON.stringify([t.map, t.kind, t.name, t.x, t.y, t.ox == null ? null : t.ox, t.oy == null ? null : t.oy, t.size, t.color, !!t.dead, !!t.hidden, t.speed == null ? null : t.speed, t.cid || null]);
+const tokRow = (t) => ({ id: t.id, campaign_id: GR.camp, map: t.map, kind: t.kind, name: t.name, x: t.x, y: t.y, ox: t.ox == null ? null : t.ox, oy: t.oy == null ? null : t.oy, size: t.size, color: t.color, dead: !!t.dead, hidden: !!t.hidden, speed: t.speed == null ? null : t.speed, cid: t.cid || null });
+function schedulePush() {
+  if (role !== 'gm' || !gActive() || !GR.ready) return;
+  clearTimeout(GR.pushT); GR.pushT = setTimeout(pushTokens, 450);
+}
+async function pushTokens() {
+  if (role !== 'gm' || !gActive() || !GR.ready) return;
+  const rows = [], sigs = {};
+  TOK.forEach(t => { const s = tokSig(t); if (GR.sig[t.id] !== s) { rows.push(tokRow(t)); sigs[t.id] = s; } });
+  const gone = Object.keys(GR.sig).filter(id => !TOK.some(t => t.id === id));
+  try {
+    if (rows.length) await gReq('POST', 'map_tokens?on_conflict=id', rows, 'resolution=merge-duplicates,return=minimal');
+    if (gone.length) await gReq('DELETE', 'map_tokens?id=in.(' + gone.map(id => '"' + id + '"').join(',') + ')', undefined, 'return=minimal');
+    Object.assign(GR.sig, sigs); gone.forEach(id => { delete GR.sig[id]; });
+    setTStat();
+  } catch (e) { $('tStat').textContent = 'Synchronisation des jetons impossible : ' + gNet(e) + (e.status === 404 || /map_tokens/.test(e.message || '') ? ' (le script 0009_carte.sql a-t-il été exécuté dans Supabase ?)' : ''); }
+}
+function pushStateSoon() { if (role !== 'gm' || !gActive() || !GR.ready) return; clearTimeout(GR.stT); GR.stT = setTimeout(pushState, 300); }
+async function pushState() {
+  try { await gReq('POST', 'map_state?on_conflict=campaign_id', [{ campaign_id: GR.camp, map: S.map, lock: S.lock, turn_char: S.turn || null, blocked: S.blocked, updated_at: new Date().toISOString() }], 'resolution=merge-duplicates,return=minimal'); setTStat(); }
+  catch (e) { $('tStat').textContent = 'État de la table non enregistré : ' + gNet(e) + (e.status === 404 ? ' (le script 0009_carte.sql a-t-il été exécuté dans Supabase ?)' : ''); }
+}
+async function gmInit() {
+  GR.ready = false;
+  try {
+    const st = await gGet('map_state?campaign_id=eq.' + GR.camp + '&select=*');
+    if (st[0]) {
+      S.lock = st[0].lock; S.turn = st[0].turn_char || null;
+      if (!Object.keys(S.blocked || {}).length && st[0].blocked) S.blocked = st[0].blocked;
+      save(); fillTurnSelect(); syncTable();
+    }
+    const rows = await gGet('map_tokens?campaign_id=eq.' + GR.camp + '&select=*');
+    rows.forEach(r => {
+      GR.sig[r.id] = null;
+      let t = TOK.find(x => x.id === r.id);
+      if (!t && MAPS.some(m => m.id === r.map)) {
+        t = { id: r.id, map: r.map, kind: r.kind, name: r.name, x: Number(r.x), y: Number(r.y), ox: r.ox == null ? undefined : Number(r.ox), oy: r.oy == null ? undefined : Number(r.oy), size: Number(r.size), color: r.color, dead: r.dead, hidden: r.hidden, speed: r.speed == null ? undefined : Number(r.speed), cid: r.cid || undefined };
+        TOK.push(t);
+      }
+      if (t) GR.sig[r.id] = t.cid && !st[0] ? null : tokSig(t);
+    });
+    GR.ready = true; saveTok(); renderList();
+    pushState(); pushTokens();
+  } catch (e) { $('tStat').textContent = 'Table de jeu indisponible : ' + gNet(e) + (e.status === 404 ? ' (exécute le script 0009_carte.sql dans Supabase)' : ''); }
+}
+async function gmPoll() {
+  if (role !== 'gm' || !GR.ready || !gActive() || document.hidden) return;
+  try {
+    const rows = await gGet('map_tokens?campaign_id=eq.' + GR.camp + '&cid=not.is.null&select=id,x,y');
+    let moved = false;
+    rows.forEach(r => {
+      const t = TOK.find(x => x.id === r.id); if (!t) return;
+      if (drag && drag.id === t.id) return;
+      if (GR.sig[t.id] !== tokSig(t)) return;
+      const x = Number(r.x), y = Number(r.y);
+      if (x !== t.x || y !== t.y) { histPush(t, t.x, t.y); t.x = x; t.y = y; GR.sig[t.id] = tokSig(t); moved = true; }
+    });
+    if (moved) saveTok();
+  } catch (e) { /* on réessaie au prochain passage */ }
+}
+async function playerPoll() {
+  if (role !== 'player' || !gActive() || document.hidden) return;
+  try {
+    const [st, rows] = await Promise.all([gGet('map_state?campaign_id=eq.' + GR.camp + '&select=*'), gGet('map_tokens?campaign_id=eq.' + GR.camp + '&select=*')]);
+    GR.st = st[0] || { map: S.map, lock: 'locked', turn_char: null, blocked: {} };
+    if (GR.st.map && GR.st.map !== S.map && MAPS.some(m => m.id === GR.st.map)) setMap(GR.st.map);
+    const seen = new Set();
+    rows.forEach(r => {
+      if (!MAPS.some(m => m.id === r.map)) return;
+      seen.add(r.id);
+      let t = TOK.find(x => x.id === r.id);
+      if (!t) { t = { id: r.id }; TOK.push(t); }
+      if (drag && drag.id === t.id) return;
+      Object.assign(t, { map: r.map, kind: r.kind, name: r.name, x: Number(r.x), y: Number(r.y), ox: r.ox == null ? undefined : Number(r.ox), oy: r.oy == null ? undefined : Number(r.oy), size: Number(r.size), color: r.color, dead: r.dead, speed: r.speed == null ? undefined : Number(r.speed), cid: r.cid || undefined });
+    });
+    TOK = TOK.filter(t => seen.has(t.id));
+    if (!GR.focus) GR.focus = {};
+    if (!GR.focus[S.map]) {
+      const me = TOK.find(t => t.map === S.map && t.cid && GR.mine.has(t.cid));
+      if (me) { GR.focus[S.map] = 1; if (COLS > 40) { CAM.z = 3; CAM.cx = me.x; CAM.cy = me.y; } }
+    }
+    updPlayerStat();
+  } catch (e) { $('pStat').textContent = 'Connexion perdue… ' + gNet(e); $('pStat').classList.remove('go'); }
+}
+function updPlayerStat() {
+  const p = $('pStat'), st = GR.st || {}, mineTok = TOK.filter(t => t.map === S.map && t.cid && GR.mine.has(t.cid));
+  p.classList.remove('go');
+  if (!mineTok.length) { p.textContent = 'Ton personnage n\'est pas (encore) sur cette carte.'; return; }
+  if (st.lock === 'free') { p.textContent = 'Déplacements libres : bouge ton jeton'; p.classList.add('go'); }
+  else if (st.lock === 'turn') {
+    const me = mineTok.find(t => t.cid === st.turn_char);
+    if (me) { p.textContent = 'À toi de jouer ! Tu peux avancer de ' + (me.speed != null ? me.speed : 6) + ' cases (zone verte)'; p.classList.add('go'); }
+    else { const w = TOK.find(t => t.cid === st.turn_char); p.textContent = w ? 'Tour de ' + w.name : 'Ce n\'est pas ton tour'; }
+  } else p.textContent = 'Déplacements bloqués par le MJ';
+}
 function gStart() {
   gUI();
-  clearInterval(GR.timer);
+  clearInterval(GR.timer); clearInterval(GR.timer2);
   GR.timer = setInterval(() => { if (GR.ses && !document.hidden) gSync(true); }, 6000);
-  gSync();
+  GR.timer2 = setInterval(() => { if (role === 'player') playerPoll(); else gmPoll(); }, role === 'player' ? 2000 : 3000);
+  gSync().then(() => { if (role === 'gm') gmInit(); else playerPoll(); });
 }
 $('gMail').value = GR.mail || 'kevinkhramaz@hotmail.com';
 $('bGLogin').onclick = async () => {
@@ -2299,11 +2644,11 @@ $('bGLogin').onclick = async () => {
 };
 $('gPass').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('bGLogin').click(); e.stopPropagation(); });
 $('gMail').addEventListener('keydown', (e) => e.stopPropagation());
-$('sGCamp').onchange = () => { GR.camp = $('sGCamp').value; gSave(); gSync(); };
+$('sGCamp').onchange = () => { GR.camp = $('sGCamp').value; gSave(); GR.ready = false; gApplyRole(); gStart(); };
 $('bGImport').onclick = gImport;
 $('bGSync').onclick = () => gSync();
-$('bGOut').onclick = () => { GR.shared = false; GR.ses = null; GR.chars = []; clearInterval(GR.timer); gSave(); gUI(); gStat('Déconnecté.'); };
-gUI();
+$('bGOut').onclick = () => { GR.shared = false; GR.ses = null; GR.chars = []; GR.ready = false; clearInterval(GR.timer); clearInterval(GR.timer2); gSave(); gUI(); setRole('gm'); loadTok(); renderList(); gStat('Déconnecté.'); };
+gUI(); syncTable();
 if (GR.ses) gLoadCamps().then(ok => { if (ok) gStart(); }).catch(e => { gStat(gNet(e)); });
 
 /* ---------- boucle de rendu ---------- */
@@ -2407,6 +2752,7 @@ function frame(ts) {
     ctx.globalCompositeOperation = 'source-over';
   }
   if (S.moon && M.fx) M.fx(ctx, t, dt, dark);
+  drawTable();
 
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   if (S.grid && !M.bakedGrid) {
@@ -2427,6 +2773,7 @@ function frame(ts) {
 }
 requestAnimationFrame(frame);
 
+window.__t = () => ({ TOK, V, S, GR, HIST, role, cv });
 if (!MAPS.some(m => m.id === S.map)) S.map = 'taverne';
 useDims(curMap());
 syncUI(); renderList();
