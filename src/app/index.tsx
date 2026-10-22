@@ -15,6 +15,8 @@ export default function Campaigns() {
   const [newName, setNewName] = useState('');
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [confirming, setConfirming] = useState<string | null>(null);
+  const [showClosed, setShowClosed] = useState(false);
 
   const load = useCallback(async () => {
     const { data, error } = await supabase.from('campaigns').select('*').order('created_at');
@@ -40,6 +42,57 @@ export default function Campaigns() {
     router.push(`/campaign/${data.id}`);
   }
 
+  /** Clôturer ou rouvrir : un simple drapeau dans les réglages, les fiches restent intactes. */
+  async function setClosed(c: Campaign, closed: boolean) {
+    setError('');
+    setConfirming(null);
+    const settings = { ...c.settings, closed };
+    setCampaigns((list) => list.map((x) => (x.id === c.id ? { ...x, settings } : x)));
+    const { error } = await supabase.from('campaigns').update({ settings }).eq('id', c.id);
+    if (error) {
+      setError(errorText(error));
+      load();
+    }
+  }
+
+  const open = campaigns.filter((c) => !c.settings?.closed);
+  const closed = campaigns.filter((c) => c.settings?.closed);
+
+  const CampaignCard = ({ c }: { c: Campaign }) => {
+    const gm = c.gm_id === me;
+    const isClosed = !!c.settings?.closed;
+    return (
+      <Card>
+        <Pressable onPress={() => router.push(`/campaign/${c.id}`)}>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <Body style={{ fontSize: 18, fontWeight: '700', color: isClosed ? t.muted : t.ink, flexShrink: 1 }}>{c.name}</Body>
+            <Pill text={gm ? 'Maître du jeu' : 'Joueur'} tone={gm ? 'accent' : 'neutral'} />
+          </Row>
+        </Pressable>
+        {gm &&
+          (isClosed ? (
+            <Row>
+              <Button small label="Rouvrir la campagne" onPress={() => setClosed(c, false)} />
+            </Row>
+          ) : confirming === c.id ? (
+            <>
+              <Body muted style={{ fontSize: 14 }}>
+                La campagne sera rangée dans « Campagnes clôturées ». Les fiches ne sont pas effacées, et tu pourras la rouvrir.
+              </Body>
+              <Row>
+                <Button small kind="danger" label="Oui, clôturer" onPress={() => setClosed(c, true)} />
+                <Button small label="Annuler" onPress={() => setConfirming(null)} />
+              </Row>
+            </>
+          ) : (
+            <Row>
+              <Button small label="Clôturer" onPress={() => setConfirming(c.id)} />
+            </Row>
+          ))}
+      </Card>
+    );
+  };
+
   async function join() {
     setError('');
     const { data, error } = await supabase.rpc('join_campaign', { code });
@@ -51,17 +104,21 @@ export default function Campaigns() {
   return (
     <Screen>
       <Title>Mes campagnes</Title>
-      {campaigns.length === 0 && <Body muted>Aucune campagne pour l'instant. Crées-en une ou rejoins tes amis.</Body>}
-      {campaigns.map((c) => (
-        <Pressable key={c.id} onPress={() => router.push(`/campaign/${c.id}`)}>
-          <Card>
-            <Row style={{ justifyContent: 'space-between' }}>
-              <Body style={{ fontSize: 18, fontWeight: '700' }}>{c.name}</Body>
-              <Pill text={c.gm_id === me ? 'Maître du jeu' : 'Joueur'} tone={c.gm_id === me ? 'accent' : 'neutral'} />
-            </Row>
-          </Card>
-        </Pressable>
+      {open.length === 0 && <Body muted>Aucune campagne en cours. Crées-en une ou rejoins tes amis.</Body>}
+      {open.map((c) => (
+        <CampaignCard key={c.id} c={c} />
       ))}
+
+      {closed.length > 0 && (
+        <>
+          <Pressable onPress={() => setShowClosed(!showClosed)}>
+            <Body muted style={{ fontWeight: '700' }}>
+              {showClosed ? '▾' : '▸'} Campagnes clôturées ({closed.length})
+            </Body>
+          </Pressable>
+          {showClosed && closed.map((c) => <CampaignCard key={c.id} c={c} />)}
+        </>
+      )}
 
       <Card>
         <Title>Rejoindre une campagne</Title>

@@ -7,6 +7,8 @@ export type CampaignSettings = {
   spell_approval: boolean;
   /** Règle optionnelle : malus d'encombrement des armures */
   armor_encumbrance?: boolean;
+  /** Campagne terminée : rangée à part sur l'accueil, rien n'est effacé */
+  closed?: boolean;
 };
 
 export type Campaign = {
