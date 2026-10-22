@@ -24,4 +24,11 @@ let html = fs.readFileSync(indexPath, 'utf8')
 fs.writeFileSync(indexPath, html);
 fs.copyFileSync(indexPath, path.join(dist, '404.html'));
 fs.writeFileSync(path.join(dist, '.nojekyll'), '');
+
+// Carte animée pour la télé (page autonome, même adresse web que l'appli : elle réutilise la connexion du MJ)
+const carteSrc = path.join(__dirname, '..', 'carte', 'index.html');
+if (fs.existsSync(carteSrc)) {
+  fs.mkdirSync(path.join(dist, 'carte'), { recursive: true });
+  fs.copyFileSync(carteSrc, path.join(dist, 'carte', 'index.html'));
+}
 console.log('Export web prêt pour GitHub Pages.');
