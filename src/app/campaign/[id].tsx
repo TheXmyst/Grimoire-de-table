@@ -1,4 +1,5 @@
 import { BackButton } from '../../components/BackButton';
+import { openCarte } from '../../lib/carte';
 import * as Clipboard from 'expo-clipboard';
 import { Stack, useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -110,6 +111,13 @@ export default function CampaignScreen() {
   return (
     <Screen>
       <Stack.Screen options={{ title: campaign.name, headerLeft: () => <BackButton to="/" label="Accueil" /> }} />
+
+      <Card>
+        <Row style={{ justifyContent: 'space-between' }}>
+          <Body muted>Carte animée pour la table (télé et joueurs)</Body>
+          <Button small kind="primary" label="Ouvrir la carte" onPress={openCarte} />
+        </Row>
+      </Card>
 
       {isGm && (
         <Card>

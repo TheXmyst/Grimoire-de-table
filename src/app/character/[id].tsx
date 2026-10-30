@@ -13,6 +13,7 @@ import { RoleplayTab } from '../../components/sheet/RoleplayTab';
 import { SpellsTab } from '../../components/sheet/SpellsTab';
 import { Body, Button, Card, ErrorText, Field, Label, Loading, Pill, Row, Screen, Title } from '../../components/ui';
 import { useUserId } from '../../lib/auth';
+import { openCarte } from '../../lib/carte';
 import { ABILITIES, ALIGNMENTS, CLASSES, CLASS_SAVES, SUBCLASS_LABEL, hitDieOf, modifier, proficiencyBonus, signed } from '../../lib/rules';
 import { errorText, supabase } from '../../lib/supabase';
 import { fonts, useTheme } from '../../lib/theme';
@@ -242,6 +243,7 @@ export default function CharacterScreen() {
                 <Text style={{ color: ch.inspiration ? t.bg : t.muted, fontWeight: '700', fontSize: 12, letterSpacing: 1 }}>INSPIRATION</Text>
               </Pressable>
               {isGm && !editing && <Button small label="Modifier la fiche" onPress={() => setEditing(true)} />}
+              <Button small label="Ouvrir la carte" onPress={openCarte} />
             </Row>
           </View>
         </Row>
