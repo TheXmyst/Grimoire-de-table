@@ -134,6 +134,16 @@ canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block
   border-radius: 6px;
 }
 body.tv .bar, body.tv .panel { display: none; }
+.inbox { position: absolute; right: 10px; top: 10px; z-index: 5; background: rgba(23,18,14,.92); border-color: #c58bff; }
+.inbox.new { background: #c58bff; color: #1a0b2a; border-color: #c58bff; font-weight: 700; }
+.rev { position: absolute; inset: 0; z-index: 20; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(5,3,11,.82); }
+.rev-card { background: var(--panel); border: 1px solid #c58bff; border-radius: 12px; padding: 18px; max-width: min(760px, 100%); max-height: 100%; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+.rev-card h2 { margin: 0; font: 700 1.4rem/1.2 var(--f-display); color: #e3c9ff; }
+.rev-card img, .rev-card video { max-width: 100%; max-height: 62vh; border-radius: 8px; display: block; margin: 0 auto; background: #000; }
+.rev-card iframe { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 8px; }
+#revB { margin: 0; white-space: pre-wrap; font-size: 1.1rem; line-height: 1.5; }
+.rev-note { margin: 0; color: var(--ink-dim); font-size: .85rem; }
+.rev-item { display: flex; justify-content: space-between; gap: 10px; align-items: center; text-align: left; width: 100%; }
 body.player #mapBtns, body.player #btnPanel, body.player #btnFull { display: none; }
 body.player.logged .panel { display: none; }
 body.player .bar { padding-top: 6px; padding-bottom: 6px; }
@@ -216,6 +226,22 @@ body.player .bar { padding-top: 6px; padding-bottom: 6px; }
     </div>
     <p class="keys" id="tStat" style="margin:0"></p>
   </div>
+  <div class="group wide" id="gRev">
+    <span class="label">Révélations : message, image ou vidéo privés pour des joueurs</span>
+    <div class="row" id="rWho"></div>
+    <div class="row">
+      <input type="text" id="rTitle" placeholder="Titre (ex. Ce que ressent le druide)" maxlength="80" aria-label="Titre du message" style="width:19rem;max-width:100%">
+      <label for="rFile">Fichier <input type="file" id="rFile" accept="image/*,video/*"></label>
+      <input type="text" id="rUrl" placeholder="ou lien d'une image, d'une vidéo, YouTube" aria-label="Lien" style="width:19rem;max-width:100%">
+    </div>
+    <textarea id="rBody" rows="3" placeholder="Message privé (le joueur est libre de le partager ou non)" aria-label="Message" style="width:100%;max-width:46rem;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:7px"></textarea>
+    <div class="row">
+      <label for="rTv"><input type="checkbox" id="rTv"> Afficher aussi sur cet écran (télé)</label>
+      <button type="button" id="bRevSend">Envoyer</button>
+    </div>
+    <p class="keys" id="rStat" style="margin:0">Connecte-toi au Grimoire plus bas pour envoyer des révélations.</p>
+    <div class="tklist" id="rList"></div>
+  </div>
   <div class="group wide">
     <span class="label">Grimoire de Table (fiches des joueurs)</span>
     <div class="row" id="gLogin">
@@ -260,6 +286,16 @@ body.player .bar { padding-top: 6px; padding-bottom: 6px; }
   <div class="loading" id="loading">Allumage des torches…</div>
   <div class="toast" id="toast" hidden></div>
   <div class="pstat" id="pStat" hidden></div>
+  <button type="button" class="inbox" id="bInbox" hidden>Messages du MJ</button>
+  <div class="rev" id="rev" hidden>
+    <div class="rev-card" role="dialog" aria-modal="true" aria-labelledby="revT">
+      <h2 id="revT"></h2>
+      <div id="revM"></div>
+      <p id="revB"></p>
+      <p class="rev-note" id="revN"></p>
+      <div class="row" id="revBtns"></div>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -2246,6 +2282,7 @@ document.addEventListener('keydown', (e) => {
   const tg = e.target && e.target.tagName;
   if (tg === 'SELECT' || (tg === 'INPUT' && e.target.type !== 'checkbox' && e.target.type !== 'range')) return;
   const k = e.key.toLowerCase();
+  if (!$('rev').hidden) return;
   if (role === 'player' && !(k === '+' || k === '=' || k === '-' || k === '_' || k === '0' || k.indexOf('arrow') === 0)) return;
   if (role === 'player' && k.indexOf('arrow') === 0) {
     const d = { arrowleft: [-1, 0], arrowright: [1, 0], arrowup: [0, -1], arrowdown: [0, 1] }[k], s = 4 / CAM.z;
@@ -2470,6 +2507,8 @@ function setRole(r) {
   document.body.classList.toggle('logged', r === 'player' && !!GR.ses);
   $('gTable').hidden = r === 'player';
   $('pStat').hidden = r !== 'player';
+  $('gRev').hidden = r === 'player';
+  $('bInbox').hidden = true; REV.msgs = []; REV.loaded = false; REV.open = null; $('rev').hidden = true;
   if (r === 'player') { TOK = []; sel = null; drag = null; }
 }
 async function gLoadCamps() {
@@ -2486,6 +2525,7 @@ function gApplyRole() {
   const c = GR.camps.find(x => x.id === GR.camp);
   setRole(c && c.gm_id && c.gm_id !== GR.uid ? 'player' : 'gm');
   GR.sig = {}; GR.st = null; GR.mine = new Set();
+  revLoadSeen();
 }
 const AVS = {};
 function gAvatar(url) {
@@ -2512,6 +2552,7 @@ async function gSync(quiet) {
     });
     if (role === 'gm') saveTok();
     fillTurnSelect();
+    if (role === 'gm') revWho();
     gStat((role === 'player' ? 'Connecté comme joueur' : 'Connecté') + ' · ' + GR.chars.length + ' personnage(s) · ' + n + ' jeton(s) · mis à jour ' + new Date().toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
   } catch (e) { gStat((quiet ? 'Synchronisation interrompue : ' : '') + gNet(e)); }
 }
@@ -2572,7 +2613,7 @@ async function gmInit() {
       if (t) GR.sig[r.id] = t.cid && !st[0] ? null : tokSig(t);
     });
     GR.ready = true; saveTok(); renderList();
-    pushState(); pushTokens();
+    pushState(); pushTokens(); revLoadList();
   } catch (e) { $('tStat').textContent = 'Table de jeu indisponible : ' + gNet(e) + (e.status === 404 ? ' (exécute le script 0009_carte.sql dans Supabase)' : ''); }
 }
 async function gmPoll() {
@@ -2612,6 +2653,7 @@ async function playerPoll() {
       if (me) { GR.focus[S.map] = 1; if (COLS > 40) { CAM.z = 3; CAM.cx = me.x; CAM.cy = me.y; } }
     }
     updPlayerStat();
+    if (!REV.loaded || ++REV.pc % 2 === 0) revPoll();
   } catch (e) { $('pStat').textContent = 'Connexion perdue… ' + gNet(e); $('pStat').classList.remove('go'); }
 }
 function updPlayerStat() {
@@ -2650,6 +2692,156 @@ $('bGSync').onclick = () => gSync();
 $('bGOut').onclick = () => { GR.shared = false; GR.ses = null; GR.chars = []; GR.ready = false; clearInterval(GR.timer); clearInterval(GR.timer2); gSave(); gUI(); setRole('gm'); loadTok(); renderList(); gStat('Déconnecté.'); };
 gUI(); syncTable();
 if (GR.ses) gLoadCamps().then(ok => { if (ok) gStart(); }).catch(e => { gStat(gNet(e)); });
+
+/* ---------- révélations : messages privés (texte, image, vidéo) pour des joueurs ---------- */
+const REV = { msgs: [], open: null, seen: new Set(), loaded: false, pc: 0, from: null };
+const revSeenKey = () => 'carte-vu-' + (GR.uid || 'x');
+function revLoadSeen() { try { REV.seen = new Set(JSON.parse(localStorage.getItem(revSeenKey()) || '[]')); } catch (e) { REV.seen = new Set(); } }
+function revSaveSeen() { try { localStorage.setItem(revSeenKey(), JSON.stringify(Array.from(REV.seen).slice(-300))); } catch (e) { /* ignoré */ } }
+function revClassify(u) {
+  u = String(u || '').trim();
+  if (!/^https?:\/\//i.test(u)) return null;
+  const yt = u.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+  if (yt) return { type: 'youtube', url: 'https://www.youtube-nocookie.com/embed/' + yt[1] };
+  if (/\.(mp4|webm|mov|m4v|ogv)(\?|#|$)/i.test(u)) return { type: 'video', url: u };
+  return { type: 'image', url: u };
+}
+const revUnseen = () => REV.msgs.filter(m => !REV.seen.has(m.id)).reverse();
+function revBadge() {
+  if (role !== 'player') { $('bInbox').hidden = true; return; }
+  const n = revUnseen().length, b = $('bInbox');
+  b.hidden = !REV.msgs.length; b.textContent = 'Messages du MJ' + (n ? ' (' + n + ' nouveau' + (n > 1 ? 'x' : '') + ')' : '');
+  b.classList.toggle('new', n > 0);
+}
+function revBtn(label, fn, id) { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; if (id) b.id = id; b.onclick = fn; return b; }
+function revShow(m, fromInbox) {
+  REV.open = m.id; REV.from = fromInbox ? 'inbox' : null;
+  $('rev').hidden = false;
+  $('revT').textContent = m.title || 'Message du MJ';
+  const box = $('revM'); box.textContent = '';
+  if (m.media_url) {
+    let e;
+    if (m.media_type === 'video') { e = document.createElement('video'); e.controls = true; e.playsInline = true; e.preload = 'metadata'; e.src = m.media_url; }
+    else if (m.media_type === 'youtube') { e = document.createElement('iframe'); e.src = m.media_url; e.allow = 'accelerometer; encrypted-media; picture-in-picture; fullscreen'; e.allowFullscreen = true; e.title = 'Vidéo'; }
+    else { e = document.createElement('img'); e.src = m.media_url; e.alt = m.title || 'Image du MJ'; }
+    box.appendChild(e);
+  }
+  $('revB').textContent = m.body || '';
+  $('revN').textContent = role === 'player' ? 'Information privée du MJ : tu es libre de la partager, ou non, avec les autres joueurs.' : 'Affiché sur l\'écran de la table.';
+  const bt = $('revBtns'); bt.textContent = '';
+  if (fromInbox) bt.appendChild(revBtn('← Retour', revInbox));
+  bt.appendChild(revBtn('Fermer', revClose, 'revOK'));
+}
+function revClose() {
+  $('revM').textContent = '';
+  if (role === 'player' && REV.open && REV.open !== 'inbox') { REV.seen.add(REV.open); revSaveSeen(); }
+  $('rev').hidden = true; REV.open = null; REV.from = null;
+  revBadge(); revNextUnseen();
+}
+function revInbox() {
+  REV.open = 'inbox';
+  $('rev').hidden = false; $('revT').textContent = 'Messages du MJ'; $('revB').textContent = ''; $('revN').textContent = 'Seuls les messages qui te sont destinés apparaissent ici.';
+  const box = $('revM'); box.textContent = '';
+  if (!REV.msgs.length) { const p = document.createElement('p'); p.textContent = 'Aucun message pour le moment.'; box.appendChild(p); }
+  REV.msgs.forEach(m => {
+    const b = revBtn('', () => { REV.seen.add(m.id); revSaveSeen(); revBadge(); revShow(m, true); });
+    b.className = 'rev-item';
+    const l = document.createElement('span'); l.textContent = (REV.seen.has(m.id) ? '' : '● ') + (m.title || (m.body || 'Message').slice(0, 40) || 'Message') + (m.media_url ? (m.media_type === 'image' ? ' 🖼' : ' ▶') : '');
+    const d = document.createElement('span'); d.className = 'keys'; d.style.margin = '0'; d.textContent = new Date(m.created_at).toLocaleString('fr-BE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    b.append(l, d); box.appendChild(b);
+  });
+  const bt = $('revBtns'); bt.textContent = ''; bt.appendChild(revBtn('Fermer', () => { $('rev').hidden = true; REV.open = null; box.textContent = ''; }, 'revOK'));
+}
+function revNextUnseen() {
+  if (role !== 'player' || REV.open) return;
+  const m = revUnseen()[0];
+  if (!m) return;
+  revShow(m);
+  try { if (navigator.vibrate) navigator.vibrate([120, 60, 120]); } catch (e) { /* ignoré */ }
+}
+async function revPoll() {
+  if (role !== 'player' || !gActive()) return;
+  try {
+    REV.msgs = await gGet('map_messages?campaign_id=eq.' + GR.camp + '&order=created_at.desc&limit=40&select=*');
+    REV.loaded = true; revBadge(); revNextUnseen();
+  } catch (e) { /* la table n'existe peut-être pas encore : on ignore côté joueur */ }
+}
+$('bInbox').onclick = revInbox;
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('rev').hidden) { if (REV.open === 'inbox' || !REV.from) revClose(); else revInbox(); } });
+
+/* ---- côté MJ ---- */
+function revWho() {
+  const box = $('rWho'); if (!box) return;
+  const prev = new Set(Array.from(box.querySelectorAll('input[data-cid]:checked')).map(i => i.dataset.cid)), allWas = !box.querySelector('#rAll') || box.querySelector('#rAll').checked;
+  box.textContent = '';
+  const mk = (id, label, checked, cid) => { const l = document.createElement('label'); l.htmlFor = id; const i = document.createElement('input'); i.type = 'checkbox'; i.id = id; i.checked = checked; if (cid) i.dataset.cid = cid; l.append(i, ' ' + label); box.appendChild(l); return i; };
+  const all = mk('rAll', 'Tous les joueurs', allWas && !prev.size);
+  const singles = GR.chars.map(c => mk('rw-' + c.id, String(c.name).split(' ')[0], prev.has(c.id), c.id));
+  all.onchange = () => { if (all.checked) singles.forEach(i => { i.checked = false; }); };
+  singles.forEach(i => { i.onchange = () => { if (i.checked) all.checked = false; else if (!singles.some(x => x.checked)) all.checked = true; }; });
+}
+function shrinkImage(file) {
+  return createImageBitmap(file).then(bmp => {
+    const s = Math.min(1, 1800 / Math.max(bmp.width, bmp.height)), c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    return new Promise((ok, ko) => c.toBlob(b => (b ? ok(b) : ko(new Error('image'))), 'image/jpeg', 0.86));
+  });
+}
+async function revUpload(file) {
+  if (file.size > 50 * 1024 * 1024) throw new Error('Fichier trop lourd (50 Mo maximum).');
+  const type = file.type.indexOf('video') === 0 ? 'video' : 'image';
+  let blob = file, ext = (file.name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 5) || 'bin';
+  if (type === 'image' && !/gif|svg/.test(file.type)) { try { blob = await shrinkImage(file); ext = 'jpg'; } catch (e) { blob = file; } }
+  const uid = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.floor(Math.random() * 1e9);
+  const path = GR.camp + '/' + uid + '.' + ext;
+  const res = await fetch(GR.url + '/storage/v1/object/carte-media/' + path, { method: 'POST', headers: { apikey: GR.key, Authorization: 'Bearer ' + GR.ses.access, 'Content-Type': blob.type || 'application/octet-stream', 'x-upsert': 'false' }, body: blob });
+  if (!res.ok) { const j = await res.json().catch(() => ({})); const e = new Error(j.message || j.error || ('Envoi du fichier refusé (' + res.status + ')')); e.status = res.status; throw e; }
+  return { type, url: GR.url + '/storage/v1/object/public/carte-media/' + path };
+}
+const revHint = (e) => (e && (e.status === 404 || /map_messages|bucket/i.test(e.message || '')) ? ' (exécute le script 0010_revelations.sql dans Supabase)' : '');
+async function revSend() {
+  const st = $('rStat');
+  if (role !== 'gm' || !gActive()) { st.textContent = 'Connecte-toi au Grimoire plus bas pour envoyer des révélations.'; return; }
+  const all = $('rAll') && $('rAll').checked, ids = Array.from(document.querySelectorAll('#rWho input[data-cid]:checked')).map(i => i.dataset.cid);
+  if (!all && !ids.length) { st.textContent = 'Choisis au moins un destinataire.'; return; }
+  const title = $('rTitle').value.trim(), body = $('rBody').value.trim(), file = $('rFile').files[0], url = $('rUrl').value.trim();
+  if (!title && !body && !file && !url) { st.textContent = 'Écris un message, ou ajoute une image ou une vidéo.'; return; }
+  $('bRevSend').disabled = true; st.textContent = 'Envoi…';
+  try {
+    let media = { type: '', url: '' };
+    if (file) { st.textContent = 'Envoi du fichier…'; media = await revUpload(file); }
+    else if (url) { media = revClassify(url); if (!media) throw new Error('Le lien doit commencer par http:// ou https://'); }
+    const r = await gReq('POST', 'map_messages', [{ campaign_id: GR.camp, to_chars: all ? null : ids, title, body, media_url: media.url, media_type: media.type }], 'return=representation');
+    st.textContent = 'Envoyé à ' + (all ? 'tous les joueurs' : ids.length + ' joueur(s)') + '.';
+    if ($('rTv').checked && r && r[0]) revShow(r[0]);
+    $('rTitle').value = ''; $('rBody').value = ''; $('rFile').value = ''; $('rUrl').value = '';
+    await revLoadList();
+  } catch (e) { st.textContent = 'Envoi impossible : ' + gNet(e) + revHint(e); }
+  finally { $('bRevSend').disabled = false; }
+}
+async function revLoadList() {
+  if (role !== 'gm' || !gActive()) return;
+  try { REV.msgs = await gGet('map_messages?campaign_id=eq.' + GR.camp + '&order=created_at.desc&limit=12&select=*'); } catch (e) { $('rStat').textContent = 'Révélations indisponibles : ' + gNet(e) + revHint(e); return; }
+  const box = $('rList'); box.textContent = '';
+  REV.msgs.forEach(m => {
+    const row = document.createElement('div'); row.className = 'tk';
+    const who = m.to_chars ? m.to_chars.map(id => { const c = GR.chars.find(x => x.id === id); return c ? String(c.name).split(' ')[0] : '?'; }).join(', ') : 'Tous';
+    const k = document.createElement('span'); k.className = 'kind'; k.style.width = '8rem'; k.textContent = '→ ' + who;
+    const t = document.createElement('span'); t.style.flex = '1'; t.textContent = (m.title || (m.body || '').slice(0, 50) || 'Message') + (m.media_url ? (m.media_type === 'image' ? '  🖼' : '  ▶') : '');
+    const rv = revBtn('Montrer sur la télé', () => revShow(m));
+    const del = revBtn('Retirer', async () => {
+      try {
+        await gReq('DELETE', 'map_messages?id=eq.' + m.id, undefined, 'return=minimal');
+        const mp = (m.media_url || '').split('/carte-media/')[1];
+        if (mp && m.media_url.indexOf(GR.url) === 0) fetch(GR.url + '/storage/v1/object/carte-media/' + mp, { method: 'DELETE', headers: { apikey: GR.key, Authorization: 'Bearer ' + GR.ses.access } }).catch(() => {});
+        revLoadList();
+      } catch (e) { $('rStat').textContent = 'Suppression impossible : ' + gNet(e); }
+    });
+    row.append(k, t, rv, del); box.appendChild(row);
+  });
+}
+$('bRevSend').onclick = revSend;
 
 /* ---------- boucle de rendu ---------- */
 let dpr = 1, cssW = 0, cssH = 0, last = 0;
