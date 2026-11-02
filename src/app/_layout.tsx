@@ -17,6 +17,8 @@ function Gate() {
   useEffect(() => {
     if (loading) return;
     const onLogin = segments[0] === 'login';
+    // La page du lien « mot de passe oublié » ouvre elle-même la session
+    if (segments[0] === 'reset-password') return;
     if (!session && !onLogin) router.replace('/login');
     if (session && onLogin) router.replace('/');
   }, [session, loading, segments, router]);
@@ -34,6 +36,7 @@ function Gate() {
     >
       <Stack.Screen name="index" options={{ title: 'Grimoire de Table' }} />
       <Stack.Screen name="login" options={{ headerShown: false }} />
+      <Stack.Screen name="reset-password" options={{ headerShown: false }} />
       <Stack.Screen name="campaign/[id]" options={{ title: 'Campagne' }} />
       <Stack.Screen name="character/[id]" options={{ title: 'Fiche' }} />
       <Stack.Screen name="spells/[characterId]" options={{ title: 'Choisir des sorts', presentation: 'modal' }} />
